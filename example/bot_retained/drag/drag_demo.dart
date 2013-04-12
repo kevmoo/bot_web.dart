@@ -2,8 +2,8 @@ import 'dart:html';
 import 'dart:isolate';
 import 'package:bot/bot.dart';
 import 'package:bot/bot_async.dart';
-import 'package:bot/bot_html.dart';
-import 'package:bot/bot_retained.dart';
+import 'package:bot_web/bot_html.dart';
+import 'package:bot_web/bot_retained.dart';
 
 main(){
   CanvasElement canvas = document.query("#content");

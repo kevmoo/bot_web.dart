@@ -2,13 +2,12 @@ library harness_browser;
 
 import 'package:unittest/html_enhanced_config.dart';
 import 'package:unittest/unittest.dart';
-import 'test_browser.dart' as browser;
-import 'test_shared.dart' as shared;
+import 'bot_retained/_bot_retained.dart' as bot_retained;
+
 
 main() {
   groupSep = ' - ';
   useHtmlEnhancedConfiguration();
 
-  shared.main();
-  browser.register();
+  bot_retained.register();
 }
