@@ -20,7 +20,7 @@ class Stage extends AttachableObject
   CanvasRenderingContext2D get ctx {
     validateNotDisposed();
     if(_ctx == null) {
-      _ctx = _canvas.context2d;
+      _ctx = _canvas.context2D;
     }
     return _ctx;
   }
@@ -28,7 +28,7 @@ class Stage extends AttachableObject
   bool draw(){
     validateNotDisposed();
     if (_ctx == null) {
-      _ctx = _canvas.context2d;
+      _ctx = _canvas.context2D;
     } else {
       this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
     }

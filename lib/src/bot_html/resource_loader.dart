@@ -72,7 +72,7 @@ abstract class ResourceLoader<T> {
     return HttpRequest.request(entry.url, responseType: 'blob',
         onProgress: (ProgressEvent args) => _onProgress(entry, args))
         .then((HttpRequest request) => _onLoadEnd(entry, request))
-        .catchError((AsyncError error) => _onError(entry, error));
+        .catchError((dynamic error) => _onError(entry, error));
   }
 
   Future _onLoadEnd(_ResourceEntry<T> entry, HttpRequest request) {
@@ -90,7 +90,7 @@ abstract class ResourceLoader<T> {
         .whenComplete(() => entry.revokeBlobUrl());
   }
 
-  void _onError(_ResourceEntry<T> entry, AsyncError error) {
+  void _onError(_ResourceEntry<T> entry, dynamic error) {
     _libLogger.severe('There was an error loading resource ${entry.url}');
     _libLogger.severe(error.toString());
     throw error;

@@ -33,7 +33,7 @@ Task getUpdateExampleHtmlTask() {
 Future<bool> _transform(List<String> samples) {
   return transformHtml(_exampleFile, (Document doc) {
     _tweakDocument(doc, samples);
-    return new Future<Document>.immediate(doc);
+    return new Future<Document>.value(doc);
   });
 }
 

@@ -56,7 +56,7 @@ class NavThing extends ParentThing {
       final tempCanvas = new CanvasElement(
           width: ghost.width.toInt(), height: ghost.height.toInt());
 
-      final tempCtx = tempCanvas.context2d;
+      final tempCtx = tempCanvas.context2D;
       ghost.drawOverride(tempCtx);
 
       this._txPanel = new _NavLayerTxPanel(this.width, this.height, tempCanvas,

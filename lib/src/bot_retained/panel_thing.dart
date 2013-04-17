@@ -24,7 +24,7 @@ class PanelThing extends ParentThing {
 
     index = (index == null) ? 0 : index;
     thing.registerParent(this);
-    _children.insertRange(index, 1, thing);
+    _children.insert(index, thing);
 
     assert(!_containerTransformProperty.isSet(thing));
     _containerTransformProperty.set(thing, thing.addTransform());

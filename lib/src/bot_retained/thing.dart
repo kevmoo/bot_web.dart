@@ -170,7 +170,7 @@ abstract class Thing extends AttachableObject {
       this._cacheCanvas.width = this.width.toInt();
       this._cacheCanvas.height = this.height.toInt();
 
-      final cacheCtx = _cacheCanvas.context2d;
+      final cacheCtx = _cacheCanvas.context2D;
 
       _drawNormal(cacheCtx);
     }

@@ -5,7 +5,7 @@ import 'package:bot_web/bot_html.dart';
 
 main(){
   final CanvasElement canvas = document.query("#content");
-  final ctx = canvas.context2d;
+  final ctx = canvas.context2D;
   final tx = new AffineTransform();
   tx.scale(200, 200);
   tx.translate(0, 1.5);
