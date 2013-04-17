@@ -22,7 +22,7 @@ $$.ListIterator = {"": "Object;_iterable,_length,_index,_current",
     t1 = this._length;
     t2 = this._iterable;
     if (t1 !== t2.length)
-      throw $.$$throw($.ConcurrentModificationError$(t2));
+      throw $.wrapException($.ConcurrentModificationError$(t2));
     t3 = this._index;
     if (t3 === t1) {
       this._current = null;
@@ -70,6 +70,8 @@ $$.JSArray = {"": "Interceptor;",
     t1 = receiver.length;
     list = $.List_List(t1);
     for (i = 0; i < receiver.length; ++i) {
+      if (i >= receiver.length || false)
+        $.throwExpression($.RangeError$value(i));
       t2 = $.S(receiver[i]);
       if (i >= t1)
         throw $.ioore(i);
@@ -78,27 +80,27 @@ $$.JSArray = {"": "Interceptor;",
     return list.join(separator);
   },
   elementAt$1: function(receiver, index) {
-    if (index !== (index | 0))
-      throw $.iae(index);
-    if (index < 0 || index >= receiver.length)
-      throw $.ioore(index);
+    if (!(typeof index === "number" && Math.floor(index) === index))
+      $.throwExpression($.ArgumentError$(index));
+    if (index >= receiver.length || index < 0)
+      $.throwExpression($.RangeError$value(index));
     return receiver[index];
   },
   toString$0: function(receiver) {
     var result = $.StringBuffer$("");
-    $.ToString__emitCollection(receiver, result, $.List_List($));
+    $.ToString__emitValue(receiver, result, $.List_List($));
     return result.toString$0(result);
   },
   get$iterator: function(receiver) {
     return $.ListIterator$(receiver);
   },
   $asList: null,
-  $asCollection: null,
+  $asIterable: null,
   $isList: true,
-  $isCollection: true
+  $isIterable: true
 };
 
-$$.JSMutableArray = {"": "JSArray;", $asList: function () { return [null]; }, $asCollection: function () { return [null]; }};
+$$.JSMutableArray = {"": "JSArray;", $asList: function () { return [null]; }, $asIterable: function () { return [null]; }};
 
 $$.JSFixedArray = {"": "JSMutableArray;"};
 
@@ -149,14 +151,14 @@ $$.Null = {"": "Object;"};
 
 $$.JSNumber = {"": "Interceptor;",
   toString$0: function(receiver) {
-    if (receiver === 0 && (1 / receiver) < 0)
+    if (receiver === 0 && 1 / receiver < 0)
       return "-0.0";
     else
-      return "" + (receiver);
+      return "" + receiver;
   },
   $add: function(receiver, other) {
     if (!(typeof other === "number"))
-      throw $.$$throw($.ArgumentError$(other));
+      throw $.wrapException($.ArgumentError$(other));
     return receiver + other;
   },
   $sub: function(receiver, other) {
@@ -164,45 +166,45 @@ $$.JSNumber = {"": "Interceptor;",
   },
   $mul: function(receiver, other) {
     if (!(typeof other === "number"))
-      throw $.$$throw($.ArgumentError$(other));
+      throw $.wrapException($.ArgumentError$(other));
     return receiver * other;
   },
   $gt: function(receiver, other) {
     if (!(typeof other === "number"))
-      throw $.$$throw($.ArgumentError$(other));
+      throw $.wrapException($.ArgumentError$(other));
     return receiver > other;
   },
   $isnum: true
 };
 
-$$.JSInt = {"": "JSNumber;", $is$int: true, $isnum: true};
+$$.JSInt = {"": "JSNumber;", $isint: true, $isnum: true};
 
 $$.JSDouble = {"": "JSNumber;", $isnum: true};
 
 $$.JSString = {"": "Interceptor;",
   codeUnitAt$1: function(receiver, index) {
     if (index < 0)
-      throw $.$$throw($.RangeError$value(index));
+      throw $.wrapException($.RangeError$value(index));
     if (index >= receiver.length)
-      throw $.$$throw($.RangeError$value(index));
+      throw $.wrapException($.RangeError$value(index));
     return receiver.charCodeAt(index);
   },
   $add: function(receiver, other) {
     if (!(typeof other === "string"))
-      throw $.$$throw($.ArgumentError$(other));
+      throw $.wrapException($.ArgumentError$(other));
     return receiver + other;
   },
   substring$2: function(receiver, startIndex, endIndex) {
-    $.checkNum(startIndex);
     if (endIndex == null)
       endIndex = receiver.length;
-    $.checkNum(endIndex);
+    if (!(typeof endIndex === "number"))
+      $.throwExpression($.ArgumentError$(endIndex));
     if (startIndex < 0)
-      throw $.$$throw($.RangeError$value(startIndex));
+      throw $.wrapException($.RangeError$value(startIndex));
     if ($.JSInt_methods.$gt(startIndex, endIndex))
-      throw $.$$throw($.RangeError$value(startIndex));
+      throw $.wrapException($.RangeError$value(startIndex));
     if ($.$gt$n(endIndex, receiver.length))
-      throw $.$$throw($.RangeError$value(endIndex));
+      throw $.wrapException($.RangeError$value(endIndex));
     return receiver.substring(startIndex, endIndex);
   },
   substring$1: function($receiver, startIndex) {
@@ -276,12 +278,6 @@ $$.StringBuffer = {"": "Object;_contents",
   }
 };
 
-$$.convertDartToNative_Dictionary_anon = {"": "Closure;object_0",
-  call$2: function(key, value) {
-    this.object_0[key] = value;
-  }
-};
-
 $$.DetailedArgumentError = {"": "Object;",
   get$message: function(_) {
     return "Illegal argument: \"" + this.argument + "\" -- " + this.details;
@@ -291,9 +287,9 @@ $$.DetailedArgumentError = {"": "Object;",
   },
   DetailedArgumentError$2: function(argument, details) {
     if (this.argument.length === 0)
-      throw $.$$throw($.InvalidOperationError$("That's just sad. Give me a valid argument"));
+      throw $.wrapException($.InvalidOperationError$("That's just sad. Give me a valid argument"));
     if (this.details.length === 0)
-      throw $.$$throw($.InvalidOperationError$("That's just sad. I need details!"));
+      throw $.wrapException($.InvalidOperationError$("That's just sad. I need details!"));
   }
 };
 
@@ -380,8 +376,8 @@ $$.AffineTransform = {"": "Object;_scX<,_shY<,_shX<,_scY<,_tX<,_tY<",
   },
   setToRotation$3: function(theta, x, y) {
     var cos, sin;
-    cos = Math.cos($.checkNum(theta));
-    sin = Math.sin($.checkNum(theta));
+    cos = Math.cos(theta);
+    sin = Math.sin(theta);
     return this.setTransform$6(this, cos, sin, -sin, cos, x - x * cos + y * sin, y - x * sin - y * cos);
   },
   setTransform$6: function(_, m00, m10, m01, m11, m02, m12) {
@@ -416,6 +412,8 @@ $$.AreaElement = {"": "Element;"};
 
 $$.AudioElement = {"": "MediaElement;"};
 
+$$.AutocompleteErrorEvent = {"": "Event;"};
+
 $$.BRElement = {"": "Element;"};
 
 $$.BaseElement = {"": "Element;"};
@@ -425,19 +423,8 @@ $$.BodyElement = {"": "Element;"};
 $$.ButtonElement = {"": "Element;"};
 
 $$.CanvasElement = {"": "Element;",
-  getContext$2: function(receiver, contextId, attrs) {
-    var t1 = $ === attrs;
-    if (t1)
-      attrs = null;
-    if (!t1)
-      return receiver.getContext(contextId, $.convertDartToNative_Dictionary(attrs));
-    return receiver.getContext(contextId);
-  },
-  getContext$1: function($receiver, contextId) {
-    return this.getContext$2($receiver, contextId, $);
-  },
-  get$context2d: function(receiver) {
-    return this.getContext$1(receiver, "2d");
+  get$context2D: function(receiver) {
+    return receiver.getContext("2d");
   }
 };
 
@@ -447,15 +434,12 @@ $$.CanvasPattern = {"": "Interceptor;"};
 
 $$.CanvasRenderingContext = {"": "Interceptor;"};
 
-$$.CanvasRenderingContext2D = {"": "CanvasRenderingContext;lineWidth},strokeStyle}",
-  beginPath$0: function(receiver) {
-    return receiver.beginPath();
-  },
+$$.CanvasRenderingContext2D = {"": "CanvasRenderingContext;",
   lineTo$2: function(receiver, x, y) {
-    return receiver.lineTo(x,y);
+    return receiver.lineTo(x, y);
   },
   moveTo$2: function(receiver, x, y) {
-    return receiver.moveTo(x,y);
+    return receiver.moveTo(x, y);
   },
   restore$0: function(receiver) {
     return receiver.restore();
@@ -463,11 +447,8 @@ $$.CanvasRenderingContext2D = {"": "CanvasRenderingContext;lineWidth},strokeStyl
   save$0: function(receiver) {
     return receiver.save();
   },
-  stroke$0: function(receiver) {
-    return receiver.stroke();
-  },
   transform$6: function(receiver, m11, m12, m21, m22, dx, dy) {
-    return receiver.transform(m11,m12,m21,m22,dx,dy);
+    return receiver.transform(m11, m12, m21, m22, dx, dy);
   }
 };
 
@@ -478,6 +459,8 @@ $$.DListElement = {"": "Element;"};
 $$.DataListElement = {"": "Element;"};
 
 $$.DetailsElement = {"": "Element;"};
+
+$$.DialogElement = {"": "Element;"};
 
 $$.DivElement = {"": "Element;"};
 
@@ -569,7 +552,17 @@ $$.ModElement = {"": "Element;"};
 
 $$.NavigatorUserMediaError = {"": "Interceptor;"};
 
-$$.Node = {"": "EventTarget;"};
+$$.Node = {"": "EventTarget;",
+  toString$0: function(receiver) {
+    var t1 = receiver.localName;
+    if (t1 == null) {
+      t1 = receiver.nodeValue;
+      if (t1 == null)
+        t1 = $.Object.prototype.toString$0.call(receiver, receiver);
+    }
+    return t1;
+  }
+};
 
 $$.OListElement = {"": "Element;"};
 
@@ -644,20 +637,6 @@ $$.XPathException = {"": "Interceptor;",
     return receiver.toString();
   }
 };
-
-$$._HTMLAppletElement = {"": "Element;"};
-
-$$._HTMLBaseFontElement = {"": "Element;"};
-
-$$._HTMLDirectoryElement = {"": "Element;"};
-
-$$._HTMLFontElement = {"": "Element;"};
-
-$$._HTMLFrameElement = {"": "Element;"};
-
-$$._HTMLFrameSetElement = {"": "Element;"};
-
-$$._HTMLMarqueeElement = {"": "Element;"};
 
 $$.AElement = {"": "StyledElement;",
   transform$6: function($receiver, arg0, arg1, arg2, arg3, arg4, arg5) {
@@ -785,7 +764,7 @@ $$.LineElement = {"": "StyledElement;",
   }
 };
 
-$$.LinearGradientElement = {"": "_SVGGradientElement;"};
+$$.LinearGradientElement = {"": "_GradientElement;"};
 
 $$.MarkerElement = {"": "StyledElement;"};
 
@@ -813,7 +792,7 @@ $$.PolylineElement = {"": "StyledElement;",
   }
 };
 
-$$.RadialGradientElement = {"": "_SVGGradientElement;"};
+$$.RadialGradientElement = {"": "_GradientElement;"};
 
 $$.RectElement = {"": "StyledElement;",
   transform$6: function($receiver, arg0, arg1, arg2, arg3, arg4, arg5) {
@@ -830,8 +809,6 @@ $$.StopElement = {"": "StyledElement;"};
 $$.StyleElement0 = {"": "SvgElement;"};
 
 $$.StyledElement = {"": "SvgElement;"};
-
-$$.SvgDocument = {"": "Document;"};
 
 $$.SvgElement = {"": "Element;"};
 
@@ -879,47 +856,9 @@ $$.UseElement = {"": "StyledElement;",
 
 $$.ViewElement = {"": "SvgElement;"};
 
-$$._SVGAltGlyphDefElement = {"": "SvgElement;"};
-
-$$._SVGAltGlyphItemElement = {"": "SvgElement;"};
-
-$$._SVGAnimateColorElement = {"": "AnimationElement;"};
+$$._GradientElement = {"": "StyledElement;"};
 
 $$._SVGComponentTransferFunctionElement = {"": "SvgElement;"};
-
-$$._SVGCursorElement = {"": "SvgElement;"};
-
-$$._SVGFEDropShadowElement = {"": "StyledElement;"};
-
-$$._SVGFontElement = {"": "SvgElement;"};
-
-$$._SVGFontFaceElement = {"": "SvgElement;"};
-
-$$._SVGFontFaceFormatElement = {"": "SvgElement;"};
-
-$$._SVGFontFaceNameElement = {"": "SvgElement;"};
-
-$$._SVGFontFaceSrcElement = {"": "SvgElement;"};
-
-$$._SVGFontFaceUriElement = {"": "SvgElement;"};
-
-$$._SVGGlyphElement = {"": "SvgElement;"};
-
-$$._SVGGlyphRefElement = {"": "StyledElement;"};
-
-$$._SVGGradientElement = {"": "StyledElement;"};
-
-$$._SVGHKernElement = {"": "SvgElement;"};
-
-$$._SVGMPathElement = {"": "SvgElement;"};
-
-$$._SVGMissingGlyphElement = {"": "StyledElement;"};
-
-$$._SVGTRefElement = {"": "TextPositioningElement;"};
-
-$$._SVGVKernElement = {"": "SvgElement;"};
-
-$$.RenderingContext = {"": "CanvasRenderingContext;"};
 
 $$.SqlError = {"": "Interceptor;"};
 
@@ -930,25 +869,28 @@ Isolate.$finishClasses($$, $, null);
 $$ = null;
 
 $.main = function() {
-  var ctx, tx, t1;
-  ctx = $.get$context2d$x(document.querySelector("#content"));
+  var ctx, tx;
+  ctx = $.get$context2D$x(document.querySelector("#content"));
   tx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
   tx.scale$2(tx, 200, 200);
   tx.translate$2(tx, 0, 1.5);
   tx.rotate$3(tx, -1.5707963267948966, 2, 0);
-  $.requireArgumentNotNull(ctx, "ctx");
-  $.requireArgumentNotNull(tx, "tx");
-  t1 = $.getInterceptor$x(ctx);
-  t1.transform$6(ctx, tx.get$scaleX(), tx.get$shearY(), tx.get$shearX(), tx.get$scaleY(), tx.get$translateX(), tx.get$translateY());
-  t1.set$lineWidth(ctx, 0.01);
-  t1.set$strokeStyle(ctx, "black");
-  t1.beginPath$0(ctx);
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+  if (ctx == null)
+    $.throwExpression($.NullArgumentError$("ctx"));
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+  ctx.transform(tx.get$scaleX(), tx.get$shearY(), tx.get$shearX(), tx.get$scaleY(), tx.get$translateX(), tx.get$translateY());
+  ctx.lineWidth = 0.01;
+  ctx.strokeStyle = "black";
+  ctx.beginPath();
   $.drawBranch(ctx, 12);
-  t1.stroke$0(ctx);
+  ctx.stroke();
 };
 
 $.drawBranch = function(ctx, levels) {
-  var t1, rightTx, t2;
+  var t1, rightTx, t2, t3;
   if (typeof levels !== "number")
     return $.drawBranch$bailout(1, ctx, levels);
   if (levels === 0)
@@ -961,26 +903,35 @@ $.drawBranch = function(ctx, levels) {
   rightTx.translate$2(rightTx, 1, 0);
   rightTx.scale$2(rightTx, 0.62, 0.62);
   rightTx.rotate$3(rightTx, 1.0471975511965976, 0, 0);
-  $.requireArgumentNotNull(ctx, "ctx");
-  $.requireArgumentNotNull(rightTx, "tx");
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+  t2 = ctx == null;
+  if (t2)
+    $.throwExpression($.NullArgumentError$("ctx"));
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   t1.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
-  t2 = levels - 1;
-  $.drawBranch(ctx, t2);
+  t3 = levels - 1;
+  $.drawBranch(ctx, t3);
   t1.restore$0(ctx);
   t1.save$0(ctx);
   rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
   rightTx.translate$2(rightTx, 1, 0);
   rightTx.scale$2(rightTx, 0.62, 0.62);
   rightTx.rotate$3(rightTx, -1.0471975511965976, 0, 0);
-  $.requireArgumentNotNull(ctx, "ctx");
-  $.requireArgumentNotNull(rightTx, "tx");
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+  if (t2)
+    $.throwExpression($.NullArgumentError$("ctx"));
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   t1.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
-  $.drawBranch(ctx, t2);
+  $.drawBranch(ctx, t3);
   t1.restore$0(ctx);
 };
 
 $.drawBranch$bailout = function(state0, ctx, levels) {
-  var t1, t2, rightTx;
+  var t1, t2, rightTx, t3;
   t1 = $.getInterceptor(levels);
   if (t1.$eq(levels, 0) === true)
     return;
@@ -992,8 +943,13 @@ $.drawBranch$bailout = function(state0, ctx, levels) {
   rightTx.translate$2(rightTx, 1, 0);
   rightTx.scale$2(rightTx, 0.62, 0.62);
   rightTx.rotate$3(rightTx, 1.0471975511965976, 0, 0);
-  $.requireArgumentNotNull(ctx, "ctx");
-  $.requireArgumentNotNull(rightTx, "tx");
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+  t3 = ctx == null;
+  if (t3)
+    $.throwExpression($.NullArgumentError$("ctx"));
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   t2.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
   $.drawBranch(ctx, t1.$sub(levels, 1));
   t2.restore$0(ctx);
@@ -1002,8 +958,12 @@ $.drawBranch$bailout = function(state0, ctx, levels) {
   rightTx.translate$2(rightTx, 1, 0);
   rightTx.scale$2(rightTx, 0.62, 0.62);
   rightTx.rotate$3(rightTx, -1.0471975511965976, 0, 0);
-  $.requireArgumentNotNull(ctx, "ctx");
-  $.requireArgumentNotNull(rightTx, "tx");
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+  if (t3)
+    $.throwExpression($.NullArgumentError$("ctx"));
+  if (false)
+    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   t2.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
   $.drawBranch(ctx, t1.$sub(levels, 1));
   t2.restore$0(ctx);
@@ -1013,12 +973,12 @@ $.ListIterator$ = function(iterable) {
   return new $.ListIterator(iterable, iterable.length, 0, null);
 };
 
-$.ToString__emitCollection = function(c, result, visiting) {
+$.ToString__emitValue = function(i, result, visiting) {
   var isList, t1, first, t2;
-  visiting.push(c);
-  isList = typeof c === "object" && c !== null && (c.constructor === Array || !!$.getInterceptor(c).$isList);
+  visiting.push(i);
+  isList = typeof i === "object" && i !== null && (i.constructor === Array || !!$.getInterceptor(i).$isList);
   result.write$1(isList ? "[" : "{");
-  for (t1 = $.get$iterator$a(c), first = true; t1.moveNext$0(); first = false) {
+  for (t1 = $.get$iterator$a(i), first = true; t1.moveNext$0(); first = false) {
     t2 = t1.get$current();
     if (!first)
       result.write$1(", ");
@@ -1031,29 +991,49 @@ $.ToString__emitCollection = function(c, result, visiting) {
 };
 
 $.ToString__emitObject = function(o, result, visiting) {
-  if (typeof o === "object" && o !== null && (o.constructor === Array || !!$.getInterceptor(o).$isCollection))
+  if (typeof o === "object" && o !== null && (o.constructor === Array || !!$.getInterceptor(o).$isIterable))
     if ($.ToString__containsRef(visiting, o))
       result.write$1(typeof o === "object" && o !== null && (o.constructor === Array || !!$.getInterceptor(o).$isList) ? "[...]" : "{...}");
     else
-      $.ToString__emitCollection(o, result, visiting);
+      $.ToString__emitValue(o, result, visiting);
   else
     result.write$1(o);
 };
 
-$.ToString__containsRef = function(c, ref) {
+$.ToString__containsRef = function(i, ref) {
   var t1;
-  for (t1 = $.JSArray_methods.get$iterator(c); t1.moveNext$0();)
+  for (t1 = $.JSArray_methods.get$iterator(i); t1.moveNext$0();)
     if (t1.get$current() === ref)
       return true;
   return false;
 };
 
-$.getNativeInterceptor = function(object) {
-  return object[$.dispatchPropertyName]();
+$.getDispatchProperty = function(object) {
+  return object[$.dispatchPropertyName];
 };
 
-$.setNativeInterceptor = function($prototype, $function) {
-  $prototype[$.dispatchPropertyName]=$function;
+$.setDispatchProperty = function(object, value) {
+  object[$.dispatchPropertyName] = value;
+};
+
+$.getNativeInterceptor = function(object) {
+  var record, proto, objectProto;
+  record = $.getDispatchProperty(object);
+  if (record != null) {
+    proto = record.p;
+    if (false === proto)
+      return record.i;
+    if (true === proto)
+      return object;
+    objectProto = Object.getPrototypeOf(object);
+    if (proto === objectProto)
+      return record.i;
+    if (record.e === objectProto)
+      return proto(object, record);
+  }
+  record = $.lookupDispatchRecord(object);
+  $.setDispatchProperty(Object.getPrototypeOf(object), record);
+  return $.getNativeInterceptor(object);
 };
 
 $.S = function(value) {
@@ -1062,7 +1042,7 @@ $.S = function(value) {
     return value;
   if (typeof value === "number") {
     if (value !== 0)
-      return "" + (value);
+      return "" + value;
   } else if (true === value)
     return "true";
   else if (false === value)
@@ -1071,7 +1051,7 @@ $.S = function(value) {
     return "null";
   res = $.toString$0(value);
   if (!(typeof res === "string"))
-    throw $.$$throw($.ArgumentError$(value));
+    throw $.wrapException($.ArgumentError$(value));
   return res;
 };
 
@@ -1098,29 +1078,27 @@ $.Primitives_objectTypeName = function(object) {
 };
 
 $.iae = function(argument) {
-  throw $.$$throw($.ArgumentError$(argument));
+  throw $.wrapException($.ArgumentError$(argument));
 };
 
 $.ioore = function(index) {
-  throw $.$$throw($.RangeError$value(index));
+  throw $.wrapException($.RangeError$value(index));
 };
 
-$.checkNum = function(value) {
-  if (!(typeof value === "number"))
-    throw $.$$throw($.ArgumentError$(value));
-  return value;
-};
-
-$.$$throw = function(ex) {
+$.wrapException = function(ex) {
   var wrapper;
   if (ex == null)
     ex = $.C_NullThrownError;
   wrapper = $.DartError$(ex);
   if (!!Error.captureStackTrace)
-    Error.captureStackTrace(wrapper, $.$$throw);
+    Error.captureStackTrace(wrapper, $.wrapException);
   else
     wrapper.stack = new Error().stack;
   return wrapper;
+};
+
+$.throwExpression = function(ex) {
+  throw $.wrapException(ex);
 };
 
 $.DartError$ = function(dartException) {
@@ -1142,7 +1120,7 @@ $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
   else if (t1.$eq(numberOfArguments, 2) === true)
     return new $.invokeClosure_anon1(closure, arg1, arg2).call$0();
   else
-    throw $.$$throw($._ExceptionImplementation$("Unsupported number of arguments for wrapped closure"));
+    throw $.wrapException($._ExceptionImplementation$("Unsupported number of arguments for wrapped closure"));
 };
 
 $.convertDartClosureToJS = function(closure, arity) {
@@ -1205,6 +1183,8 @@ $.typeNameInFirefox = function(obj) {
   var $name = $.constructorNameFallback(obj);
   if ($name === "Window")
     return "DOMWindow";
+  if ($name === "BeforeUnloadEvent")
+    return "Event";
   if ($name === "CSS2Properties")
     return "CSSStyleDeclaration";
   if ($name === "DataTransfer")
@@ -1235,6 +1215,8 @@ $.typeNameInIE = function(obj) {
   }
   if ($name === "ApplicationCache")
     return "DOMApplicationCache";
+  if ($name === "BeforeUnloadEvent")
+    return "Event";
   if ($name === "CanvasPixelArray")
     return "Uint8ClampedArray";
   if ($name === "DataTransfer")
@@ -1258,7 +1240,7 @@ $.typeNameInIE = function(obj) {
   if ($name === "Position")
     return "Geoposition";
   if ($name === "Object")
-    if (window.DataView && (obj instanceof window.DataView))
+    if (window.DataView && obj instanceof window.DataView)
       return "DataView";
   return $name;
 };
@@ -1268,7 +1250,7 @@ $.constructorNameFallback = function(object) {
   if (object == null)
     return "Null";
   $constructor = object.constructor;
-  if (typeof($constructor) === "function") {
+  if (typeof $constructor === "function") {
     $name = $constructor.name;
     if (typeof $name === "string")
       t1 = $name !== "" && $name !== "Object" && $name !== "Function.prototype";
@@ -1291,7 +1273,7 @@ $.alternateTag = function(object, tag) {
 };
 
 $.getFunctionForTypeNameOf = function() {
-  if (typeof(navigator) !== "object")
+  if (typeof navigator !== "object")
     return $.typeNameInChrome;
   var userAgent = navigator.userAgent;
   if (userAgent.indexOf("Chrome") !== -1 || userAgent.indexOf("DumpRenderTree") !== -1)
@@ -1322,42 +1304,57 @@ $.defineProperty = function(obj, property, value) {
   Object.defineProperty(obj, property, {value: value, enumerable: false, writable: true, configurable: true});
 };
 
-$.dynamicBind = function(obj, $name, methods, $arguments) {
-  var hasOwnPropertyFunction, tag, method, secondTag, nameOfObjectClass, proto;
-  hasOwnPropertyFunction = Object.prototype.hasOwnProperty;
-  if (!((obj) instanceof ($.Object))) {
-    if ($._getTypeNameOf == null)
-      $._getTypeNameOf = $.getFunctionForTypeNameOf();
-    tag = $._getTypeNameOf.call$1(obj);
-    method = $.dynamicBindLookup(hasOwnPropertyFunction, tag, methods);
-    if (method == null) {
-      secondTag = $.alternateTag(obj, tag);
-      if (secondTag != null)
-        method = $.dynamicBindLookup(hasOwnPropertyFunction, secondTag, methods);
-    }
-  } else
-    method = null;
-  if (method == null) {
-    if ($._getTypeNameOf == null)
-      $._getTypeNameOf = $.getFunctionForTypeNameOf();
-    nameOfObjectClass = $._getTypeNameOf.call$1($.C_Object);
-    method = hasOwnPropertyFunction.call(methods, nameOfObjectClass) ? methods[nameOfObjectClass] : null;
-  }
-  if (method == null)
-    (function(){throw new TypeError($name + " is not a function");})();
-  else {
-    proto = Object.getPrototypeOf(obj);
-    if (!hasOwnPropertyFunction.call(proto, $name) || proto === Object.prototype)
-      Object.defineProperty(proto, $name, {value: method, enumerable: false, writable: true, configurable: true});
-  }
-  return method.apply(obj, $arguments);
+$.defineNativeMethods = function(tags, interceptorClass) {
+  $.defineNativeMethodsCommon(tags, interceptorClass, true);
 };
 
-$.dynamicBindLookup = function(hasOwnPropertyFunction, tag, methods) {
+$.defineNativeMethodsNonleaf = function(tags, interceptorClass) {
+  $.defineNativeMethodsCommon(tags, interceptorClass, false);
+};
+
+$.defineNativeMethodsCommon = function(tags, interceptorClass, isLeaf) {
+  var methods, tagsList, i, tag;
+  methods = interceptorClass.prototype;
+  if ($.interceptorsByTag == null)
+    $.interceptorsByTag = {};
+  if ($.leafTags == null)
+    $.leafTags = {};
+  tagsList = tags.split("|");
+  for (i = 0; i < tagsList.length; ++i) {
+    tag = tagsList[i];
+    $.interceptorsByTag[tag] = methods;
+    $.leafTags[tag] = isLeaf;
+  }
+};
+
+$.defineNativeMethodsFinish = function() {
+};
+
+$.lookupDispatchRecord = function(obj) {
+  var hasOwnPropertyFunction, tag, interceptor, secondTag;
+  hasOwnPropertyFunction = Object.prototype.hasOwnProperty;
+  if ($._getTypeNameOf == null)
+    $._getTypeNameOf = $.getFunctionForTypeNameOf();
+  tag = $._getTypeNameOf.call$1(obj);
+  interceptor = $.lookupInterceptor(hasOwnPropertyFunction, tag, $.interceptorsByTag);
+  if (interceptor == null) {
+    secondTag = $.alternateTag(obj, tag);
+    if (secondTag != null)
+      interceptor = $.lookupInterceptor(hasOwnPropertyFunction, secondTag, $.interceptorsByTag);
+  }
+  if (interceptor == null)
+    interceptor = {__what: "interceptor not found", __tag: tag};
+  if (true === $.leafTags[tag])
+    return {i: interceptor, p: false, e: null};
+  else
+    return {i: interceptor, p: Object.getPrototypeOf(obj), e: null};
+};
+
+$.lookupInterceptor = function(hasOwnPropertyFunction, tag, methods) {
   var method, t1, i, entry;
   method = hasOwnPropertyFunction.call(methods, tag) ? methods[tag] : null;
   if (method == null) {
-    if (typeof($dynamicMetadata) === "undefined")
+    if (typeof $dynamicMetadata === "undefined")
       $._dynamicMetadata([]);
     t1 = $dynamicMetadata != null;
   } else
@@ -1365,11 +1362,11 @@ $.dynamicBindLookup = function(hasOwnPropertyFunction, tag, methods) {
   if (t1) {
     i = 0;
     while (true) {
-      if (typeof($dynamicMetadata) === "undefined")
+      if (typeof $dynamicMetadata === "undefined")
         $._dynamicMetadata([]);
       if (!(i < $dynamicMetadata.length))
         break;
-      if (typeof($dynamicMetadata) === "undefined")
+      if (typeof $dynamicMetadata === "undefined")
         $._dynamicMetadata([]);
       entry = $dynamicMetadata[i];
       if (hasOwnPropertyFunction.call(entry.get$_set(), tag)) {
@@ -1382,47 +1379,6 @@ $.dynamicBindLookup = function(hasOwnPropertyFunction, tag, methods) {
     }
   }
   return method;
-};
-
-$.dynamicFunction = function($name) {
-  var table, f, methods, bind;
-  table = $.dynamicFunctionTable;
-  if (table == null) {
-    table = {};
-    $.dynamicFunctionTable = table;
-  }
-  f = table[$name];
-  if (f != null && !!f.methods)
-    return f.methods;
-  methods = {};
-  bind = function() {return $.dynamicBind.call$4(this, $name, methods, Array.prototype.slice.call(arguments));};
-  bind.methods = methods;
-  Object.defineProperty(Object.prototype, $name, {value: bind, enumerable: false, writable: true, configurable: true});
-  Object.defineProperty(table, $name, {value: bind, enumerable: false, writable: true, configurable: true});
-  return methods;
-};
-
-$.defineNativeMethods = function(tag, interceptorClass) {
-  var methods = interceptorClass.prototype;
-  $.dynamicFunction($.dispatchPropertyName)[tag]=function(){return methods};
-};
-
-$.defineNativeMethodsNonleaf = function(tag, interceptorClass) {
-  var methods, method;
-  methods = interceptorClass.prototype;
-  method = $.dispatchPropertyName;
-  $.dynamicFunction(method)[tag]=function(){if(Object.getPrototypeOf(this).hasOwnProperty(method))return methods;return $._redispatchGetNativeInterceptorHook(method,this);};
-};
-
-$.defineNativeMethodsFinish = function() {
-  var t1, t2;
-  t1 = $.dispatchPropertyName;
-  t2 = Object.getPrototypeOf($.C_Interceptor);
-  Object.prototype[t1]=function(){if (Object.getPrototypeOf(this) === Object.prototype)return t2;return $._redispatchGetNativeInterceptorHook(t1,this);};
-};
-
-$._redispatchGetNativeInterceptorHook = function($name, receiver) {
-  return $.dynamicFunctionTable[$name].call(receiver);
 };
 
 $.MetaInfo$ = function(_tag, _tags, _set) {
@@ -1483,7 +1439,7 @@ $.List_List = function($length) {
   if (t1)
     return new Array(0);
   if (!(typeof $length === "number" && Math.floor($length) === $length) || $length < 0)
-    throw $.$$throw($.ArgumentError$("Length must be a positive integer: " + $.S($length) + "."));
+    throw $.wrapException($.ArgumentError$("Length must be a positive integer: " + $.S($length) + "."));
   result = new Array($length);
   result.fixed$length = true;
   return result;
@@ -1493,15 +1449,6 @@ $.StringBuffer$ = function($content) {
   var t1 = new $.StringBuffer("");
   t1.StringBuffer$1($content);
   return t1;
-};
-
-$.convertDartToNative_Dictionary = function(dict) {
-  var object;
-  if (dict == null)
-    return;
-  object = {};
-  $.JSNull_methods.forEach$1(dict, new $.convertDartToNative_Dictionary_anon(object));
-  return object;
 };
 
 $.InvalidOperationError$ = function(message) {
@@ -1518,19 +1465,8 @@ $.AffineTransform$ = function(scaleX, shearY, shearX, scaleY, translateX, transl
   return new $.AffineTransform(scaleX, shearY, shearX, scaleY, translateX, translateY);
 };
 
-$.requireArgumentNotNull = function(argument, argName) {
-  $._metaRequireArgumentNotNullOrEmpty(argName);
-  if (argument == null)
-    throw $.$$throw($.NullArgumentError$(argName));
-};
-
-$._metaRequireArgumentNotNullOrEmpty = function(argName) {
-  if (argName.length === 0)
-    throw $.$$throw($.InvalidOperationError$("That's just sad. Give me a good argName"));
-};
-
-$.$$throw.call$1 = $.$$throw;
-$.$$throw.$name = "$$throw";
+$.wrapException.call$1 = $.wrapException;
+$.wrapException.$name = "wrapException";
 $.DartError_toStringWrapper.call$0 = $.DartError_toStringWrapper;
 $.DartError_toStringWrapper.$name = "DartError_toStringWrapper";
 $.invokeClosure.call$5 = $.invokeClosure;
@@ -1547,22 +1483,16 @@ $.typeNameInIE.call$1 = $.typeNameInIE;
 $.typeNameInIE.$name = "typeNameInIE";
 $.constructorNameFallback.call$1 = $.constructorNameFallback;
 $.constructorNameFallback.$name = "constructorNameFallback";
-$.dynamicBind.call$4 = $.dynamicBind;
-$.dynamicBind.$name = "dynamicBind";
-$._redispatchGetNativeInterceptorHook.call$2 = $._redispatchGetNativeInterceptorHook;
-$._redispatchGetNativeInterceptorHook.$name = "_redispatchGetNativeInterceptorHook";
 $.num = {builtin$cls: "num"};
 $.String = {builtin$cls: "String"};
-$.C_Object = new $.Object();
+$.JSArray_methods = $.JSArray.prototype;
 $.C_NullThrownError = new $.NullThrownError();
 $.JSInt_methods = $.JSInt.prototype;
-$.C_Interceptor = new $.Interceptor();
-$.JSArray_methods = $.JSArray.prototype;
-$.JSNull_methods = $.JSNull.prototype;
 $.dispatchPropertyName = "_zzyzx";
 $.Primitives_hashCodeSeed = 0;
 $._getTypeNameOf = null;
-$.dynamicFunctionTable = null;
+$.interceptorsByTag = null;
+$.leafTags = null;
 $.$add$ns = function(receiver, a0) {
   if (typeof receiver == "number" && typeof a0 == "number")
     return receiver + a0;
@@ -1571,8 +1501,8 @@ $.$add$ns = function(receiver, a0) {
 $.$eq = function(receiver, a0) {
   if (receiver == null)
     return a0 == null;
-  if (!(typeof receiver == "object"))
-    return !(a0 == null) && receiver === a0;
+  if (typeof receiver != "object")
+    return a0 != null && receiver === a0;
   return $.getInterceptor(receiver).$eq(receiver, a0);
 };
 $.$gt$n = function(receiver, a0) {
@@ -1585,8 +1515,8 @@ $.$mul$n = function(receiver, a0) {
     return receiver * a0;
   return $.getInterceptor$n(receiver).$mul(receiver, a0);
 };
-$.get$context2d$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$context2d(receiver);
+$.get$context2D$x = function(receiver) {
+  return $.getInterceptor$x(receiver).get$context2D(receiver);
 };
 $.get$iterator$a = function(receiver) {
   return $.getInterceptor$a(receiver).get$iterator(receiver);
@@ -1660,21 +1590,6 @@ $.getInterceptor$x = function(receiver) {
   return $.getNativeInterceptor(receiver);
 };
 // Native classes
-(function(table) {
-  for (var key in table)
-    $.defineProperty(Object.prototype, key, table[key]);
-})({
-  toString$0: function(_) {
-    return $.toStringForNativeObject(this);
-  },
-  get$hashCode: function(_) {
-    return $.hashCodeForNativeObject(this);
-  },
-  $eq: function(_, a) {
-    return this === a;
-  }
-});
-
 $.defineNativeMethodsNonleaf("HTMLElement", $._HTMLElement);
 
 $.defineNativeMethods("HTMLAnchorElement", $.AnchorElement);
@@ -1682,6 +1597,8 @@ $.defineNativeMethods("HTMLAnchorElement", $.AnchorElement);
 $.defineNativeMethods("HTMLAreaElement", $.AreaElement);
 
 $.defineNativeMethods("HTMLAudioElement", $.AudioElement);
+
+$.defineNativeMethods("AutocompleteErrorEvent", $.AutocompleteErrorEvent);
 
 $.defineNativeMethods("HTMLBRElement", $.BRElement);
 
@@ -1708,6 +1625,8 @@ $.defineNativeMethods("HTMLDListElement", $.DListElement);
 $.defineNativeMethods("HTMLDataListElement", $.DataListElement);
 
 $.defineNativeMethods("HTMLDetailsElement", $.DetailsElement);
+
+$.defineNativeMethods("HTMLDialogElement", $.DialogElement);
 
 $.defineNativeMethods("HTMLDivElement", $.DivElement);
 
@@ -1851,20 +1770,6 @@ $.defineNativeMethods("HTMLVideoElement", $.VideoElement);
 
 $.defineNativeMethods("XPathException", $.XPathException);
 
-$.defineNativeMethods("HTMLAppletElement", $._HTMLAppletElement);
-
-$.defineNativeMethods("HTMLBaseFontElement", $._HTMLBaseFontElement);
-
-$.defineNativeMethods("HTMLDirectoryElement", $._HTMLDirectoryElement);
-
-$.defineNativeMethods("HTMLFontElement", $._HTMLFontElement);
-
-$.defineNativeMethods("HTMLFrameElement", $._HTMLFrameElement);
-
-$.defineNativeMethods("HTMLFrameSetElement", $._HTMLFrameSetElement);
-
-$.defineNativeMethods("HTMLMarqueeElement", $._HTMLMarqueeElement);
-
 $.defineNativeMethods("SVGAElement", $.AElement);
 
 $.defineNativeMethods("SVGAltGlyphElement", $.AltGlyphElement);
@@ -1985,8 +1890,6 @@ $.defineNativeMethods("SVGStyleElement", $.StyleElement0);
 
 $.defineNativeMethodsNonleaf("SVGStyledElement", $.StyledElement);
 
-$.defineNativeMethods("SVGDocument", $.SvgDocument);
-
 $.defineNativeMethodsNonleaf("SVGElement", $.SvgElement);
 
 $.defineNativeMethods("SVGException", $.SvgException);
@@ -2013,58 +1916,20 @@ $.defineNativeMethods("SVGUseElement", $.UseElement);
 
 $.defineNativeMethods("SVGViewElement", $.ViewElement);
 
-$.defineNativeMethods("SVGAltGlyphDefElement", $._SVGAltGlyphDefElement);
-
-$.defineNativeMethods("SVGAltGlyphItemElement", $._SVGAltGlyphItemElement);
-
-$.defineNativeMethods("SVGAnimateColorElement", $._SVGAnimateColorElement);
+$.defineNativeMethodsNonleaf("SVGGradientElement", $._GradientElement);
 
 $.defineNativeMethodsNonleaf("SVGComponentTransferFunctionElement", $._SVGComponentTransferFunctionElement);
-
-$.defineNativeMethods("SVGCursorElement", $._SVGCursorElement);
-
-$.defineNativeMethods("SVGFEDropShadowElement", $._SVGFEDropShadowElement);
-
-$.defineNativeMethods("SVGFontElement", $._SVGFontElement);
-
-$.defineNativeMethods("SVGFontFaceElement", $._SVGFontFaceElement);
-
-$.defineNativeMethods("SVGFontFaceFormatElement", $._SVGFontFaceFormatElement);
-
-$.defineNativeMethods("SVGFontFaceNameElement", $._SVGFontFaceNameElement);
-
-$.defineNativeMethods("SVGFontFaceSrcElement", $._SVGFontFaceSrcElement);
-
-$.defineNativeMethods("SVGFontFaceUriElement", $._SVGFontFaceUriElement);
-
-$.defineNativeMethods("SVGGlyphElement", $._SVGGlyphElement);
-
-$.defineNativeMethods("SVGGlyphRefElement", $._SVGGlyphRefElement);
-
-$.defineNativeMethodsNonleaf("SVGGradientElement", $._SVGGradientElement);
-
-$.defineNativeMethods("SVGHKernElement", $._SVGHKernElement);
-
-$.defineNativeMethods("SVGMPathElement", $._SVGMPathElement);
-
-$.defineNativeMethods("SVGMissingGlyphElement", $._SVGMissingGlyphElement);
-
-$.defineNativeMethods("SVGTRefElement", $._SVGTRefElement);
-
-$.defineNativeMethods("SVGVKernElement", $._SVGVKernElement);
-
-$.defineNativeMethods("WebGLRenderingContext", $.RenderingContext);
 
 $.defineNativeMethods("SQLError", $.SqlError);
 
 $.defineNativeMethods("SQLException", $.SqlException);
 
-// 192 dynamic classes.
+// 167 dynamic classes.
 // 192 classes
 // 14 !leaf
 (function() {
-  var v0_TextPositioningElement = "SVGAltGlyphElement|SVGTRefElement|SVGTSpanElement|SVGTextElement|SVGTextPositioningElement", v1__SVGGradientElement = "SVGGradientElement|SVGLinearGradientElement|SVGRadialGradientElement", v2_TextContentElement = [v0_TextPositioningElement, "SVGTextContentElement|SVGTextPathElement"].join("|"), v3_StyledElement = [v1__SVGGradientElement, v2_TextContentElement, "SVGAElement|SVGCircleElement|SVGClipPathElement|SVGDefsElement|SVGDescElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFESpecularLightingElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGForeignObjectElement|SVGGElement|SVGGlyphRefElement|SVGImageElement|SVGLineElement|SVGMarkerElement|SVGMaskElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRectElement|SVGSVGElement|SVGStopElement|SVGStyledElement|SVGSwitchElement|SVGSymbolElement|SVGTitleElement|SVGUseElement"].join("|"), v4__SVGComponentTransferFunctionElement = "SVGComponentTransferFunctionElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement", v5_AnimationElement = "SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGSetElement", v6_SvgElement = [v3_StyledElement, v4__SVGComponentTransferFunctionElement, v5_AnimationElement, "SVGAltGlyphDefElement|SVGAltGlyphItemElement|SVGCursorElement|SVGElement|SVGFEDistantLightElement|SVGFEMergeNodeElement|SVGFEPointLightElement|SVGFESpotLightElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGGlyphElement|SVGHKernElement|SVGMPathElement|SVGMetadataElement|SVGScriptElement|SVGStyleElement|SVGVKernElement|SVGViewElement"].join("|"), v7_MediaElement = "HTMLAudioElement|HTMLMediaElement|HTMLVideoElement", v8_Element = [v6_SvgElement, v7_MediaElement, "Element|HTMLAnchorElement|HTMLAppletElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDirectoryElement|HTMLDivElement|HTMLElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFormElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement"].join("|"), v9_Document = "Document|HTMLDocument|SVGDocument", v10_Node = [v8_Element, v9_Document, "Node"].join("|");
-  $.dynamicSetMetadata([["CanvasRenderingContext", "CanvasRenderingContext|CanvasRenderingContext2D|WebGLRenderingContext"], ["Document", v9_Document], ["SVGGradientElement", v1__SVGGradientElement], ["SVGTextPositioningElement", v0_TextPositioningElement], ["SVGTextContentElement", v2_TextContentElement], ["SVGStyledElement", v3_StyledElement], ["SVGComponentTransferFunctionElement", v4__SVGComponentTransferFunctionElement], ["SVGAnimationElement", v5_AnimationElement], ["SVGElement", v6_SvgElement], ["HTMLMediaElement", v7_MediaElement], ["Element", v8_Element], ["Event", "ErrorEvent|Event|SpeechRecognitionError"], ["Node", v10_Node], ["EventTarget", [v10_Node, "EventTarget"].join("|")]]);
+  var v0_TextPositioningElement = "SVGAltGlyphElement|SVGTRefElement|SVGTSpanElement|SVGTextElement|SVGTextPositioningElement", v1__GradientElement = "SVGGradientElement|SVGLinearGradientElement|SVGRadialGradientElement", v2_TextContentElement = [v0_TextPositioningElement, "SVGTextContentElement|SVGTextPathElement"].join("|"), v3_StyledElement = [v1__GradientElement, v2_TextContentElement, "SVGAElement|SVGCircleElement|SVGClipPathElement|SVGDefsElement|SVGDescElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFESpecularLightingElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGForeignObjectElement|SVGGElement|SVGGlyphRefElement|SVGImageElement|SVGLineElement|SVGMarkerElement|SVGMaskElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRectElement|SVGSVGElement|SVGStopElement|SVGStyledElement|SVGSwitchElement|SVGSymbolElement|SVGTitleElement|SVGUseElement"].join("|"), v4__SVGComponentTransferFunctionElement = "SVGComponentTransferFunctionElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement", v5_AnimationElement = "SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGSetElement", v6_SvgElement = [v3_StyledElement, v4__SVGComponentTransferFunctionElement, v5_AnimationElement, "SVGAltGlyphDefElement|SVGAltGlyphItemElement|SVGCursorElement|SVGElement|SVGFEDistantLightElement|SVGFEMergeNodeElement|SVGFEPointLightElement|SVGFESpotLightElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGGlyphElement|SVGHKernElement|SVGMPathElement|SVGMetadataElement|SVGScriptElement|SVGStyleElement|SVGVKernElement|SVGViewElement"].join("|"), v7_MediaElement = "HTMLAudioElement|HTMLMediaElement|HTMLVideoElement", v8_Element = [v6_SvgElement, v7_MediaElement, "Element|HTMLAnchorElement|HTMLAppletElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFormElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement"].join("|"), v9_Document = "Document|HTMLDocument", v10_Node = [v8_Element, v9_Document, "Node"].join("|");
+  $.dynamicSetMetadata([["CanvasRenderingContext", "CanvasRenderingContext|CanvasRenderingContext2D"], ["Document", v9_Document], ["SVGGradientElement", v1__GradientElement], ["SVGTextPositioningElement", v0_TextPositioningElement], ["SVGTextContentElement", v2_TextContentElement], ["SVGStyledElement", v3_StyledElement], ["SVGComponentTransferFunctionElement", v4__SVGComponentTransferFunctionElement], ["SVGAnimationElement", v5_AnimationElement], ["SVGElement", v6_SvgElement], ["HTMLMediaElement", v7_MediaElement], ["Element", v8_Element], ["Event", "AutocompleteErrorEvent|ErrorEvent|Event|SpeechRecognitionError"], ["Node", v10_Node], ["EventTarget", [v10_Node, "EventTarget"].join("|")]]);
 })();
 
 var $ = null;
@@ -2175,7 +2040,7 @@ function init() {
         return;
       finishedClasses[cls] = true;
       var superclass = pendingClasses[cls];
-      if ((!superclass || typeof superclass) != "string")
+      if (!superclass || typeof superclass != "string")
         return;
       finishClass(superclass);
       var constructor = isolateProperties[cls];
