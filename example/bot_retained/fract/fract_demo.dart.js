@@ -22,7 +22,7 @@ $$.ListIterator = {"": "Object;_iterable,_length,_index,_current",
     t1 = this._length;
     t2 = this._iterable;
     if (t1 !== t2.length)
-      throw $.wrapException($.ConcurrentModificationError$(t2));
+      $.throwExpression($.ConcurrentModificationError$(t2));
     t3 = this._index;
     if (t3 === t1) {
       this._current = null;
@@ -70,8 +70,6 @@ $$.JSArray = {"": "Interceptor;",
     t1 = receiver.length;
     list = $.List_List(t1);
     for (i = 0; i < receiver.length; ++i) {
-      if (i >= receiver.length || false)
-        $.throwExpression($.RangeError$value(i));
       t2 = $.S(receiver[i]);
       if (i >= t1)
         throw $.ioore(i);
@@ -80,16 +78,14 @@ $$.JSArray = {"": "Interceptor;",
     return list.join(separator);
   },
   elementAt$1: function(receiver, index) {
-    if (!(typeof index === "number" && Math.floor(index) === index))
-      $.throwExpression($.ArgumentError$(index));
-    if (index >= receiver.length || index < 0)
-      $.throwExpression($.RangeError$value(index));
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
     return receiver[index];
   },
   toString$0: function(receiver) {
     var result = $.StringBuffer$("");
     $.ToString__emitValue(receiver, result, $.List_List($));
-    return result.toString$0(result);
+    return result._contents;
   },
   get$iterator: function(receiver) {
     return $.ListIterator$(receiver);
@@ -157,21 +153,21 @@ $$.JSNumber = {"": "Interceptor;",
       return "" + receiver;
   },
   $add: function(receiver, other) {
-    if (!(typeof other === "number"))
-      throw $.wrapException($.ArgumentError$(other));
+    if (typeof other !== "number")
+      $.throwExpression($.ArgumentError$(other));
     return receiver + other;
   },
   $sub: function(receiver, other) {
     return receiver - other;
   },
   $mul: function(receiver, other) {
-    if (!(typeof other === "number"))
-      throw $.wrapException($.ArgumentError$(other));
+    if (typeof other !== "number")
+      $.throwExpression($.ArgumentError$(other));
     return receiver * other;
   },
   $gt: function(receiver, other) {
-    if (!(typeof other === "number"))
-      throw $.wrapException($.ArgumentError$(other));
+    if (typeof other !== "number")
+      $.throwExpression($.ArgumentError$(other));
     return receiver > other;
   },
   $isnum: true
@@ -184,27 +180,27 @@ $$.JSDouble = {"": "JSNumber;", $isnum: true};
 $$.JSString = {"": "Interceptor;",
   codeUnitAt$1: function(receiver, index) {
     if (index < 0)
-      throw $.wrapException($.RangeError$value(index));
+      $.throwExpression($.RangeError$value(index));
     if (index >= receiver.length)
-      throw $.wrapException($.RangeError$value(index));
+      $.throwExpression($.RangeError$value(index));
     return receiver.charCodeAt(index);
   },
   $add: function(receiver, other) {
-    if (!(typeof other === "string"))
-      throw $.wrapException($.ArgumentError$(other));
+    if (typeof other !== "string")
+      $.throwExpression($.ArgumentError$(other));
     return receiver + other;
   },
   substring$2: function(receiver, startIndex, endIndex) {
     if (endIndex == null)
       endIndex = receiver.length;
-    if (!(typeof endIndex === "number"))
+    if (typeof endIndex !== "number")
       $.throwExpression($.ArgumentError$(endIndex));
     if (startIndex < 0)
-      throw $.wrapException($.RangeError$value(startIndex));
+      $.throwExpression($.RangeError$value(startIndex));
     if ($.JSInt_methods.$gt(startIndex, endIndex))
-      throw $.wrapException($.RangeError$value(startIndex));
+      $.throwExpression($.RangeError$value(startIndex));
     if ($.$gt$n(endIndex, receiver.length))
-      throw $.wrapException($.RangeError$value(endIndex));
+      $.throwExpression($.RangeError$value(endIndex));
     return receiver.substring(startIndex, endIndex);
   },
   substring$1: function($receiver, startIndex) {
@@ -215,8 +211,6 @@ $$.JSString = {"": "Interceptor;",
   },
   $isString: true
 };
-
-$$.MetaInfo = {"": "Object;_tag<,_tags,_set<"};
 
 $$.NullThrownError = {"": "Object;",
   toString$0: function(_) {
@@ -287,9 +281,9 @@ $$.DetailedArgumentError = {"": "Object;",
   },
   DetailedArgumentError$2: function(argument, details) {
     if (this.argument.length === 0)
-      throw $.wrapException($.InvalidOperationError$("That's just sad. Give me a valid argument"));
+      $.throwExpression($.InvalidOperationError$("That's just sad. Give me a valid argument"));
     if (this.details.length === 0)
-      throw $.wrapException($.InvalidOperationError$("That's just sad. I need details!"));
+      $.throwExpression($.InvalidOperationError$("That's just sad. I need details!"));
   }
 };
 
@@ -315,13 +309,6 @@ $$.AffineTransform = {"": "Object;_scX<,_shY<,_shX<,_scY<,_tX<,_tY<",
   },
   get$shearY: function() {
     return this._shY;
-  },
-  scale$2: function(_, sx, sy) {
-    this._scX = $.$mul$n(this._scX, sx);
-    this._shY = $.$mul$n(this._shY, sx);
-    this._shX = $.$mul$n(this._shX, sy);
-    this._scY = $.$mul$n(this._scY, sy);
-    return this;
   },
   concatenate$1: function(tx) {
     var m0, m1, t1, t2, t3;
@@ -350,9 +337,6 @@ $$.AffineTransform = {"": "Object;_scX<,_shY<,_shX<,_scY<,_tX<,_tY<",
       throw $.iae(m1);
     this._tY = t3 + (t2 * m0 + t1 * m1);
     return this;
-  },
-  rotate$3: function(_, theta, x, y) {
-    return this.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(theta, x, y));
   },
   translate$2: function(_, dx, dy) {
     var t1, t2, t3;
@@ -400,6 +384,7 @@ $$.AffineTransform = {"": "Object;_scX<,_shY<,_shX<,_scY<,_tX<,_tY<",
   }
 };
 
+// Native classes
 $$._HTMLElement = {"": "Element;"};
 
 $$.AnchorElement = {"": "Element;",
@@ -558,7 +543,7 @@ $$.Node = {"": "EventTarget;",
     if (t1 == null) {
       t1 = receiver.nodeValue;
       if (t1 == null)
-        t1 = $.Object.prototype.toString$0.call(receiver, receiver);
+        t1 = $.Interceptor.prototype.toString$0.call(receiver, receiver);
     }
     return t1;
   }
@@ -872,9 +857,12 @@ $.main = function() {
   var ctx, tx;
   ctx = $.get$context2D$x(document.querySelector("#content"));
   tx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
-  tx.scale$2(tx, 200, 200);
+  tx._scX = $.$mul$n(tx._scX, 200);
+  tx._shY = $.$mul$n(tx._shY, 200);
+  tx._shX = $.$mul$n(tx._shX, 200);
+  tx._scY = $.$mul$n(tx._scY, 200);
   tx.translate$2(tx, 0, 1.5);
-  tx.rotate$3(tx, -1.5707963267948966, 2, 0);
+  tx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.5707963267948966, 2, 0));
   if (false)
     $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   if (ctx == null)
@@ -890,7 +878,7 @@ $.main = function() {
 };
 
 $.drawBranch = function(ctx, levels) {
-  var t1, rightTx, t2, t3;
+  var t1, rightTx, t2, t3, t4;
   if (typeof levels !== "number")
     return $.drawBranch$bailout(1, ctx, levels);
   if (levels === 0)
@@ -901,8 +889,23 @@ $.drawBranch = function(ctx, levels) {
   t1.save$0(ctx);
   rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
   rightTx.translate$2(rightTx, 1, 0);
-  rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.rotate$3(rightTx, 1.0471975511965976, 0, 0);
+  t2 = rightTx._scX;
+  if (typeof t2 !== "number")
+    return $.drawBranch$bailout(2, ctx, levels, rightTx, t2, $.JSNumber_methods, t1);
+  rightTx._scX = t2 * 0.62;
+  t2 = rightTx._shY;
+  if (typeof t2 !== "number")
+    return $.drawBranch$bailout(3, ctx, levels, rightTx, t2, $.JSNumber_methods, t1);
+  rightTx._shY = t2 * 0.62;
+  t2 = rightTx._shX;
+  if (typeof t2 !== "number")
+    return $.drawBranch$bailout(4, ctx, levels, rightTx, t2, $.JSNumber_methods, t1);
+  rightTx._shX = t2 * 0.62;
+  t2 = rightTx._scY;
+  if (typeof t2 !== "number")
+    return $.drawBranch$bailout(5, ctx, levels, rightTx, t2, $.JSNumber_methods, t1);
+  rightTx._scY = t2 * 0.62;
+  rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(1.0471975511965976, 0, 0));
   if (false)
     $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   t2 = ctx == null;
@@ -917,8 +920,23 @@ $.drawBranch = function(ctx, levels) {
   t1.save$0(ctx);
   rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
   rightTx.translate$2(rightTx, 1, 0);
-  rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.rotate$3(rightTx, -1.0471975511965976, 0, 0);
+  t4 = rightTx._scX;
+  if (typeof t4 !== "number")
+    return $.drawBranch$bailout(6, ctx, levels, rightTx, t2, $.JSNumber_methods, t1, t4);
+  rightTx._scX = t4 * 0.62;
+  t4 = rightTx._shY;
+  if (typeof t4 !== "number")
+    return $.drawBranch$bailout(7, ctx, levels, rightTx, t2, $.JSNumber_methods, t1, t4);
+  rightTx._shY = t4 * 0.62;
+  t4 = rightTx._shX;
+  if (typeof t4 !== "number")
+    return $.drawBranch$bailout(8, ctx, levels, rightTx, t2, $.JSNumber_methods, t1, t4);
+  rightTx._shX = t4 * 0.62;
+  t4 = rightTx._scY;
+  if (typeof t4 !== "number")
+    return $.drawBranch$bailout(9, ctx, levels, rightTx, t2, $.JSNumber_methods, t1, t4);
+  rightTx._scY = t4 * 0.62;
+  rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.0471975511965976, 0, 0));
   if (false)
     $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
   if (t2)
@@ -930,43 +948,77 @@ $.drawBranch = function(ctx, levels) {
   t1.restore$0(ctx);
 };
 
-$.drawBranch$bailout = function(state0, ctx, levels) {
-  var t1, t2, rightTx, t3;
-  t1 = $.getInterceptor(levels);
-  if (t1.$eq(levels, 0) === true)
-    return;
-  t2 = $.getInterceptor$x(ctx);
-  t2.moveTo$2(ctx, 0, 0);
-  t2.lineTo$2(ctx, 1, 0);
-  t2.save$0(ctx);
-  rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
-  rightTx.translate$2(rightTx, 1, 0);
-  rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.rotate$3(rightTx, 1.0471975511965976, 0, 0);
-  if (false)
-    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
-  t3 = ctx == null;
-  if (t3)
-    $.throwExpression($.NullArgumentError$("ctx"));
-  if (false)
-    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
-  t2.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
-  $.drawBranch(ctx, t1.$sub(levels, 1));
-  t2.restore$0(ctx);
-  t2.save$0(ctx);
-  rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
-  rightTx.translate$2(rightTx, 1, 0);
-  rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.rotate$3(rightTx, -1.0471975511965976, 0, 0);
-  if (false)
-    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
-  if (t3)
-    $.throwExpression($.NullArgumentError$("ctx"));
-  if (false)
-    $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
-  t2.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
-  $.drawBranch(ctx, t1.$sub(levels, 1));
-  t2.restore$0(ctx);
+$.drawBranch$bailout = function(state0, ctx, levels, rightTx, t3, t1, t2, t4) {
+  switch (state0) {
+    case 0:
+    case 1:
+      state0 = 0;
+      t1 = $.getInterceptor(levels);
+      if (t1.$eq(levels, 0) === true)
+        return;
+      t2 = $.getInterceptor$x(ctx);
+      t2.moveTo$2(ctx, 0, 0);
+      t2.lineTo$2(ctx, 1, 0);
+      t2.save$0(ctx);
+      rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
+      rightTx.translate$2(rightTx, 1, 0);
+      t3 = rightTx._scX;
+    case 2:
+      state0 = 0;
+      rightTx._scX = $.$mul$n(t3, 0.62);
+      t3 = rightTx._shY;
+    case 3:
+      state0 = 0;
+      rightTx._shY = $.$mul$n(t3, 0.62);
+      t3 = rightTx._shX;
+    case 4:
+      state0 = 0;
+      rightTx._shX = $.$mul$n(t3, 0.62);
+      t3 = rightTx._scY;
+    case 5:
+      state0 = 0;
+      rightTx._scY = $.$mul$n(t3, 0.62);
+      rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(1.0471975511965976, 0, 0));
+      if (false)
+        $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+      t3 = ctx == null;
+      if (t3)
+        $.throwExpression($.NullArgumentError$("ctx"));
+      if (false)
+        $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+      t2.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
+      $.drawBranch(ctx, t1.$sub(levels, 1));
+      t2.restore$0(ctx);
+      t2.save$0(ctx);
+      rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
+      rightTx.translate$2(rightTx, 1, 0);
+      t4 = rightTx._scX;
+    case 6:
+      state0 = 0;
+      rightTx._scX = $.$mul$n(t4, 0.62);
+      t4 = rightTx._shY;
+    case 7:
+      state0 = 0;
+      rightTx._shY = $.$mul$n(t4, 0.62);
+      t4 = rightTx._shX;
+    case 8:
+      state0 = 0;
+      rightTx._shX = $.$mul$n(t4, 0.62);
+      t4 = rightTx._scY;
+    case 9:
+      state0 = 0;
+      rightTx._scY = $.$mul$n(t4, 0.62);
+      rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.0471975511965976, 0, 0));
+      if (false)
+        $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+      if (t3)
+        $.throwExpression($.NullArgumentError$("ctx"));
+      if (false)
+        $.throwExpression($.InvalidOperationError$("That's just sad. Give me a good argName"));
+      t2.transform$6(ctx, rightTx.get$scaleX(), rightTx.get$shearY(), rightTx.get$shearX(), rightTx.get$scaleY(), rightTx.get$translateX(), rightTx.get$translateY());
+      $.drawBranch(ctx, t1.$sub(levels, 1));
+      t2.restore$0(ctx);
+  }
 };
 
 $.ListIterator$ = function(iterable) {
@@ -974,15 +1026,15 @@ $.ListIterator$ = function(iterable) {
 };
 
 $.ToString__emitValue = function(i, result, visiting) {
-  var isList, t1, first, t2;
+  var isList, t1, first, e;
   visiting.push(i);
   isList = typeof i === "object" && i !== null && (i.constructor === Array || !!$.getInterceptor(i).$isList);
   result.write$1(isList ? "[" : "{");
   for (t1 = $.get$iterator$a(i), first = true; t1.moveNext$0(); first = false) {
-    t2 = t1.get$current();
+    e = t1.get$current();
     if (!first)
       result.write$1(", ");
-    $.ToString__emitObject(t2, result, visiting);
+    $.ToString__emitObject(e, result, visiting);
   }
   result.write$1(isList ? "]" : "}");
   if (0 >= visiting.length)
@@ -1050,8 +1102,8 @@ $.S = function(value) {
   else if (value == null)
     return "null";
   res = $.toString$0(value);
-  if (!(typeof res === "string"))
-    throw $.wrapException($.ArgumentError$(value));
+  if (typeof res !== "string")
+    $.throwExpression($.ArgumentError$(value));
   return res;
 };
 
@@ -1078,11 +1130,13 @@ $.Primitives_objectTypeName = function(object) {
 };
 
 $.iae = function(argument) {
-  throw $.wrapException($.ArgumentError$(argument));
+  $.throwExpression($.ArgumentError$(argument));
 };
 
 $.ioore = function(index) {
-  throw $.wrapException($.RangeError$value(index));
+  if (typeof index !== "number" || Math.floor(index) !== index)
+    $.throwExpression($.ArgumentError$(index));
+  $.throwExpression($.RangeError$value(index));
 };
 
 $.wrapException = function(ex) {
@@ -1120,7 +1174,7 @@ $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
   else if (t1.$eq(numberOfArguments, 2) === true)
     return new $.invokeClosure_anon1(closure, arg1, arg2).call$0();
   else
-    throw $.wrapException($._ExceptionImplementation$("Unsupported number of arguments for wrapped closure"));
+    $.throwExpression($._ExceptionImplementation$("Unsupported number of arguments for wrapped closure"));
 };
 
 $.convertDartClosureToJS = function(closure, arity) {
@@ -1145,12 +1199,8 @@ $.typeNameInSafari = function(obj) {
 
 $.typeNameInWebKitCommon = function(tag) {
   var $name = tag;
-  if ($name === "Window")
-    return "DOMWindow";
   if ($name === "CanvasPixelArray")
     return "Uint8ClampedArray";
-  if ($name === "WebKitMutationObserver")
-    return "MutationObserver";
   if ($name === "AudioChannelMerger")
     return "ChannelMergerNode";
   if ($name === "AudioChannelSplitter")
@@ -1171,18 +1221,11 @@ $.typeNameInWebKitCommon = function(tag) {
 };
 
 $.typeNameInOpera = function(obj) {
-  var $name = $.constructorNameFallback(obj);
-  if ($name === "Window")
-    return "DOMWindow";
-  if ($name === "ApplicationCache")
-    return "DOMApplicationCache";
-  return $name;
+  return $.constructorNameFallback(obj);
 };
 
 $.typeNameInFirefox = function(obj) {
   var $name = $.constructorNameFallback(obj);
-  if ($name === "Window")
-    return "DOMWindow";
   if ($name === "BeforeUnloadEvent")
     return "Event";
   if ($name === "CSS2Properties")
@@ -1193,10 +1236,6 @@ $.typeNameInFirefox = function(obj) {
     return "MouseEvent";
   if ($name === "GeoGeolocation")
     return "Geolocation";
-  if ($name === "MouseScrollEvent")
-    return "WheelEvent";
-  if ($name === "OfflineResourceList")
-    return "DOMApplicationCache";
   if ($name === "WorkerMessageEvent")
     return "MessageEvent";
   if ($name === "XMLDocument")
@@ -1206,15 +1245,11 @@ $.typeNameInFirefox = function(obj) {
 
 $.typeNameInIE = function(obj) {
   var $name = $.constructorNameFallback(obj);
-  if ($name === "Window")
-    return "DOMWindow";
   if ($name === "Document") {
     if (!!obj.xmlVersion)
       return "Document";
     return "HTMLDocument";
   }
-  if ($name === "ApplicationCache")
-    return "DOMApplicationCache";
   if ($name === "BeforeUnloadEvent")
     return "Event";
   if ($name === "CanvasPixelArray")
@@ -1235,8 +1270,6 @@ $.typeNameInIE = function(obj) {
     return "HTMLElement";
   if ($name === "MSStyleCSSProperties")
     return "CSSStyleDeclaration";
-  if ($name === "MouseWheelEvent")
-    return "WheelEvent";
   if ($name === "Position")
     return "Geoposition";
   if ($name === "Object")
@@ -1331,16 +1364,19 @@ $.defineNativeMethodsFinish = function() {
 };
 
 $.lookupDispatchRecord = function(obj) {
-  var hasOwnPropertyFunction, tag, interceptor, secondTag;
+  var hasOwnPropertyFunction, tag, map, interceptor, secondTag;
   hasOwnPropertyFunction = Object.prototype.hasOwnProperty;
   if ($._getTypeNameOf == null)
     $._getTypeNameOf = $.getFunctionForTypeNameOf();
   tag = $._getTypeNameOf.call$1(obj);
-  interceptor = $.lookupInterceptor(hasOwnPropertyFunction, tag, $.interceptorsByTag);
+  map = $.interceptorsByTag;
+  interceptor = hasOwnPropertyFunction.call(map, tag) ? map[tag] : null;
   if (interceptor == null) {
     secondTag = $.alternateTag(obj, tag);
-    if (secondTag != null)
-      interceptor = $.lookupInterceptor(hasOwnPropertyFunction, secondTag, $.interceptorsByTag);
+    if (secondTag != null) {
+      map = $.interceptorsByTag;
+      interceptor = hasOwnPropertyFunction.call(map, secondTag) ? map[secondTag] : null;
+    }
   }
   if (interceptor == null)
     interceptor = {__what: "interceptor not found", __tag: tag};
@@ -1348,65 +1384,6 @@ $.lookupDispatchRecord = function(obj) {
     return {i: interceptor, p: false, e: null};
   else
     return {i: interceptor, p: Object.getPrototypeOf(obj), e: null};
-};
-
-$.lookupInterceptor = function(hasOwnPropertyFunction, tag, methods) {
-  var method, t1, i, entry;
-  method = hasOwnPropertyFunction.call(methods, tag) ? methods[tag] : null;
-  if (method == null) {
-    if (typeof $dynamicMetadata === "undefined")
-      $._dynamicMetadata([]);
-    t1 = $dynamicMetadata != null;
-  } else
-    t1 = false;
-  if (t1) {
-    i = 0;
-    while (true) {
-      if (typeof $dynamicMetadata === "undefined")
-        $._dynamicMetadata([]);
-      if (!(i < $dynamicMetadata.length))
-        break;
-      if (typeof $dynamicMetadata === "undefined")
-        $._dynamicMetadata([]);
-      entry = $dynamicMetadata[i];
-      if (hasOwnPropertyFunction.call(entry.get$_set(), tag)) {
-        t1 = entry.get$_tag();
-        method = hasOwnPropertyFunction.call(methods, t1) ? methods[t1] : null;
-        if (method != null)
-          break;
-      }
-      ++i;
-    }
-  }
-  return method;
-};
-
-$.MetaInfo$ = function(_tag, _tags, _set) {
-  return new $.MetaInfo(_tag, _tags, _set);
-};
-
-$._dynamicMetadata = function(table) {
-  $dynamicMetadata = table;
-};
-
-$.buildDynamicMetadata = function(inputTable) {
-  var result, i, tag, tags, set, tagNames, j;
-  result = [];
-  for (i = 0; i < inputTable.length; ++i) {
-    tag = inputTable[i][0];
-    tags = inputTable[i][1];
-    set = {};
-    tagNames = tags.split("|");
-    for (j = 0; j < tagNames.length; ++j)
-      set[tagNames[j]] = true;
-    result.push($.MetaInfo$(tag, tags, set));
-  }
-  return result;
-};
-
-$.dynamicSetMetadata = function(inputTable) {
-  var t1 = $.buildDynamicMetadata(inputTable);
-  $._dynamicMetadata(t1);
 };
 
 $.Error_safeToString = function(object) {
@@ -1438,8 +1415,8 @@ $.List_List = function($length) {
     $length = null;
   if (t1)
     return new Array(0);
-  if (!(typeof $length === "number" && Math.floor($length) === $length) || $length < 0)
-    throw $.wrapException($.ArgumentError$("Length must be a positive integer: " + $.S($length) + "."));
+  if (typeof $length !== "number" || Math.floor($length) !== $length || $length < 0)
+    $.throwExpression($.ArgumentError$("Length must be a positive integer: " + $.S($length) + "."));
   result = new Array($length);
   result.fixed$length = true;
   return result;
@@ -1485,9 +1462,10 @@ $.constructorNameFallback.call$1 = $.constructorNameFallback;
 $.constructorNameFallback.$name = "constructorNameFallback";
 $.num = {builtin$cls: "num"};
 $.String = {builtin$cls: "String"};
-$.JSArray_methods = $.JSArray.prototype;
 $.C_NullThrownError = new $.NullThrownError();
 $.JSInt_methods = $.JSInt.prototype;
+$.JSNumber_methods = $.JSNumber.prototype;
+$.JSArray_methods = $.JSArray.prototype;
 $.dispatchPropertyName = "_zzyzx";
 $.Primitives_hashCodeSeed = 0;
 $._getTypeNameOf = null;
@@ -1924,13 +1902,6 @@ $.defineNativeMethods("SQLError", $.SqlError);
 
 $.defineNativeMethods("SQLException", $.SqlException);
 
-// 167 dynamic classes.
-// 192 classes
-// 14 !leaf
-(function() {
-  var v0_TextPositioningElement = "SVGAltGlyphElement|SVGTRefElement|SVGTSpanElement|SVGTextElement|SVGTextPositioningElement", v1__GradientElement = "SVGGradientElement|SVGLinearGradientElement|SVGRadialGradientElement", v2_TextContentElement = [v0_TextPositioningElement, "SVGTextContentElement|SVGTextPathElement"].join("|"), v3_StyledElement = [v1__GradientElement, v2_TextContentElement, "SVGAElement|SVGCircleElement|SVGClipPathElement|SVGDefsElement|SVGDescElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFESpecularLightingElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGForeignObjectElement|SVGGElement|SVGGlyphRefElement|SVGImageElement|SVGLineElement|SVGMarkerElement|SVGMaskElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRectElement|SVGSVGElement|SVGStopElement|SVGStyledElement|SVGSwitchElement|SVGSymbolElement|SVGTitleElement|SVGUseElement"].join("|"), v4__SVGComponentTransferFunctionElement = "SVGComponentTransferFunctionElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement", v5_AnimationElement = "SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGSetElement", v6_SvgElement = [v3_StyledElement, v4__SVGComponentTransferFunctionElement, v5_AnimationElement, "SVGAltGlyphDefElement|SVGAltGlyphItemElement|SVGCursorElement|SVGElement|SVGFEDistantLightElement|SVGFEMergeNodeElement|SVGFEPointLightElement|SVGFESpotLightElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGGlyphElement|SVGHKernElement|SVGMPathElement|SVGMetadataElement|SVGScriptElement|SVGStyleElement|SVGVKernElement|SVGViewElement"].join("|"), v7_MediaElement = "HTMLAudioElement|HTMLMediaElement|HTMLVideoElement", v8_Element = [v6_SvgElement, v7_MediaElement, "Element|HTMLAnchorElement|HTMLAppletElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFormElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement"].join("|"), v9_Document = "Document|HTMLDocument", v10_Node = [v8_Element, v9_Document, "Node"].join("|");
-  $.dynamicSetMetadata([["CanvasRenderingContext", "CanvasRenderingContext|CanvasRenderingContext2D"], ["Document", v9_Document], ["SVGGradientElement", v1__GradientElement], ["SVGTextPositioningElement", v0_TextPositioningElement], ["SVGTextContentElement", v2_TextContentElement], ["SVGStyledElement", v3_StyledElement], ["SVGComponentTransferFunctionElement", v4__SVGComponentTransferFunctionElement], ["SVGAnimationElement", v5_AnimationElement], ["SVGElement", v6_SvgElement], ["HTMLMediaElement", v7_MediaElement], ["Element", v8_Element], ["Event", "AutocompleteErrorEvent|ErrorEvent|Event|SpeechRecognitionError"], ["Node", v10_Node], ["EventTarget", [v10_Node, "EventTarget"].join("|")]]);
-})();
 
 var $ = null;
 Isolate = Isolate.$finishIsolateConstructor(Isolate);
@@ -2023,8 +1994,8 @@ function init() {
         var fields = desc[""], supr;
         if (typeof fields == "string") {
           var s = fields.split(";");
-          supr = s[0];
           fields = s[1] == "" ? [] : s[1].split(",");
+          supr = s[0];
         } else {
           supr = desc.super;
         }
