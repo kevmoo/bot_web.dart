@@ -8,10 +8,10 @@ environment:
   sdk: '>=0.4.7+1'
 dependencies:
   unittest: '>=0.4.7+1'
-  bot: '>=0.20.0'
+  bot: '>=0.20.1'
   logging: '>=0.4.7+1'
   meta: '>=0.4.7+1'
 dev_dependencies:
   html5lib: '>=0.4.3'
   browser: '>=0.4.7+1'
-  hop: '>=0.21.0'
+  hop: '>=0.22.0'

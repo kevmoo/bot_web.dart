@@ -14,7 +14,7 @@ class AudioLoader extends ResourceLoader<AudioBuffer> {
         });
   }
 
-  Future<AudioBuffer> _decode(ArrayBuffer audioData) {
+  Future<AudioBuffer> _decode(typed_data.ByteBuffer audioData) {
     final completer = new Completer<AudioBuffer>();
 
     context.decodeAudioData(audioData,

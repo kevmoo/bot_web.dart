@@ -16,20 +16,11 @@ class TextureAnimationThing extends Thing {
 
   void update() {
 
-    var toRemove = new List<TextureAnimationRequest>();
-    for(final r in _requests) {
+    _requests.removeWhere((r) {
       r.update();
       assert(!r.fresh);
-      if(r.done) {
-        toRemove.add(r);
-      }
-    }
-
-    for(final r in toRemove) {
-      final i = _requests.indexOf(r, 0);
-      assert(i >= 0);
-      _requests.removeRange(i, 1);
-    }
+      return r.done;
+    });
 
     if(_requests.length > 0) {
       invalidateDraw();
