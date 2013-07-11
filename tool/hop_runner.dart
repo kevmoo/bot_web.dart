@@ -22,9 +22,9 @@ void main() {
   //
   // Analyzer
   //
-  addTask('analyze_libs', createDartAnalyzerTask(_getLibs));
+  addTask('analyze_libs', createAnalyzerTask(_getLibs));
 
-  addTask('analyze_test_libs', createDartAnalyzerTask(
+  addTask('analyze_test_libs', createAnalyzerTask(
       ['test/harness_browser.dart', 'test/harness_console.dart',
        'test/test_dump_render_tree.dart',]));
 
@@ -36,7 +36,7 @@ void main() {
       .toList();
   paths.add('test/harness_browser.dart');
 
-  addTask('dart2js', createDart2JsTask(paths,
+  addTask('dart2js', createDartCompilerTask(paths,
       liveTypeAnalysis: true, rejectDeprecatedFeatures: true));
 
   addTask('update-html', html_tasks.getUpdateExampleHtmlTask());
