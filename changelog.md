@@ -1,5 +1,9 @@
 # Changelog - Dart Bag of Tricks - WEB
 
+## 0.20.4 2013-07-24 (SDK 0.6.9.2 r25388)
+
+* Latest SDK
+
 ## 0.20.3 2013-07-11 (SDK 0.6.5.0 r25017)
 
 * Updated pub dependencies
