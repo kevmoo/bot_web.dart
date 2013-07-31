@@ -8,7 +8,7 @@ import 'package:html5lib/dom.dart';
 import 'package:html5lib/parser.dart';
 import 'package:html5lib/dom_parsing.dart';
 
-import 'shared.dart';
+import 'package:hop/src/hop_experimental.dart';
 
 const _startPath = r'example/bot_retained';
 const _demoFinder = r'/**/*_demo.html';
