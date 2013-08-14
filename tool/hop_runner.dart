@@ -34,8 +34,7 @@ void main() {
       .toList();
   paths.add('test/harness_browser.dart');
 
-  addTask('dart2js', createDartCompilerTask(paths,
-      liveTypeAnalysis: true, rejectDeprecatedFeatures: true));
+  addTask('dart2js', createDartCompilerTask(paths, liveTypeAnalysis: true));
 
   addTask('update-html', html_tasks.getUpdateExampleHtmlTask());
 
