@@ -5,8 +5,6 @@ import 'dart:io';
 import 'package:bot/bot.dart';
 import 'package:hop/hop.dart';
 import 'package:html5lib/dom.dart';
-import 'package:html5lib/parser.dart';
-import 'package:html5lib/dom_parsing.dart';
 
 import 'package:hop/src/hop_experimental.dart';
 

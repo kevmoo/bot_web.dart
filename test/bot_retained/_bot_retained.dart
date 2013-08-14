@@ -1,7 +1,6 @@
 library test_bot_retained;
 
 import 'dart:html';
-import 'package:bot/bot.dart';
 import 'package:bot_web/bot_retained.dart';
 import 'package:unittest/unittest.dart';
 
