@@ -7,6 +7,56 @@
 //                        Instead, a closure that will invoke [main] is
 //                        passed to [dartMainRunner].
 (function($) {
+var A = {};
+delete A.x;
+var B = {};
+delete B.x;
+var C = {};
+delete C.x;
+var D = {};
+delete D.x;
+var E = {};
+delete E.x;
+var F = {};
+delete F.x;
+var G = {};
+delete G.x;
+var H = {};
+delete H.x;
+var J = {};
+delete J.x;
+var K = {};
+delete K.x;
+var L = {};
+delete L.x;
+var M = {};
+delete M.x;
+var N = {};
+delete N.x;
+var O = {};
+delete O.x;
+var P = {};
+delete P.x;
+var Q = {};
+delete Q.x;
+var R = {};
+delete R.x;
+var S = {};
+delete S.x;
+var T = {};
+delete T.x;
+var U = {};
+delete U.x;
+var V = {};
+delete V.x;
+var W = {};
+delete W.x;
+var X = {};
+delete X.x;
+var Y = {};
+delete Y.x;
+var Z = {};
+delete Z.x;
 function Isolate() {}
 init();
 
@@ -15,31 +65,32 @@ var $$ = {};
 
 // Native classes
 // Bound closures
-$$.Closure$wrapException = {"": "Closure;call$1,$name"};
+$$.Closure$toStringWrapper = [H, {"": "Closure;call$0,$name"}];
 
-$$.Closure$toStringWrapper = {"": "Closure;call$0,$name"};
+$$.Closure$invokeClosure = [H, {"": "Closure;call$5,$name"}];
 
-$$.Closure$invokeClosure = {"": "Closure;call$5,$name"};
+$$.Closure$typeNameInChrome = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$typeNameInChrome = {"": "Closure;call$1,$name"};
+$$.Closure$typeNameInSafari = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$typeNameInSafari = {"": "Closure;call$1,$name"};
+$$.Closure$typeNameInOpera = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$typeNameInOpera = {"": "Closure;call$1,$name"};
+$$.Closure$typeNameInFirefox = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$typeNameInFirefox = {"": "Closure;call$1,$name"};
+$$.Closure$typeNameInIE = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$typeNameInIE = {"": "Closure;call$1,$name"};
+$$.Closure$constructorNameFallback = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$constructorNameFallback = {"": "Closure;call$1,$name"};
-
-$$.Closure$callDartFunctionWith1Arg = {"": "Closure;call$2,$name"};
+$$.Closure$callDartFunctionWith1Arg = [H, {"": "Closure;call$2,$name"}];
 
 (function (reflectionData) {
+  function map(x){x={x:x};delete x.x;return x}
   if (!init.libraries) init.libraries = [];
-  if (!init.mangledNames) init.mangledNames = {};
-  if (!init.mangledGlobalNames) init.mangledGlobalNames = {};
-  if (!init.statics) init.statics = {};
+  if (!init.mangledNames) init.mangledNames = map();
+  if (!init.mangledGlobalNames) init.mangledGlobalNames = map();
+  if (!init.statics) init.statics = map();
+  if (!init.interfaces) init.interfaces = map();
+  if (!init.globalFunctions) init.globalFunctions = map();
   var libraries = init.libraries;
   var mangledNames = init.mangledNames;
   var mangledGlobalNames = init.mangledGlobalNames;
@@ -50,8 +101,9 @@ $$.Closure$callDartFunctionWith1Arg = {"": "Closure;call$2,$name"};
     var name = data[0];
     var uri = data[1];
     var metadata = data[2];
-    var descriptor = data[3];
-    var isRoot = !!data[4];
+    var globalObject = data[3];
+    var descriptor = data[4];
+    var isRoot = !!data[5];
     var fields = descriptor && descriptor[""];
     var classes = [];
     var functions = [];
@@ -64,12 +116,22 @@ $$.Closure$callDartFunctionWith1Arg = {"": "Closure;call$2,$name"};
         var previousProperty;
         if (firstChar === "+") {
           mangledGlobalNames[previousProperty] = property.substring(1);
+          if (descriptor[property] == 1) descriptor[previousProperty].$reflectable = 1;
+          if (element && element.length) init.interfaces[previousProperty] = element;
         } else if (firstChar === "@") {
           property = property.substring(1);
           $[property]["@"] = element;
+        } else if (firstChar === "*") {
+          globalObject[previousProperty].$defaultValues = element;
+          var optionalMethods = descriptor.$methodsWithOptionalArguments;
+          if (!optionalMethods) {
+            descriptor.$methodsWithOptionalArguments = optionalMethods = {}
+          }
+          optionalMethods[property] = previousProperty;
         } else if (typeof element === "function") {
-          $[previousProperty = property] = element;
+          globalObject[previousProperty = property] = element;
           functions.push(property);
+          init.globalFunctions[property] = element;
         } else {
           previousProperty = property;
           var newDesc = {};
@@ -81,32 +143,33 @@ $$.Closure$callDartFunctionWith1Arg = {"": "Closure;call$2,$name"};
               processStatics(init.statics[property] = element[prop]);
             } else if (firstChar === "+") {
               mangledNames[previousProp] = prop.substring(1);
+              if (element[prop] == 1) element[previousProp].$reflectable = 1;
             } else if (firstChar === "@" && prop !== "@") {
               newDesc[prop.substring(1)]["@"] = element[prop];
+            } else if (firstChar === "*") {
+              newDesc[previousProp].$defaultValues = element[prop];
+              var optionalMethods = newDesc.$methodsWithOptionalArguments;
+              if (!optionalMethods) {
+                newDesc.$methodsWithOptionalArguments = optionalMethods={}
+              }
+              optionalMethods[prop] = previousProp;
             } else {
               newDesc[previousProp = prop] = element[prop];
             }
           }
-          $$[property] = newDesc;
+          $$[property] = [globalObject, newDesc];
           classes.push(property);
         }
       }
     }
     processStatics(descriptor);
-    libraries.push([name, uri, classes, functions, metadata, fields, isRoot]);
+    libraries.push([name, uri, classes, functions, metadata, fields, isRoot,
+                    globalObject]);
   }
 })([
-["_interceptors", "dart:_interceptors", , {
+["_interceptors", "dart:_interceptors", , J, {
 getInterceptor: function(object) {
-  return $.getInterceptor(object);
-},
-
-getDispatchProperty: function(object) {
-  return object[$.dispatchPropertyName];
-},
-
-setDispatchProperty: function(object, value) {
-  Object.defineProperty(object, $.dispatchPropertyName, {value: value, enumerable: false, writable: true, configurable: true});
+  return void 0;
 },
 
 makeDispatchRecord: function(interceptor, proto, extension, indexability) {
@@ -115,7 +178,7 @@ makeDispatchRecord: function(interceptor, proto, extension, indexability) {
 
 getNativeInterceptor: function(object) {
   var record, proto, objectProto;
-  record = $.getDispatchProperty(object);
+  record = object[init.dispatchPropertyName];
   if (record != null) {
     proto = record.p;
     if (false === proto)
@@ -128,44 +191,11 @@ getNativeInterceptor: function(object) {
     if (record.e === objectProto)
       return proto(object, record);
   }
-  record = $.lookupDispatchRecord(object);
+  record = H.lookupDispatchRecord(object);
   if (record == null)
-    return $.C_UnknownJavaScriptObject;
-  $.setDispatchProperty(Object.getPrototypeOf(object), record);
-  return $.getNativeInterceptor(object);
-},
-
-initializeDispatchProperty: function(setGetDispatchPropertyFn, rootProperty, jsObjectInterceptor) {
-  var objectProto, i, property;
-  if (typeof rootProperty !== "string")
-    return $.initializeDispatchProperty$bailout(1, setGetDispatchPropertyFn, rootProperty, jsObjectInterceptor);
-  objectProto = Object.prototype;
-  for (i = 0; true; ++i) {
-    if (i > 0)
-      property = rootProperty + "_" + i;
-    else
-      property = rootProperty;
-    if (typeof objectProto[property] === "undefined") {
-      $.dispatchPropertyName = property;
-      setGetDispatchPropertyFn(new Function("a", "return a." + property));
-      $.setDispatchProperty(objectProto, $.makeDispatchRecord(jsObjectInterceptor, objectProto, null, null));
-      return;
-    }
-  }
-},
-
-initializeDispatchProperty$bailout: function(state0, setGetDispatchPropertyFn, rootProperty, jsObjectInterceptor) {
-  var objectProto, i, property;
-  objectProto = Object.prototype;
-  for (i = 0; true; ++i) {
-    property = i > 0 ? rootProperty + "_" + i : rootProperty;
-    if (typeof objectProto[property] === "undefined") {
-      $.dispatchPropertyName = property;
-      setGetDispatchPropertyFn(new Function("a", "return a." + property));
-      $.setDispatchProperty(objectProto, $.makeDispatchRecord(jsObjectInterceptor, objectProto, null, null));
-      return;
-    }
-  }
+    return C.C_UnknownJavaScriptObject;
+  Object.defineProperty(Object.getPrototypeOf(object), init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
+  return J.getNativeInterceptor(object);
 },
 
 Interceptor: {"": "Object;",
@@ -173,7 +203,7 @@ Interceptor: {"": "Object;",
     return receiver === other;
   },
   toString$0: function(receiver) {
-    return $.Primitives_objectToString(receiver);
+    return H.Primitives_objectToString(receiver);
   }
 },
 
@@ -202,23 +232,23 @@ JSArray: {"": "List/Interceptor;",
   join$1: function(receiver, separator) {
     var t1, list, i, t2;
     t1 = receiver.length;
-    list = $.List_List(t1);
+    list = P.List_List(t1);
     for (i = 0; i < receiver.length; ++i) {
-      t2 = $.S(receiver[i]);
+      t2 = H.S(receiver[i]);
       if (i >= t1)
-        throw $.ioore(i);
+        throw H.ioore(list, i);
       list[i] = t2;
     }
     return list.join(separator);
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   toString$0: function(receiver) {
-    return $.IterableMixinWorkaround_toStringIterable(receiver, "[", "]");
+    return H.IterableMixinWorkaround_toStringIterable(receiver, "[", "]");
   },
   get$iterator: function(receiver) {
-    return new $.ListIterator(receiver, receiver.length, 0, null);
+    return new H.ListIterator(receiver, receiver.length, 0, null);
+  },
+  get$length: function(receiver) {
+    return receiver.length;
   },
   $isList: true
 },
@@ -240,21 +270,6 @@ JSNumber: {"": "num/Interceptor;",
     else
       return "" + receiver;
   },
-  $add: function(receiver, other) {
-    if (typeof other !== "number")
-      throw $.wrapException(new $.ArgumentError(other));
-    return receiver + other;
-  },
-  $sub: function(receiver, other) {
-    if (typeof other !== "number")
-      throw $.wrapException(new $.ArgumentError(other));
-    return receiver - other;
-  },
-  $mul: function(receiver, other) {
-    if (typeof other !== "number")
-      throw $.wrapException(new $.ArgumentError(other));
-    return receiver * other;
-  },
   $isnum: true
 },
 
@@ -265,37 +280,38 @@ JSDouble: {"": "double/JSNumber;", $isnum: true},
 JSString: {"": "String/Interceptor;",
   codeUnitAt$1: function(receiver, index) {
     if (index < 0)
-      throw $.wrapException(new $.RangeError("value " + index));
+      throw H.wrapException(new P.RangeError("value " + index));
     if (index >= receiver.length)
-      throw $.wrapException(new $.RangeError("value " + index));
+      throw H.wrapException(new P.RangeError("value " + index));
     return receiver.charCodeAt(index);
   },
   substring$2: function(receiver, startIndex, endIndex) {
-    endIndex = receiver.length;
-    if (typeof endIndex !== "number")
-      $.throwExpression(new $.ArgumentError(endIndex));
-    if (startIndex < 0)
-      throw $.wrapException(new $.RangeError("value " + startIndex));
     if (endIndex == null)
-      throw $.iae(endIndex);
+      endIndex = receiver.length;
+    if (typeof endIndex !== "number")
+      H.throwExpression(new P.ArgumentError(endIndex));
+    if (startIndex < 0)
+      throw H.wrapException(new P.RangeError("value " + startIndex));
+    if (typeof endIndex !== "number")
+      throw H.iae(endIndex);
     if (startIndex > endIndex)
-      throw $.wrapException(new $.RangeError("value " + startIndex));
+      throw H.wrapException(new P.RangeError("value " + startIndex));
     if (endIndex > receiver.length)
-      throw $.wrapException(new $.RangeError("value " + endIndex));
+      throw H.wrapException(new P.RangeError("value " + H.S(endIndex)));
     return receiver.substring(startIndex, endIndex);
   },
   substring$1: function($receiver, startIndex) {
     return this.substring$2($receiver, startIndex, null);
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   toString$0: function(receiver) {
     return receiver;
   },
+  get$length: function(receiver) {
+    return receiver.length;
+  },
   $isString: true
 }}],
-["_js_helper", "dart:_js_helper", , {
+["_js_helper", "dart:_js_helper", , H, {
 S: function(value) {
   var res;
   if (typeof value === "string")
@@ -309,9 +325,9 @@ S: function(value) {
     return "false";
   else if (value == null)
     return "null";
-  res = $.toString$0(value);
+  res = J.toString$0(value);
   if (typeof res !== "string")
-    throw $.wrapException(new $.ArgumentError(value));
+    throw H.wrapException(new P.ArgumentError(value));
   return res;
 },
 
@@ -326,21 +342,21 @@ Primitives_objectHashCode: function(object) {
 
 Primitives_objectTypeName: function(object) {
   var $name, decompiled, t1;
-  $name = $.constructorNameFallback($.getInterceptor(object));
-  if ($.$eq($name, "Object")) {
+  $name = H.constructorNameFallback(J.getInterceptor(object));
+  if (J.$eq($name, "Object")) {
     decompiled = String(object.constructor).match(/^\s*function\s*(\S*)\s*\(/)[1];
     if (typeof decompiled === "string")
       $name = decompiled;
   }
-  t1 = $.getInterceptor$s($name);
+  t1 = J.getInterceptor$s($name);
   if (t1.codeUnitAt$1($name, 0) === 36)
     $name = t1.substring$1($name, 1);
-  t1 = $.getRuntimeTypeInfo(object);
-  return $.S($name) + $.joinArguments(t1, 0);
+  t1 = H.getRuntimeTypeInfo(object);
+  return H.S($name) + H.joinArguments(t1, 0);
 },
 
 Primitives_objectToString: function(object) {
-  return "Instance of '" + $.Primitives_objectTypeName(object) + "'";
+  return "Instance of '" + H.Primitives_objectTypeName(object) + "'";
 },
 
 Primitives_newFixedList: function($length) {
@@ -350,38 +366,49 @@ Primitives_newFixedList: function($length) {
 },
 
 iae: function(argument) {
-  throw $.wrapException(new $.ArgumentError(argument));
+  throw H.wrapException(new P.ArgumentError(argument));
 },
 
-ioore: function(index) {
+ioore: function(receiver, index) {
+  if (receiver == null)
+    J.get$length$asx(receiver);
   if (typeof index !== "number" || Math.floor(index) !== index)
-    $.iae(index);
-  throw $.wrapException(new $.RangeError("value " + $.S(index)));
+    H.iae(index);
+  throw H.wrapException(new P.RangeError("value " + H.S(index)));
 },
 
 wrapException: function(ex) {
-  var wrapper = $.DartError$(ex == null ? new $.NullThrownError() : ex);
-  if (!!Error.captureStackTrace)
-    Error.captureStackTrace(wrapper, $.wrapException$closure);
-  else
-    wrapper.stack = new Error().stack;
+  var wrapper;
+  if (ex == null)
+    ex = new P.NullThrownError();
+  wrapper = new Error();
+  wrapper.dartException = ex;
+  if ("defineProperty" in Object) {
+    Object.defineProperty(wrapper, "message", { get: H.toStringWrapper$closure.call$0 });
+    wrapper.name = "";
+  } else
+    wrapper.toString = H.toStringWrapper$closure.call$0;
   return wrapper;
 },
 
+toStringWrapper: function() {
+  return J.toString$0(this.dartException);
+},
+
 throwExpression: function(ex) {
-  throw $.wrapException(ex);
+  throw H.wrapException(ex);
 },
 
 invokeClosure: function(closure, isolate, numberOfArguments, arg1, arg2) {
-  var t1 = $.getInterceptor(numberOfArguments);
+  var t1 = J.getInterceptor(numberOfArguments);
   if (t1.$eq(numberOfArguments, 0))
-    return new $.invokeClosure_closure(closure).call$0();
+    return new H.invokeClosure_closure(closure).call$0();
   else if (t1.$eq(numberOfArguments, 1))
-    return new $.invokeClosure_closure0(closure, arg1).call$0();
+    return new H.invokeClosure_closure0(closure, arg1).call$0();
   else if (t1.$eq(numberOfArguments, 2))
-    return new $.invokeClosure_closure1(closure, arg1, arg2).call$0();
+    return new H.invokeClosure_closure1(closure, arg1, arg2).call$0();
   else
-    throw $.wrapException(new $._ExceptionImplementation("Unsupported number of arguments for wrapped closure"));
+    throw H.wrapException(new P._ExceptionImplementation("Unsupported number of arguments for wrapped closure"));
 },
 
 convertDartClosureToJS: function(closure, arity) {
@@ -391,13 +418,13 @@ convertDartClosureToJS: function(closure, arity) {
   $function = closure.$identity;
   if (!!$function)
     return $function;
-  $function = (function ($2, $3) { return function($0, $1) { return $3(closure, $2, arity, $0, $1) }})($, $.invokeClosure$closure.call$5);
+  $function = (function ($2, $3) { return function($0, $1) { return $3(closure, $2, arity, $0, $1) }})($, H.invokeClosure$closure.call$5);
   closure.$identity = $function;
   return $function;
 },
 
 throwCyclicInit: function(staticName) {
-  throw $.wrapException(new $.CyclicInitializationError("Cyclic initialization for static " + $.S(staticName)));
+  throw H.wrapException(new P.CyclicInitializationError("Cyclic initialization for static " + H.S(staticName)));
 },
 
 getRuntimeTypeInfo: function(target) {
@@ -410,7 +437,7 @@ runtimeTypeToString: function(type) {
   if (type == null)
     return "dynamic";
   else if (typeof type === "object" && type !== null && type.constructor === Array)
-    return type[0].builtin$cls + $.joinArguments(type, 1);
+    return type[0].builtin$cls + H.joinArguments(type, 1);
   else if (typeof type == "function")
     return type.builtin$cls;
   else
@@ -421,7 +448,7 @@ joinArguments: function(types, startIndex) {
   var buffer, index, firstArgument, allDynamic, argument, str;
   if (types == null)
     return "";
-  buffer = $.StringBuffer$("");
+  buffer = P.StringBuffer$("");
   for (index = startIndex, firstArgument = true, allDynamic = true; index < types.length; ++index) {
     if (firstArgument)
       firstArgument = false;
@@ -430,11 +457,11 @@ joinArguments: function(types, startIndex) {
     argument = types[index];
     if (argument != null)
       allDynamic = false;
-    str = $.runtimeTypeToString(argument);
+    str = H.runtimeTypeToString(argument);
     str = typeof str === "string" ? str : str;
     buffer._contents = buffer._contents + str;
   }
-  return allDynamic ? "" : "<" + $.S(buffer) + ">";
+  return allDynamic ? "" : "<" + H.S(buffer) + ">";
 },
 
 typeNameInChrome: function(obj) {
@@ -442,15 +469,15 @@ typeNameInChrome: function(obj) {
 },
 
 typeNameInSafari: function(obj) {
-  return $.constructorNameFallback(obj);
+  return H.constructorNameFallback(obj);
 },
 
 typeNameInOpera: function(obj) {
-  return $.constructorNameFallback(obj);
+  return H.constructorNameFallback(obj);
 },
 
 typeNameInFirefox: function(obj) {
-  var $name = $.constructorNameFallback(obj);
+  var $name = H.constructorNameFallback(obj);
   if ($name === "BeforeUnloadEvent")
     return "Event";
   if ($name === "DataTransfer")
@@ -465,7 +492,7 @@ typeNameInFirefox: function(obj) {
 },
 
 typeNameInIE: function(obj) {
-  var $name = $.constructorNameFallback(obj);
+  var $name = H.constructorNameFallback(obj);
   if ($name === "Document") {
     if (!!obj.xmlVersion)
       return "Document";
@@ -520,32 +547,32 @@ alternateTag: function(object, tag) {
 },
 
 getFunctionForTypeNameOf: function() {
-  var getTagFunction = $.getBaseFunctionForTypeNameOf();
+  var getTagFunction = H.getBaseFunctionForTypeNameOf();
   if (typeof dartExperimentalFixupGetTag == "function")
-    return $.applyExperimentalFixup(dartExperimentalFixupGetTag, getTagFunction);
+    return H.applyExperimentalFixup(dartExperimentalFixupGetTag, getTagFunction);
   return getTagFunction;
 },
 
 getBaseFunctionForTypeNameOf: function() {
   if (typeof navigator !== "object")
-    return $.typeNameInChrome$closure;
+    return H.typeNameInChrome$closure;
   var userAgent = navigator.userAgent;
   if (userAgent.indexOf("Chrome") !== -1 || userAgent.indexOf("DumpRenderTree") !== -1)
-    return $.typeNameInChrome$closure;
+    return H.typeNameInChrome$closure;
   else if (userAgent.indexOf("Firefox") !== -1)
-    return $.typeNameInFirefox$closure;
-  else if (userAgent.indexOf("MSIE") !== -1)
-    return $.typeNameInIE$closure;
+    return H.typeNameInFirefox$closure;
+  else if (userAgent.indexOf("Trident/") !== -1)
+    return H.typeNameInIE$closure;
   else if (userAgent.indexOf("Opera") !== -1)
-    return $.typeNameInOpera$closure;
+    return H.typeNameInOpera$closure;
   else if (userAgent.indexOf("AppleWebKit") !== -1)
-    return $.typeNameInSafari$closure;
+    return H.typeNameInSafari$closure;
   else
-    return $.constructorNameFallback$closure;
+    return H.constructorNameFallback$closure;
 },
 
 applyExperimentalFixup: function(fixupJSFunction, originalGetTagDartFunction) {
-  return new $.applyExperimentalFixup_newGetTagDartFunction(fixupJSFunction((function(invoke, closure){return function(arg){ return invoke(closure, arg); };})($.callDartFunctionWith1Arg$closure.call$2, originalGetTagDartFunction)));
+  return new H.applyExperimentalFixup_newGetTagDartFunction(fixupJSFunction((function(invoke, closure){return function(arg){ return invoke(closure, arg); };})(H.callDartFunctionWith1Arg$closure.call$2, originalGetTagDartFunction)));
 },
 
 callDartFunctionWith1Arg: function(fn, arg) {
@@ -557,7 +584,7 @@ toStringForNativeObject: function(obj) {
 },
 
 hashCodeForNativeObject: function(object) {
-  return $.Primitives_objectHashCode(object);
+  return H.Primitives_objectHashCode(object);
 },
 
 defineProperty: function(obj, property, value) {
@@ -565,11 +592,23 @@ defineProperty: function(obj, property, value) {
 },
 
 defineNativeMethods: function(tags, interceptorClass) {
-  $.defineNativeMethodsCommon(tags, interceptorClass, true);
+  H.defineNativeMethodsCommon(tags, interceptorClass, true);
 },
 
 defineNativeMethodsNonleaf: function(tags, interceptorClass) {
-  $.defineNativeMethodsCommon(tags, interceptorClass, false);
+  H.defineNativeMethodsCommon(tags, interceptorClass, false);
+},
+
+defineNativeMethodsExtended: function(tags, interceptorClass, subclassInterceptorClasses) {
+  var classes, t1, i;
+  if ($.interceptorToTag == null)
+    $.interceptorToTag = [];
+  classes = subclassInterceptorClasses;
+  for (t1 = classes.length, i = 0; i < t1; ++i) {
+    $.interceptorToTag.push(classes[i]);
+    $.interceptorToTag.push(tags);
+  }
+  H.defineNativeMethodsCommon(tags, interceptorClass, false);
 },
 
 defineNativeMethodsCommon: function(tags, interceptorClass, isLeaf) {
@@ -601,44 +640,23 @@ lookupDispatchRecord: function(obj) {
   var hasOwnPropertyFunction, tag, interceptor, secondTag, t1;
   hasOwnPropertyFunction = Object.prototype.hasOwnProperty;
   tag = $.get$getTypeNameOf().call$1(obj);
-  interceptor = $.lookupInterceptor(hasOwnPropertyFunction, tag);
+  interceptor = H.lookupInterceptor(hasOwnPropertyFunction, tag);
   if (interceptor == null) {
-    secondTag = $.alternateTag(obj, tag);
+    secondTag = H.alternateTag(obj, tag);
     if (secondTag != null)
-      interceptor = $.lookupInterceptor(hasOwnPropertyFunction, secondTag);
+      interceptor = H.lookupInterceptor(hasOwnPropertyFunction, secondTag);
   }
   if (interceptor == null)
     return;
   t1 = $.leafTags;
   if (t1 != null && t1[tag] === true)
-    return $.makeDispatchRecord(interceptor, false, null, !!interceptor.$isJavaScriptIndexingBehavior);
+    return H.makeLeafDispatchRecord(interceptor);
   else
-    return $.makeDispatchRecord(interceptor, Object.getPrototypeOf(obj), null, null);
+    return J.makeDispatchRecord(interceptor, Object.getPrototypeOf(obj), null, null);
 },
 
-DartError: {"": "Object;",
-  toString$0: function(_) {
-    var dartException = this.dartException;
-    if (!!Error.captureStackTrace || this.stack == null)
-      return $.toString$0(dartException);
-    else
-      return $.S(dartException) + "\n" + $.S(this.stack);
-  },
-  DartError$1: function(dartException) {
-    this.dartException = dartException;
-    this.toString = $.DartError_toStringWrapper$closure.call$0;
-  },
-  static: {
-DartError$: function(dartException) {
-  var t1 = new $.DartError();
-  t1.DartError$1(dartException);
-  return t1;
-},
-
-DartError_toStringWrapper: function() {
-  return $.toString$0(this);
-}}
-
+makeLeafDispatchRecord: function(interceptor) {
+  return J.makeDispatchRecord(interceptor, false, null, !!interceptor.$isJavaScriptIndexingBehavior);
 },
 
 invokeClosure_closure: {"": "Closure;closure_0",
@@ -665,17 +683,34 @@ Closure: {"": "Object;",
   }
 },
 
-Null: {"": "Object;"},
+TypeImpl: {"": "Object;_typeName,_unmangledName",
+  toString$0: function(_) {
+    var t1, unmangledName, unmangledName0;
+    t1 = this._unmangledName;
+    if (t1 != null)
+      return t1;
+    unmangledName = this._typeName;
+    unmangledName0 = H.unmangleGlobalNameIfPreservedAnyways(unmangledName);
+    unmangledName = unmangledName0 == null ? unmangledName : unmangledName0;
+    this._unmangledName = unmangledName;
+    return unmangledName;
+  },
+  $eq: function(_, other) {
+    if (other == null)
+      return false;
+    return false;
+  }
+},
 
 applyExperimentalFixup_newGetTagDartFunction: {"": "Closure;newGetTagJSFunction_0",
   call$1: function(object) {
     return this.newGetTagJSFunction_0(object);
   }
 }}],
-["bot", "package:bot/bot.dart", , {
+["bot", "package:bot/bot.dart", , X, {
 _metaRequireArgumentNotNullOrEmpty: function(argName) {
   if (argName.length === 0)
-    throw $.wrapException(new $.InvalidOperationError("That's just sad. Give me a good argName"));
+    throw H.wrapException(new X.InvalidOperationError("That's just sad. Give me a good argName"));
 },
 
 DetailedArgumentError: {"": "ArgumentError;",
@@ -687,9 +722,9 @@ DetailedArgumentError: {"": "ArgumentError;",
   },
   DetailedArgumentError$2: function(argument, details) {
     if (this.argument.length === 0)
-      throw $.wrapException(new $.InvalidOperationError("That's just sad. Give me a valid argument"));
+      throw H.wrapException(new X.InvalidOperationError("That's just sad. Give me a valid argument"));
     if (this.details.length === 0)
-      throw $.wrapException(new $.InvalidOperationError("That's just sad. I need details!"));
+      throw H.wrapException(new X.InvalidOperationError("That's just sad. I need details!"));
   }
 },
 
@@ -699,58 +734,29 @@ NullArgumentError: {"": "DetailedArgumentError;argument,details,message"},
 
 AffineTransform: {"": "Object;_scX,_shY,_shX,_scY,_tX,_tY",
   scale$2: function(_, sx, sy) {
-    this._scX = $.$mul$n(this._scX, sx);
-    this._shY = $.$mul$n(this._shY, sx);
-    this._shX = $.$mul$n(this._shX, sy);
-    this._scY = $.$mul$n(this._scY, sy);
+    this._scX = this._scX * sx;
+    this._shY = this._shY * sx;
+    this._shX = this._shX * sy;
+    this._scY = this._scY * sy;
     return this;
   },
   concatenate$1: function(tx) {
-    var m0, m1, t1, t2, t3;
+    var m0, m1;
     m0 = this._scX;
     m1 = this._shX;
-    this._scX = $.$add$ns($.$mul$n(tx._scX, m0), $.$mul$n(tx._shY, m1));
-    this._shX = $.$add$ns($.$mul$n(tx._shX, m0), $.$mul$n(tx._scY, m1));
-    t1 = this._tX;
-    t2 = tx._tX;
-    if (typeof m0 !== "number")
-      throw $.iae(m0);
-    t3 = tx._tY;
-    if (typeof m1 !== "number")
-      throw $.iae(m1);
-    this._tX = t1 + (t2 * m0 + t3 * m1);
+    this._scX = tx._scX * m0 + tx._shY * m1;
+    this._shX = tx._shX * m0 + tx._scY * m1;
+    this._tX = this._tX + (tx._tX * m0 + tx._tY * m1);
     m0 = this._shY;
     m1 = this._scY;
-    this._shY = $.$add$ns($.$mul$n(tx._scX, m0), $.$mul$n(tx._shY, m1));
-    this._scY = $.$add$ns($.$mul$n(tx._shX, m0), $.$mul$n(tx._scY, m1));
-    t3 = this._tY;
-    t2 = tx._tX;
-    if (typeof m0 !== "number")
-      throw $.iae(m0);
-    t1 = tx._tY;
-    if (typeof m1 !== "number")
-      throw $.iae(m1);
-    this._tY = t3 + (t2 * m0 + t1 * m1);
+    this._shY = tx._scX * m0 + tx._shY * m1;
+    this._scY = tx._shX * m0 + tx._scY * m1;
+    this._tY = this._tY + (tx._tX * m0 + tx._tY * m1);
     return this;
   },
   translate$2: function(_, dx, dy) {
-    var t1, t2, t3;
-    t1 = this._tX;
-    t2 = this._scX;
-    if (typeof t2 !== "number")
-      throw $.iae(t2);
-    t3 = this._shX;
-    if (typeof t3 !== "number")
-      throw $.iae(t3);
-    this._tX = t1 + (dx * t2 + dy * t3);
-    t3 = this._tY;
-    t2 = this._shY;
-    if (typeof t2 !== "number")
-      throw $.iae(t2);
-    t1 = this._scY;
-    if (typeof t1 !== "number")
-      throw $.iae(t1);
-    this._tY = t3 + (dx * t2 + dy * t1);
+    this._tX = this._tX + (dx * this._scX + dy * this._shX);
+    this._tY = this._tY + (dx * this._shY + dy * this._scY);
     return this;
   },
   setToRotation$3: function(theta, x, y) {
@@ -769,47 +775,43 @@ AffineTransform: {"": "Object;_scX,_shY,_shX,_scY,_tX,_tY",
     return this;
   },
   $eq: function(_, other) {
-    var t1 = other == null;
-    if (t1)
+    if (other == null)
       return false;
-    if (!t1)
-      if ($.$eq(this._scX, other.get$_scX()))
-        if ($.$eq(this._shX, other.get$_shX()))
-          other.get$_tX();
+    other.get$_scX();
     return false;
   },
   toString$0: function(_) {
-    return $.JSArray_methods.join$1([this._scX, this._shY, this._shX, this._scY, this._tX, this._tY], ", ");
+    return C.JSArray_methods.join$1([this._scX, this._shY, this._shX, this._scY, this._tX, this._tY], ", ");
   },
   static: {
 AffineTransform$: function(scaleX, shearY, shearX, scaleY, translateX, translateY) {
-  return new $.AffineTransform(scaleX, shearY, shearX, scaleY, translateX, translateY);
+  return new X.AffineTransform(scaleX, shearY, shearX, scaleY, translateX, translateY);
 }}
 
 }}],
-["bot_html", "package:bot_web/bot_html.dart", , {
+["bot_html", "package:bot_web/bot_html.dart", , B, {
 CanvasUtil_transform: function(ctx, tx) {
   var t1;
-  $._metaRequireArgumentNotNullOrEmpty("ctx");
+  X._metaRequireArgumentNotNullOrEmpty("ctx");
   if (ctx == null) {
-    t1 = new $.NullArgumentError("ctx", "cannot be null", null);
+    t1 = new X.NullArgumentError("ctx", "cannot be null", null);
     t1.DetailedArgumentError$2("ctx", "cannot be null");
-    $.throwExpression(t1);
+    H.throwExpression(t1);
   }
-  $._metaRequireArgumentNotNullOrEmpty("tx");
+  X._metaRequireArgumentNotNullOrEmpty("tx");
   ctx.transform(tx._scX, tx._shY, tx._shX, tx._scY, tx._tX, tx._tY);
 }}],
-["dart._collection.dev", "dart:_collection-dev", , {
+["dart._collection.dev", "dart:_collection-dev", , H, {
 IterableMixinWorkaround_toStringIterable: function(iterable, leftDelimiter, rightDelimiter) {
   var result, i, t1;
   for (i = 0; i < $.get$IterableMixinWorkaround__toStringList().length; ++i) {
     t1 = $.get$IterableMixinWorkaround__toStringList();
     if (i >= t1.length)
-      throw $.ioore(i);
+      throw H.ioore(t1, i);
     if (t1[i] === iterable)
-      return $.S(leftDelimiter) + "..." + $.S(rightDelimiter);
+      return H.S(leftDelimiter) + "..." + H.S(rightDelimiter);
   }
-  result = $.StringBuffer$("");
+  result = P.StringBuffer$("");
   try {
     $.get$IterableMixinWorkaround__toStringList().push(iterable);
     result.write$1(leftDelimiter);
@@ -818,7 +820,7 @@ IterableMixinWorkaround_toStringIterable: function(iterable, leftDelimiter, righ
   } finally {
     t1 = $.get$IterableMixinWorkaround__toStringList();
     if (0 >= t1.length)
-      throw $.ioore(0);
+      throw H.ioore(t1, 0);
     t1.pop();
   }
   return result.get$_contents();
@@ -830,32 +832,34 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current",
     t1 = this._iterable;
     $length = t1.length;
     if (this._length !== $length)
-      throw $.wrapException(new $.ConcurrentModificationError(t1));
+      throw H.wrapException(new P.ConcurrentModificationError(t1));
     t2 = this._index;
     if (t2 >= $length) {
       this._current = null;
       return false;
     }
     if (t2 < 0)
-      throw $.ioore(t2);
+      throw H.ioore(t1, t2);
     this._current = t1[t2];
     this._index = this._index + 1;
     return true;
   }
 }}],
-["dart.core", "dart:core", , {
+["dart._js_names", "dart:_js_names", , H, {
+unmangleGlobalNameIfPreservedAnyways: function($name) {
+  return init.mangledGlobalNames[$name];
+}}],
+["dart.core", "dart:core", , P, {
 Error_safeToString: function(object) {
-  if (false)
-    return $.JSArray_methods.toString$0(object);
-  return $.Primitives_objectToString(object);
+  return H.Primitives_objectToString(object);
 },
 
 List_List: function($length) {
   if ($length == null)
     return new Array(0);
   if (typeof $length !== "number" || Math.floor($length) !== $length || $length < 0)
-    throw $.wrapException(new $.ArgumentError("Length must be a positive integer: " + $.S($length) + "."));
-  return $.Primitives_newFixedList($length);
+    throw H.wrapException(new P.ArgumentError("Length must be a positive integer: " + H.S($length) + "."));
+  return H.Primitives_newFixedList($length);
 },
 
 Error: {"": "Object;"},
@@ -869,20 +873,20 @@ NullThrownError: {"": "Error;",
 ArgumentError: {"": "Error;message>",
   toString$0: function(_) {
     if (this.get$message(this) != null)
-      return "Illegal argument(s): " + $.S(this.get$message(this));
+      return "Illegal argument(s): " + H.S(this.get$message(this));
     return "Illegal argument(s)";
   }
 },
 
 RangeError: {"": "ArgumentError;message",
   toString$0: function(_) {
-    return "RangeError: " + $.S(this.message);
+    return "RangeError: " + H.S(this.message);
   }
 },
 
 ConcurrentModificationError: {"": "Error;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.S($.Error_safeToString(this.modifiedObject)) + ".";
+    return "Concurrent modification during iteration: " + P.Error_safeToString(this.modifiedObject) + ".";
   }
 },
 
@@ -898,18 +902,24 @@ _ExceptionImplementation: {"": "Object;message",
   }
 },
 
+Null: {"": "Object;",
+  toString$0: function(_) {
+    return "null";
+  }
+},
+
 Object: {"": ";",
   $eq: function(_, other) {
     return this === other;
   },
   toString$0: function(_) {
-    return $.Primitives_objectToString(this);
+    return H.Primitives_objectToString(this);
   }
 },
 
 StringBuffer: {"": "Object;_contents<",
-  get$isEmpty: function(_) {
-    return this._contents.length === 0;
+  get$length: function(_) {
+    return this._contents.length;
   },
   write$1: function(obj) {
     if (typeof obj !== "string")
@@ -917,20 +927,18 @@ StringBuffer: {"": "Object;_contents<",
     this._contents = this._contents + obj;
   },
   write$1$bailout: function(state0, obj) {
-    var str = typeof obj === "string" ? obj : $.S(obj);
+    var str = typeof obj === "string" ? obj : H.S(obj);
     this._contents = this._contents + str;
   },
   writeAll$2: function(objects, separator) {
     var iterator, str;
-    if (typeof separator !== "string")
-      return this.writeAll$2$bailout(1, objects, separator);
-    iterator = $.get$iterator$a(objects);
+    iterator = J.get$iterator$a(objects);
     if (!iterator.moveNext$0())
       return;
-    if ($.JSString_methods.get$isEmpty(separator))
+    if (separator.length === 0)
       do {
         str = iterator._current;
-        str = typeof str === "string" ? str : $.S(str);
+        str = typeof str === "string" ? str : H.S(str);
         this._contents = this._contents + str;
       } while (iterator.moveNext$0());
     else {
@@ -938,29 +946,7 @@ StringBuffer: {"": "Object;_contents<",
       for (; iterator.moveNext$0();) {
         this._contents = this._contents + separator;
         str = iterator._current;
-        str = typeof str === "string" ? str : $.S(str);
-        this._contents = this._contents + str;
-      }
-    }
-  },
-  writeAll$2$bailout: function(state0, objects, separator) {
-    var iterator, str, t1;
-    iterator = $.get$iterator$a(objects);
-    if (!iterator.moveNext$0())
-      return;
-    if ($.get$isEmpty$as(separator))
-      do {
-        str = iterator._current;
-        str = typeof str === "string" ? str : $.S(str);
-        this._contents = this._contents + str;
-      } while (iterator.moveNext$0());
-    else {
-      this.write$1(iterator._current);
-      for (t1 = typeof separator === "string"; iterator.moveNext$0();) {
-        str = t1 ? separator : $.S(separator);
-        this._contents = this._contents + str;
-        str = iterator._current;
-        str = typeof str === "string" ? str : $.S(str);
+        str = typeof str === "string" ? str : H.S(str);
         this._contents = this._contents + str;
       }
     }
@@ -973,22 +959,22 @@ StringBuffer: {"": "Object;_contents<",
   },
   static: {
 StringBuffer$: function($content) {
-  var t1 = new $.StringBuffer("");
+  var t1 = new P.StringBuffer("");
   t1.StringBuffer$1($content);
   return t1;
 }}
 
 }}],
-["dart.dom.html", "dart:html", , {
-_HTMLElement: {"": "Element;"},
+["dart.dom.html", "dart:html", , W, {
+HtmlElement: {"": "Element;"},
 
-AnchorElement: {"": "_HTMLElement;",
+AnchorElement: {"": "HtmlElement;",
   toString$0: function(receiver) {
     return receiver.toString();
   }
 },
 
-CanvasElement: {"": "_HTMLElement;",
+CanvasElement: {"": "HtmlElement;",
   get$context2D: function(receiver) {
     return receiver.getContext("2d");
   }
@@ -1008,83 +994,54 @@ Element: {"": "Node;",
 
 EventTarget: {"": "Interceptor;"},
 
-FileException: {"": "Interceptor;",
-  toString$0: function(receiver) {
-    return receiver.toString();
-  }
-},
+FormElement: {"": "HtmlElement;length="},
 
 Node: {"": "EventTarget;",
   toString$0: function(receiver) {
     var t1 = receiver.nodeValue;
-    return t1 == null ? $.Interceptor.prototype.toString$0.call(this, receiver) : t1;
+    return t1 == null ? J.Interceptor.prototype.toString$0.call(this, receiver) : t1;
   }
-}}],
-["fract_demo.dart", "fract_demo.dart", , {
+},
+
+SelectElement: {"": "HtmlElement;length="}}],
+["fract_demo.dart", "fract_demo.dart", , E, {
 main: function() {
   var ctx, tx;
-  ctx = $.get$context2D$x(document.querySelector("#content"));
-  tx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
+  ctx = J.get$context2D$x(document.querySelector("#content"));
+  tx = X.AffineTransform$(1, 0, 0, 1, 0, 0);
   tx.scale$2(tx, 200, 200);
   tx.translate$2(tx, 0, 1.5);
-  tx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.5707963267948966, 2, 0));
-  $.CanvasUtil_transform(ctx, tx);
+  tx.concatenate$1(X.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.5707963267948966, 2, 0));
+  B.CanvasUtil_transform(ctx, tx);
   ctx.lineWidth = 0.01;
   ctx.strokeStyle = "black";
   ctx.beginPath();
-  $.drawBranch(ctx, 12);
+  E.drawBranch(ctx, 12);
   ctx.stroke();
 },
 
 drawBranch: function(ctx, levels) {
   var rightTx, t1;
-  if (typeof levels !== "number")
-    return $.drawBranch$bailout(1, ctx, levels);
   if (levels === 0)
     return;
   ctx.moveTo(0, 0);
   ctx.lineTo(1, 0);
   ctx.save();
-  rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
+  rightTx = X.AffineTransform$(1, 0, 0, 1, 0, 0);
   rightTx.translate$2(rightTx, 1, 0);
   rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(1.0471975511965976, 0, 0));
-  $.CanvasUtil_transform(ctx, rightTx);
+  rightTx.concatenate$1(X.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(1.0471975511965976, 0, 0));
+  B.CanvasUtil_transform(ctx, rightTx);
   t1 = levels - 1;
-  $.drawBranch(ctx, t1);
+  E.drawBranch(ctx, t1);
   ctx.restore();
   ctx.save();
-  rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
+  rightTx = X.AffineTransform$(1, 0, 0, 1, 0, 0);
   rightTx.translate$2(rightTx, 1, 0);
   rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.0471975511965976, 0, 0));
-  $.CanvasUtil_transform(ctx, rightTx);
-  $.drawBranch(ctx, t1);
-  ctx.restore();
-},
-
-drawBranch$bailout: function(state0, ctx, levels) {
-  var t1, rightTx;
-  t1 = $.getInterceptor(levels);
-  if (t1.$eq(levels, 0))
-    return;
-  ctx.moveTo(0, 0);
-  ctx.lineTo(1, 0);
-  ctx.save();
-  rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
-  rightTx.translate$2(rightTx, 1, 0);
-  rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(1.0471975511965976, 0, 0));
-  $.CanvasUtil_transform(ctx, rightTx);
-  $.drawBranch(ctx, t1.$sub(levels, 1));
-  ctx.restore();
-  ctx.save();
-  rightTx = $.AffineTransform$(1, 0, 0, 1, 0, 0);
-  rightTx.translate$2(rightTx, 1, 0);
-  rightTx.scale$2(rightTx, 0.62, 0.62);
-  rightTx.concatenate$1($.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.0471975511965976, 0, 0));
-  $.CanvasUtil_transform(ctx, rightTx);
-  $.drawBranch(ctx, t1.$sub(levels, 1));
+  rightTx.concatenate$1(X.AffineTransform$(1, 0, 0, 1, 0, 0).setToRotation$3(-1.0471975511965976, 0, 0));
+  B.CanvasUtil_transform(ctx, rightTx);
+  E.drawBranch(ctx, t1);
   ctx.restore();
 }},
 1],
@@ -1092,192 +1049,227 @@ drawBranch$bailout: function(state0, ctx, levels) {
 Isolate.$finishClasses($$, $, null);
 $$ = null;
 
-$.wrapException$closure = new $.Closure$wrapException($.wrapException, "wrapException$closure");
-$.DartError_toStringWrapper$closure = new $.Closure$toStringWrapper($.DartError_toStringWrapper, "DartError_toStringWrapper$closure");
-$.invokeClosure$closure = new $.Closure$invokeClosure($.invokeClosure, "invokeClosure$closure");
-$.typeNameInChrome$closure = new $.Closure$typeNameInChrome($.typeNameInChrome, "typeNameInChrome$closure");
-$.typeNameInSafari$closure = new $.Closure$typeNameInSafari($.typeNameInSafari, "typeNameInSafari$closure");
-$.typeNameInOpera$closure = new $.Closure$typeNameInOpera($.typeNameInOpera, "typeNameInOpera$closure");
-$.typeNameInFirefox$closure = new $.Closure$typeNameInFirefox($.typeNameInFirefox, "typeNameInFirefox$closure");
-$.typeNameInIE$closure = new $.Closure$typeNameInIE($.typeNameInIE, "typeNameInIE$closure");
-$.constructorNameFallback$closure = new $.Closure$constructorNameFallback($.constructorNameFallback, "constructorNameFallback$closure");
-$.callDartFunctionWith1Arg$closure = new $.Closure$callDartFunctionWith1Arg($.callDartFunctionWith1Arg, "callDartFunctionWith1Arg$closure");
-$.getInterceptor = function(receiver) {
+// Static function getters
+init.globalFunctions.toStringWrapper$closure = H.toStringWrapper$closure = new H.Closure$toStringWrapper(H.toStringWrapper, "toStringWrapper$closure");
+init.globalFunctions.invokeClosure$closure = H.invokeClosure$closure = new H.Closure$invokeClosure(H.invokeClosure, "invokeClosure$closure");
+init.globalFunctions.typeNameInChrome$closure = H.typeNameInChrome$closure = new H.Closure$typeNameInChrome(H.typeNameInChrome, "typeNameInChrome$closure");
+init.globalFunctions.typeNameInSafari$closure = H.typeNameInSafari$closure = new H.Closure$typeNameInSafari(H.typeNameInSafari, "typeNameInSafari$closure");
+init.globalFunctions.typeNameInOpera$closure = H.typeNameInOpera$closure = new H.Closure$typeNameInOpera(H.typeNameInOpera, "typeNameInOpera$closure");
+init.globalFunctions.typeNameInFirefox$closure = H.typeNameInFirefox$closure = new H.Closure$typeNameInFirefox(H.typeNameInFirefox, "typeNameInFirefox$closure");
+init.globalFunctions.typeNameInIE$closure = H.typeNameInIE$closure = new H.Closure$typeNameInIE(H.typeNameInIE, "typeNameInIE$closure");
+init.globalFunctions.constructorNameFallback$closure = H.constructorNameFallback$closure = new H.Closure$constructorNameFallback(H.constructorNameFallback, "constructorNameFallback$closure");
+init.globalFunctions.callDartFunctionWith1Arg$closure = H.callDartFunctionWith1Arg$closure = new H.Closure$callDartFunctionWith1Arg(H.callDartFunctionWith1Arg, "callDartFunctionWith1Arg$closure");
+// Runtime type support
+// getInterceptor methods
+J.getInterceptor = function(receiver) {
   if (typeof receiver == "number") {
     if (Math.floor(receiver) == receiver)
-      return $.JSInt.prototype;
-    return $.JSDouble.prototype;
+      return J.JSInt.prototype;
+    return J.JSDouble.prototype;
   }
   if (typeof receiver == "string")
-    return $.JSString.prototype;
+    return J.JSString.prototype;
   if (receiver == null)
-    return $.JSNull.prototype;
+    return J.JSNull.prototype;
   if (typeof receiver == "boolean")
-    return $.JSBool.prototype;
+    return J.JSBool.prototype;
   if (receiver.constructor == Array)
-    return $.JSArray.prototype;
+    return J.JSArray.prototype;
   if (typeof receiver != "object")
     return receiver;
-  if (receiver instanceof $.Object)
+  if (receiver instanceof P.Object)
     return receiver;
-  return $.getNativeInterceptor(receiver);
+  return J.getNativeInterceptor(receiver);
 };
-$.getInterceptor$a = function(receiver) {
+J.getInterceptor$a = function(receiver) {
   if (receiver == null)
     return receiver;
   if (receiver.constructor == Array)
-    return $.JSArray.prototype;
-  if (!(receiver instanceof $.Object))
-    return $.UnknownJavaScriptObject.prototype;
+    return J.JSArray.prototype;
+  if (!(receiver instanceof P.Object))
+    return J.UnknownJavaScriptObject.prototype;
   return receiver;
 };
-$.getInterceptor$as = function(receiver) {
+J.getInterceptor$asx = function(receiver) {
   if (typeof receiver == "string")
-    return $.JSString.prototype;
+    return J.JSString.prototype;
   if (receiver == null)
     return receiver;
   if (receiver.constructor == Array)
-    return $.JSArray.prototype;
-  if (!(receiver instanceof $.Object))
-    return $.UnknownJavaScriptObject.prototype;
-  return receiver;
-};
-$.getInterceptor$n = function(receiver) {
-  if (typeof receiver == "number")
-    return $.JSNumber.prototype;
-  if (receiver == null)
+    return J.JSArray.prototype;
+  if (typeof receiver != "object")
     return receiver;
-  if (!(receiver instanceof $.Object))
-    return $.UnknownJavaScriptObject.prototype;
-  return receiver;
+  if (receiver instanceof P.Object)
+    return receiver;
+  return J.getNativeInterceptor(receiver);
 };
-$.getInterceptor$ns = function(receiver) {
-  if (typeof receiver == "number")
-    return $.JSNumber.prototype;
+J.getInterceptor$s = function(receiver) {
   if (typeof receiver == "string")
-    return $.JSString.prototype;
+    return J.JSString.prototype;
   if (receiver == null)
     return receiver;
-  if (!(receiver instanceof $.Object))
-    return $.UnknownJavaScriptObject.prototype;
+  if (!(receiver instanceof P.Object))
+    return J.UnknownJavaScriptObject.prototype;
   return receiver;
 };
-$.getInterceptor$s = function(receiver) {
-  if (typeof receiver == "string")
-    return $.JSString.prototype;
-  if (receiver == null)
-    return receiver;
-  if (!(receiver instanceof $.Object))
-    return $.UnknownJavaScriptObject.prototype;
-  return receiver;
-};
-$.getInterceptor$x = function(receiver) {
+J.getInterceptor$x = function(receiver) {
   if (receiver == null)
     return receiver;
   if (typeof receiver != "object")
     return receiver;
-  if (receiver instanceof $.Object)
+  if (receiver instanceof P.Object)
     return receiver;
-  return $.getNativeInterceptor(receiver);
+  return J.getNativeInterceptor(receiver);
 };
-$.C_UnknownJavaScriptObject = new $.UnknownJavaScriptObject();
-$.JSArray_methods = $.JSArray.prototype;
-$.JSString_methods = $.JSString.prototype;
-$.dispatchPropertyName = null;
+C.C_UnknownJavaScriptObject = new J.UnknownJavaScriptObject();
+C.JSArray_methods = J.JSArray.prototype;
 $.interceptorsByTag = null;
 $.leafTags = null;
-$.$add$ns = function(receiver, a0) {
-  if (typeof receiver == "number" && typeof a0 == "number")
-    return receiver + a0;
-  return $.getInterceptor$ns(receiver).$add(receiver, a0);
-};
-$.$eq = function(receiver, a0) {
+$.interceptorToTag = null;
+J.$eq = function(receiver, a0) {
   if (receiver == null)
     return a0 == null;
   if (typeof receiver != "object")
     return a0 != null && receiver === a0;
-  return $.getInterceptor(receiver).$eq(receiver, a0);
+  return J.getInterceptor(receiver).$eq(receiver, a0);
 };
-$.$mul$n = function(receiver, a0) {
-  if (typeof receiver == "number" && typeof a0 == "number")
-    return receiver * a0;
-  return $.getInterceptor$n(receiver).$mul(receiver, a0);
+J.get$context2D$x = function(receiver) {
+  return J.getInterceptor$x(receiver).get$context2D(receiver);
 };
-$.get$context2D$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$context2D(receiver);
+J.get$iterator$a = function(receiver) {
+  return J.getInterceptor$a(receiver).get$iterator(receiver);
 };
-$.get$isEmpty$as = function(receiver) {
-  return $.getInterceptor$as(receiver).get$isEmpty(receiver);
+J.get$length$asx = function(receiver) {
+  return J.getInterceptor$asx(receiver).get$length(receiver);
 };
-$.get$iterator$a = function(receiver) {
-  return $.getInterceptor$a(receiver).get$iterator(receiver);
+J.toString$0 = function(receiver) {
+  return J.getInterceptor(receiver).toString$0(receiver);
 };
-$.toString$0 = function(receiver) {
-  return $.getInterceptor(receiver).toString$0(receiver);
-};
+$.mapTypeToInterceptor = [];
 Isolate.$lazy($, "getTypeNameOf", "getTypeNameOf", "get$getTypeNameOf", function() {
-  return $.getFunctionForTypeNameOf();
+  return H.getFunctionForTypeNameOf();
 });
 Isolate.$lazy($, "_toStringList", "IterableMixinWorkaround__toStringList", "get$IterableMixinWorkaround__toStringList", function() {
-  return $.List_List(null);
+  return P.List_List(null);
 });
 // Native classes
-$.defineNativeMethods("AutocompleteErrorEvent|CanvasGradient|CanvasPattern|CanvasRenderingContext|CanvasRenderingContext2D|DOMError|ErrorEvent|Event|FileError|MediaError|MediaKeyError|NavigatorUserMediaError|PositionError|SQLError|SQLException|SVGAnimatedLength|SVGAnimatedLengthList|SVGAnimatedNumber|SVGAnimatedNumberList|SVGAnimatedTransformList|SpeechRecognitionError", $.Interceptor);
+H.defineNativeMethods("AutocompleteErrorEvent|CanvasGradient|CanvasPattern|CanvasRenderingContext|CanvasRenderingContext2D|DOMError|ErrorEvent|Event|FileError|MediaError|MediaKeyError|NavigatorUserMediaError|PositionError|SQLError|SVGAnimatedLength|SVGAnimatedLengthList|SVGAnimatedNumber|SVGAnimatedNumberList|SVGAnimatedTransformList|SpeechRecognitionError", J.Interceptor);
 
-$.defineNativeMethods("HTMLAreaElement|HTMLAudioElement|HTMLBRElement|HTMLBaseElement|HTMLBodyElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFormElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMediaElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement|HTMLVideoElement", $._HTMLElement);
+H.defineNativeMethods("HTMLAppletElement|HTMLAreaElement|HTMLAudioElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMediaElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement|HTMLVideoElement", W.HtmlElement);
 
-$.defineNativeMethodsNonleaf("HTMLElement", $._HTMLElement);
+H.defineNativeMethodsNonleaf("HTMLElement", W.HtmlElement);
 
-$.defineNativeMethods("HTMLAnchorElement", $.AnchorElement);
+H.defineNativeMethods("HTMLAnchorElement", W.AnchorElement);
 
-$.defineNativeMethods("HTMLCanvasElement", $.CanvasElement);
+H.defineNativeMethods("HTMLCanvasElement", W.CanvasElement);
 
-$.defineNativeMethods("DOMException", $.DomException);
+H.defineNativeMethods("DOMException", W.DomException);
 
-$.defineNativeMethods("SVGAElement|SVGAltGlyphElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGDefsElement|SVGDescElement|SVGElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDistantLightElement|SVGFEFloodElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFEPointLightElement|SVGFESpecularLightingElement|SVGFESpotLightElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGForeignObjectElement|SVGGElement|SVGGradientElement|SVGImageElement|SVGLineElement|SVGLinearGradientElement|SVGMarkerElement|SVGMaskElement|SVGMetadataElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRadialGradientElement|SVGRectElement|SVGSVGElement|SVGScriptElement|SVGSetElement|SVGStopElement|SVGStyleElement|SVGStyledElement|SVGSwitchElement|SVGSymbolElement|SVGTSpanElement|SVGTextContentElement|SVGTextElement|SVGTextPathElement|SVGTextPositioningElement|SVGTitleElement|SVGUseElement|SVGViewElement", $.Element);
+H.defineNativeMethods("SVGAElement|SVGAltGlyphDefElement|SVGAltGlyphElement|SVGAltGlyphItemElement|SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGCursorElement|SVGDefsElement|SVGDescElement|SVGElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFEPointLightElement|SVGFESpecularLightingElement|SVGFESpotLightElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGForeignObjectElement|SVGGElement|SVGGlyphElement|SVGGlyphRefElement|SVGGradientElement|SVGGraphicsElement|SVGHKernElement|SVGImageElement|SVGLineElement|SVGLinearGradientElement|SVGMPathElement|SVGMarkerElement|SVGMaskElement|SVGMetadataElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRadialGradientElement|SVGRectElement|SVGSVGElement|SVGScriptElement|SVGSetElement|SVGStopElement|SVGStyleElement|SVGSwitchElement|SVGSymbolElement|SVGTRefElement|SVGTSpanElement|SVGTextContentElement|SVGTextElement|SVGTextPathElement|SVGTextPositioningElement|SVGTitleElement|SVGUseElement|SVGVKernElement|SVGViewElement", W.Element);
 
-$.defineNativeMethodsNonleaf("Element", $.Element);
+H.defineNativeMethodsNonleaf("Element", W.Element);
 
-$.defineNativeMethodsNonleaf("EventTarget", $.EventTarget);
+H.defineNativeMethodsNonleaf("EventTarget", W.EventTarget);
 
-$.defineNativeMethods("FileException", $.FileException);
+H.defineNativeMethods("HTMLFormElement", W.FormElement);
 
-$.defineNativeMethods("Document|HTMLDocument", $.Node);
+H.defineNativeMethods("Document|HTMLDocument", W.Node);
 
-$.defineNativeMethodsNonleaf("Node", $.Node);
+H.defineNativeMethodsNonleaf("Node", W.Node);
+
+H.defineNativeMethods("HTMLSelectElement", W.SelectElement);
 
 
+init.functionAliases = {};
+;
 init.metadata = [];
 $ = null;
 Isolate = Isolate.$finishIsolateConstructor(Isolate);
 $ = new Isolate();
-$.initializeDispatchProperty(function(a) {
-  $.getDispatchProperty = a;
-}, "___dart_dispatch_record_ZxYxX_0_", $.PlainJavaScriptObject.prototype);
-// BEGIN invoke [main].
-if (typeof document !== "undefined" && document.readyState !== "complete") {
-  document.addEventListener("readystatechange", function () {
-    if (document.readyState == "complete") {
-      if (typeof dartMainRunner === "function") {
-        dartMainRunner(function() { $.main(); });
-      } else {
-        $.main();
-      }
-    }
-  }, false);
-} else {
-  if (typeof dartMainRunner === "function") {
-    dartMainRunner(function() { $.main(); });
-  } else {
-    $.main();
-  }
+function convertToFastObject(properties) {
+  function MyClass() {};
+  MyClass.prototype = properties;
+  new MyClass();
+  return properties;
 }
+A = convertToFastObject(A);
+B = convertToFastObject(B);
+C = convertToFastObject(C);
+D = convertToFastObject(D);
+E = convertToFastObject(E);
+F = convertToFastObject(F);
+G = convertToFastObject(G);
+H = convertToFastObject(H);
+J = convertToFastObject(J);
+K = convertToFastObject(K);
+L = convertToFastObject(L);
+M = convertToFastObject(M);
+N = convertToFastObject(N);
+O = convertToFastObject(O);
+P = convertToFastObject(P);
+Q = convertToFastObject(Q);
+R = convertToFastObject(R);
+S = convertToFastObject(S);
+T = convertToFastObject(T);
+U = convertToFastObject(U);
+V = convertToFastObject(V);
+W = convertToFastObject(W);
+X = convertToFastObject(X);
+Y = convertToFastObject(Y);
+Z = convertToFastObject(Z);
+!function() {
+  var objectProto = Object.prototype;
+  for (var i = 0;; i++) {
+    var property = "___dart_dispatch_record_ZxYxX_0_";
+    if (i > 0)
+      property = rootProperty + "_" + i;
+    if (!(property in objectProto))
+      return init.dispatchPropertyName = property;
+  }
+}();
+// BEGIN invoke [main].
+;(function (callback) {
+  if (typeof document === "undefined") {
+    callback(null);
+    return;
+  }
+  if (document.currentScript) {
+    callback(document.currentScript);
+    return;
+  }
+
+  var scripts = document.scripts;
+  function onLoad(event) {
+    for (var i = 0; i < scripts.length; ++i) {
+      scripts[i].removeEventListener("load", onLoad, false);
+    }
+    callback(event.target);
+  }
+  for (var i = 0; i < scripts.length; ++i) {
+    scripts[i].addEventListener("load", onLoad, false);
+  }
+})(function(currentScript) {
+  init.currentScript = currentScript;
+
+  if (typeof dartMainRunner === "function") {
+    dartMainRunner(function() { E.main(); });
+  } else {
+    E.main();
+  }
+});
 // END invoke [main].
 function init() {
   Isolate.$isolateProperties = {};
-  function generateAccessor(field, prototype) {
+  function generateAccessor(field, accessors, cls) {
     var len = field.length;
     var code = field.charCodeAt(len - 1);
+    var reflectable = false;
+    if (code == 45) {
+      len--;
+      code = field.charCodeAt(len - 1);
+      field = field.substring(0, len);
+      reflectable = true;
+    }
     code = code >= 60 && code <= 64 ? code - 59 : code >= 123 && code <= 126 ? code - 117 : code >= 37 && code <= 43 ? code - 27 : 0;
     if (code) {
       var getterCode = code & 3;
@@ -1292,53 +1284,84 @@ function init() {
         var args = getterCode & 2 ? "receiver" : "";
         var receiver = getterCode & 1 ? "this" : "receiver";
         var body = "return " + receiver + "." + field;
-        prototype["get$" + accessorName] = new Function(args, body);
+        var property = cls + ".prototype.get$" + accessorName + "=";
+        var fn = "function(" + args + "){" + body + "}";
+        if (reflectable)
+          accessors.push(property + "$reflectable(" + fn + ");\n");
+        else
+          accessors.push(property + fn + ";\n");
       }
       if (setterCode) {
         var args = setterCode & 2 ? "receiver, value" : "value";
         var receiver = setterCode & 1 ? "this" : "receiver";
         var body = receiver + "." + field + " = value";
-        prototype["set$" + accessorName] = new Function(args, body);
+        var property = cls + ".prototype.set$" + accessorName + "=";
+        var fn = "function(" + args + "){" + body + "}";
+        if (reflectable)
+          accessors.push(property + "$reflectable(" + fn + ");\n");
+        else
+          accessors.push(property + fn + ";\n");
       }
     }
     return field;
   }
   Isolate.$isolateProperties.$generateAccessor = generateAccessor;
-  function defineClass(name, cls, fields, prototype) {
-    var constructor;
-    if (typeof fields == "function") {
-      constructor = fields;
-    } else {
-      var str = "function " + cls + "(";
-      var body = "";
-      for (var i = 0; i < fields.length; i++) {
-        if (i != 0)
-          str += ", ";
-        var field = generateAccessor(fields[i], prototype);
-        var parameter = "parameter_" + field;
-        str += parameter;
-        body += "this." + field + " = " + parameter + ";\n";
-      }
-      str += ") {" + body + "}\nreturn " + cls;
-      constructor = new Function(str)();
+  function defineClass(name, cls, fields) {
+    var accessors = [];
+    var str = "function " + cls + "(";
+    var body = "";
+    for (var i = 0; i < fields.length; i++) {
+      if (i != 0)
+        str += ", ";
+      var field = generateAccessor(fields[i], accessors, cls);
+      var parameter = "parameter_" + field;
+      str += parameter;
+      body += "this." + field + " = " + parameter + ";\n";
     }
-    constructor.prototype = prototype;
-    constructor.builtin$cls = name;
-    return constructor;
+    str += ") {\n" + body + "}\n";
+    str += cls + ".builtin$cls=\"" + name + "\";\n";
+    str += "$desc=$collectedClasses." + cls + ";\n";
+    str += "if($desc instanceof Array) $desc = $desc[1];\n";
+    str += cls + ".prototype = $desc;\n";
+    if (typeof defineClass.name != "string") {
+      str += cls + ".name=\"" + cls + "\";\n";
+    }
+    str += accessors.join("");
+    return str;
   }
-  var supportsProto = false;
-  var tmp = defineClass("c", "c", ["f<"], {}).prototype;
-  if (tmp.__proto__) {
-    tmp.__proto__ = {};
-    if (typeof tmp.get$f != "undefined")
-      supportsProto = true;
-  }
+  var inheritFrom = function() {
+    function tmp() {
+    }
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    return function(constructor, superConstructor) {
+      tmp.prototype = superConstructor.prototype;
+      var object = new tmp();
+      var properties = constructor.prototype;
+      for (var member in properties)
+        if (hasOwnProperty.call(properties, member))
+          object[member] = properties[member];
+      object.constructor = constructor;
+      constructor.prototype = object;
+      return object;
+    };
+  }();
   Isolate.$finishClasses = function(collectedClasses, isolateProperties, existingIsolateProperties) {
     var pendingClasses = {};
+    if (!init.allClasses)
+      init.allClasses = {};
+    var allClasses = init.allClasses;
     var hasOwnProperty = Object.prototype.hasOwnProperty;
+    if (typeof dart_precompiled == "function") {
+      var constructors = dart_precompiled(collectedClasses);
+    } else {
+      var combinedConstructorFunction = "function $reflectable(fn){fn.$reflectable=1;return fn};\n" + "var $desc;\n";
+      var constructorsList = [];
+    }
     for (var cls in collectedClasses) {
       if (hasOwnProperty.call(collectedClasses, cls)) {
         var desc = collectedClasses[cls];
+        if (desc instanceof Array)
+          desc = desc[1];
         var classData = desc[""], supr, name = cls, fields = classData;
         if (typeof classData == "string") {
           var split = classData.split("/");
@@ -1347,21 +1370,35 @@ function init() {
             fields = split[1];
           }
         }
-        if (typeof fields == "string") {
-          var s = fields.split(";");
-          fields = s[1] == "" ? [] : s[1].split(",");
-          supr = s[0];
-        } else {
-          supr = desc.super;
-          if (!!desc.$name)
-            name = desc.$name;
+        var s = fields.split(";");
+        fields = s[1] == "" ? [] : s[1].split(",");
+        supr = s[0];
+        if (typeof dart_precompiled != "function") {
+          combinedConstructorFunction += defineClass(name, cls, fields);
+          constructorsList.push(cls);
         }
-        var constructor = defineClass(name, cls, fields, desc);
-        isolateProperties[cls] = constructor;
         if (supr)
           pendingClasses[cls] = supr;
       }
     }
+    if (typeof dart_precompiled != "function") {
+      combinedConstructorFunction += "return [\n  " + constructorsList.join(",\n  ") + "\n]";
+      var constructors = new Function("$collectedClasses", combinedConstructorFunction)(collectedClasses);
+      combinedConstructorFunction = null;
+    }
+    for (var i = 0; i < constructors.length; i++) {
+      var constructor = constructors[i];
+      var cls = constructor.name;
+      var desc = collectedClasses[cls];
+      var globalObject = isolateProperties;
+      if (desc instanceof Array) {
+        globalObject = desc[0] || isolateProperties;
+        desc = desc[1];
+      }
+      allClasses[cls] = constructor;
+      globalObject[cls] = constructor;
+    }
+    constructors = null;
     var finishedClasses = {};
     function finishClass(cls) {
       var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -1372,35 +1409,16 @@ function init() {
       if (!superclass || typeof superclass != "string")
         return;
       finishClass(superclass);
-      var constructor = isolateProperties[cls];
-      var superConstructor = isolateProperties[superclass];
+      var constructor = allClasses[cls];
+      var superConstructor = allClasses[superclass];
       if (!superConstructor)
         superConstructor = existingIsolateProperties[superclass];
-      var prototype = constructor.prototype;
-      if (supportsProto) {
-        prototype.__proto__ = superConstructor.prototype;
-        prototype.constructor = constructor;
-      } else {
-        function tmp() {
-        }
-        tmp.prototype = superConstructor.prototype;
-        var newPrototype = new tmp();
-        constructor.prototype = newPrototype;
-        newPrototype.constructor = constructor;
-        for (var member in prototype) {
-          if (!member)
-            continue;
-          if (hasOwnProperty.call(prototype, member)) {
-            newPrototype[member] = prototype[member];
-          }
-        }
-      }
+      prototype = inheritFrom(constructor, superConstructor);
     }
     for (var cls in pendingClasses)
       finishClass(cls);
   };
   Isolate.$lazy = function(prototype, staticName, fieldName, getterName, lazyValue) {
-    var getter = new Function("{ return this." + fieldName + ";}");
     var sentinelUndefined = {};
     var sentinelInProgress = {};
     prototype[fieldName] = sentinelUndefined;
@@ -1420,34 +1438,33 @@ function init() {
           }
         } else {
           if (result === sentinelInProgress)
-            $.throwCyclicInit(staticName);
+            H.throwCyclicInit(staticName);
         }
         return result;
       } finally {
-        $[getterName] = getter;
+        $[getterName] = function() {
+          return this[fieldName];
+        };
       }
     };
   };
   Isolate.$finishIsolateConstructor = function(oldIsolate) {
     var isolateProperties = oldIsolate.$isolateProperties;
-    isolateProperties.$currentScript = typeof document == "object" ? document.currentScript || document.scripts[document.scripts.length - 1] : null;
-    var isolatePrototype = oldIsolate.prototype;
-    var str = "{\n";
-    str += "var properties = arguments.callee.$isolateProperties;\n";
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
-    for (var staticName in isolateProperties) {
-      if (hasOwnProperty.call(isolateProperties, staticName)) {
-        str += "this." + staticName + "= properties." + staticName + ";\n";
+    function Isolate() {
+      var hasOwnProperty = Object.prototype.hasOwnProperty;
+      for (var staticName in isolateProperties)
+        if (hasOwnProperty.call(isolateProperties, staticName))
+          this[staticName] = isolateProperties[staticName];
+      function ForceEfficientMap() {
       }
+      ForceEfficientMap.prototype = this;
+      new ForceEfficientMap();
     }
-    str += "}\n";
-    var newIsolate = new Function(str);
-    newIsolate.prototype = isolatePrototype;
-    isolatePrototype.constructor = newIsolate;
-    newIsolate.$isolateProperties = isolateProperties;
-    newIsolate.makeConstantList = oldIsolate.makeConstantList;
-    newIsolate.$finishClasses = oldIsolate.$finishClasses;
-    return newIsolate;
+    Isolate.prototype = oldIsolate.prototype;
+    Isolate.prototype.constructor = Isolate;
+    Isolate.$isolateProperties = isolateProperties;
+    Isolate.$finishClasses = oldIsolate.$finishClasses;
+    return Isolate;
   };
 }
 })()
