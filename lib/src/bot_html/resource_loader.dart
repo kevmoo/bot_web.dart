@@ -96,15 +96,11 @@ abstract class ResourceLoader<T> {
     throw error;
   }
 
-  void _onProgress(_ResourceEntry<T> entry, HttpRequestProgressEvent args) {
+  void _onProgress(_ResourceEntry<T> entry, ProgressEvent args) {
     assert(args.type == 'progress');
     assert(args.lengthComputable);
 
-    // DARTBUG: sanity checks for http://code.google.com/p/dart/issues/detail?id=5373
-    assert(args.totalSize == args.total);
-    assert(args.position == args.loaded);
-
-    if(entry.updateProgress(args.loaded, args.totalSize)) {
+    if(entry.updateProgress(args.loaded, args.total)) {
       _progressEvent.add(EventArgs.empty);
     }
   }
