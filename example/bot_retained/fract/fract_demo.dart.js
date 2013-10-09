@@ -64,24 +64,14 @@ $ = Isolate.$isolateProperties;
 var $$ = {};
 
 // Native classes
-// Bound closures
-$$.Closure$toStringWrapper = [H, {"": "Closure;call$0,$name"}];
+// Method closures
+$$.Closure$0 = [H, {"": "Closure;call$0,$name"}];
 
-$$.Closure$invokeClosure = [H, {"": "Closure;call$5,$name"}];
+$$.Closure$7 = [H, {"": "Closure;call$7,$name"}];
 
-$$.Closure$typeNameInChrome = [H, {"": "Closure;call$1,$name"}];
+$$.Closure$1 = [H, {"": "Closure;call$1,$name"}];
 
-$$.Closure$typeNameInSafari = [H, {"": "Closure;call$1,$name"}];
-
-$$.Closure$typeNameInOpera = [H, {"": "Closure;call$1,$name"}];
-
-$$.Closure$typeNameInFirefox = [H, {"": "Closure;call$1,$name"}];
-
-$$.Closure$typeNameInIE = [H, {"": "Closure;call$1,$name"}];
-
-$$.Closure$constructorNameFallback = [H, {"": "Closure;call$1,$name"}];
-
-$$.Closure$callDartFunctionWith1Arg = [H, {"": "Closure;call$2,$name"}];
+$$.Closure$2 = [H, {"": "Closure;call$2,$name"}];
 
 (function (reflectionData) {
   function map(x){x={x:x};delete x.x;return x}
@@ -215,7 +205,7 @@ JSBool: {"": "bool/Interceptor;",
 
 JSNull: {"": "Interceptor;",
   $eq: function(receiver, other) {
-    return null == other;
+    return false;
   },
   toString$0: function(receiver) {
     return "null";
@@ -399,7 +389,7 @@ throwExpression: function(ex) {
   throw H.wrapException(ex);
 },
 
-invokeClosure: function(closure, isolate, numberOfArguments, arg1, arg2) {
+invokeClosure: function(closure, isolate, numberOfArguments, arg1, arg2, arg3, arg4) {
   var t1 = J.getInterceptor(numberOfArguments);
   if (t1.$eq(numberOfArguments, 0))
     return new H.invokeClosure_closure(closure).call$0();
@@ -407,6 +397,10 @@ invokeClosure: function(closure, isolate, numberOfArguments, arg1, arg2) {
     return new H.invokeClosure_closure0(closure, arg1).call$0();
   else if (t1.$eq(numberOfArguments, 2))
     return new H.invokeClosure_closure1(closure, arg1, arg2).call$0();
+  else if (t1.$eq(numberOfArguments, 3))
+    return new H.invokeClosure_closure2(closure, arg1, arg2, arg3).call$0();
+  else if (t1.$eq(numberOfArguments, 4))
+    return new H.invokeClosure_closure3(closure, arg1, arg2, arg3, arg4).call$0();
   else
     throw H.wrapException(new P._ExceptionImplementation("Unsupported number of arguments for wrapped closure"));
 },
@@ -418,7 +412,7 @@ convertDartClosureToJS: function(closure, arity) {
   $function = closure.$identity;
   if (!!$function)
     return $function;
-  $function = (function ($2, $3) { return function($0, $1) { return $3(closure, $2, arity, $0, $1) }})($, H.invokeClosure$closure.call$5);
+  $function = (function(closure, arity, context, invoke) {  return function(a1, a2, a3, a4) {     return invoke(closure, context, arity, a1, a2, a3, a4);  };})(closure,arity,$,H.invokeClosure$closure.call$7);
   closure.$identity = $function;
   return $function;
 },
@@ -677,28 +671,21 @@ invokeClosure_closure1: {"": "Closure;closure_3,arg1_4,arg2_5",
   }
 },
 
-Closure: {"": "Object;",
-  toString$0: function(_) {
-    return "Closure";
+invokeClosure_closure2: {"": "Closure;closure_6,arg1_7,arg2_8,arg3_9",
+  call$0: function() {
+    return this.closure_6.call$3(this.arg1_7, this.arg2_8, this.arg3_9);
   }
 },
 
-TypeImpl: {"": "Object;_typeName,_unmangledName",
+invokeClosure_closure3: {"": "Closure;closure_10,arg1_11,arg2_12,arg3_13,arg4_14",
+  call$0: function() {
+    return this.closure_10.call$4(this.arg1_11, this.arg2_12, this.arg3_13, this.arg4_14);
+  }
+},
+
+Closure: {"": "Object;",
   toString$0: function(_) {
-    var t1, unmangledName, unmangledName0;
-    t1 = this._unmangledName;
-    if (t1 != null)
-      return t1;
-    unmangledName = this._typeName;
-    unmangledName0 = H.unmangleGlobalNameIfPreservedAnyways(unmangledName);
-    unmangledName = unmangledName0 == null ? unmangledName : unmangledName0;
-    this._unmangledName = unmangledName;
-    return unmangledName;
-  },
-  $eq: function(_, other) {
-    if (other == null)
-      return false;
-    return false;
+    return "Closure";
   }
 },
 
@@ -775,8 +762,6 @@ AffineTransform: {"": "Object;_scX,_shY,_shX,_scY,_tX,_tY",
     return this;
   },
   $eq: function(_, other) {
-    if (other == null)
-      return false;
     other.get$_scX();
     return false;
   },
@@ -844,10 +829,6 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current",
     this._index = this._index + 1;
     return true;
   }
-}}],
-["dart._js_names", "dart:_js_names", , H, {
-unmangleGlobalNameIfPreservedAnyways: function($name) {
-  return init.mangledGlobalNames[$name];
 }}],
 ["dart.core", "dart:core", , P, {
 Error_safeToString: function(object) {
@@ -1050,15 +1031,15 @@ Isolate.$finishClasses($$, $, null);
 $$ = null;
 
 // Static function getters
-init.globalFunctions.toStringWrapper$closure = H.toStringWrapper$closure = new H.Closure$toStringWrapper(H.toStringWrapper, "toStringWrapper$closure");
-init.globalFunctions.invokeClosure$closure = H.invokeClosure$closure = new H.Closure$invokeClosure(H.invokeClosure, "invokeClosure$closure");
-init.globalFunctions.typeNameInChrome$closure = H.typeNameInChrome$closure = new H.Closure$typeNameInChrome(H.typeNameInChrome, "typeNameInChrome$closure");
-init.globalFunctions.typeNameInSafari$closure = H.typeNameInSafari$closure = new H.Closure$typeNameInSafari(H.typeNameInSafari, "typeNameInSafari$closure");
-init.globalFunctions.typeNameInOpera$closure = H.typeNameInOpera$closure = new H.Closure$typeNameInOpera(H.typeNameInOpera, "typeNameInOpera$closure");
-init.globalFunctions.typeNameInFirefox$closure = H.typeNameInFirefox$closure = new H.Closure$typeNameInFirefox(H.typeNameInFirefox, "typeNameInFirefox$closure");
-init.globalFunctions.typeNameInIE$closure = H.typeNameInIE$closure = new H.Closure$typeNameInIE(H.typeNameInIE, "typeNameInIE$closure");
-init.globalFunctions.constructorNameFallback$closure = H.constructorNameFallback$closure = new H.Closure$constructorNameFallback(H.constructorNameFallback, "constructorNameFallback$closure");
-init.globalFunctions.callDartFunctionWith1Arg$closure = H.callDartFunctionWith1Arg$closure = new H.Closure$callDartFunctionWith1Arg(H.callDartFunctionWith1Arg, "callDartFunctionWith1Arg$closure");
+init.globalFunctions.toStringWrapper$closure = H.toStringWrapper$closure = new H.Closure$0(H.toStringWrapper, "toStringWrapper$closure");
+init.globalFunctions.invokeClosure$closure = H.invokeClosure$closure = new H.Closure$7(H.invokeClosure, "invokeClosure$closure");
+init.globalFunctions.typeNameInChrome$closure = H.typeNameInChrome$closure = new H.Closure$1(H.typeNameInChrome, "typeNameInChrome$closure");
+init.globalFunctions.typeNameInSafari$closure = H.typeNameInSafari$closure = new H.Closure$1(H.typeNameInSafari, "typeNameInSafari$closure");
+init.globalFunctions.typeNameInOpera$closure = H.typeNameInOpera$closure = new H.Closure$1(H.typeNameInOpera, "typeNameInOpera$closure");
+init.globalFunctions.typeNameInFirefox$closure = H.typeNameInFirefox$closure = new H.Closure$1(H.typeNameInFirefox, "typeNameInFirefox$closure");
+init.globalFunctions.typeNameInIE$closure = H.typeNameInIE$closure = new H.Closure$1(H.typeNameInIE, "typeNameInIE$closure");
+init.globalFunctions.constructorNameFallback$closure = H.constructorNameFallback$closure = new H.Closure$1(H.constructorNameFallback, "constructorNameFallback$closure");
+init.globalFunctions.callDartFunctionWith1Arg$closure = H.callDartFunctionWith1Arg$closure = new H.Closure$2(H.callDartFunctionWith1Arg, "callDartFunctionWith1Arg$closure");
 // Runtime type support
 // getInterceptor methods
 J.getInterceptor = function(receiver) {
