@@ -1,5 +1,9 @@
 # Changelog - Dart Bag of Tricks - WEB
 
+## 0.20.6 2013-10-09 (SDK 0.8.1+2 r28355)
+
+* Latest SDK, updated `bot` package version
+
 ## 0.20.5 2013-09-27 (SDK 0.7.6.0 r27991)
 
 * Latest SDK
