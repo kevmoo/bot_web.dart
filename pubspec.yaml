@@ -1,19 +1,19 @@
 name: bot_web
-version: 0.20.5
+version: 0.20.6-dev
 author: Kevin Moore <kevin@thinkpixellab.com>
 description: A collection of (mostly) general libraries to make working with Dart more productive.
 homepage: https://github.com/kevmoo/bot_web.dart
 documentation: http://kevmoo.github.io/bot_web.dart/
 environment:
-  sdk: '>=0.7.6'
+  sdk: '>=0.8.1'
 dependencies:
-  bot: '>=0.23.1'
-  logging: '>=0.7.6'
-  meta: '>=0.7.6'
+  bot: '>=0.24.0'
+  logging: '>=0.8.1'
+  meta: '>=0.8.1'
 dev_dependencies:
   bot_test: '>=0.1.2'
-  browser: '>=0.6.17'
+  browser: '>=0.8.1'
   hop: '>=0.25.1'
-  html5lib: '>=0.7.6'
-  path: '>=0.7.6'
-  unittest: '>=0.7.6'
+  html5lib: '>=0.8.1'
+  path: '>=0.8.1'
+  unittest: '>=0.8.1'

@@ -56,7 +56,7 @@ class RetainedUtil {
     final bounds = new Box(0, 0, thing.width, thing.height);
 
     var hits = new List<Thing>();
-    if (bounds.contains(point)) {
+    if (bounds.containsPoint(point)) {
       if(thing is ParentThing) {
         final ParentThing p = thing;
 

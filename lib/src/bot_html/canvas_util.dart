@@ -86,13 +86,7 @@ class CanvasUtil {
       targetBox = new Box(0, 0, sourceBox.width, sourceBox.height);
     }
 
-    final targetRect = new Rect(targetBox.left, targetBox.top,
-        targetBox.width, targetBox.height);
-
-    final sourceRect = new Rect(sourceBox.left, sourceBox.top,
-        sourceBox.width, sourceBox.height);
-
-    ctx.drawImageToRect(img, targetRect, sourceRect: sourceRect);
+    ctx.drawImageToRect(img, targetBox, sourceRect: sourceBox);
   }
 
   static void ellipse(CanvasRenderingContext2D ctx,

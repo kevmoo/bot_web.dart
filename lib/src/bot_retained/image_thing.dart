@@ -26,7 +26,7 @@ class ImageThing extends Thing {
   }
 
   void _doDraw(CanvasRenderingContext2D ctx) {
-    final rect = new Rect(0,0,width,height);
+    final rect = new Rectangle(0, 0, width, height);
 
     ctx.drawImageToRect(_image, rect);
   }
