@@ -1,10 +1,9 @@
 import 'dart:html';
 import 'package:bot/bot.dart';
-import 'package:bot_web/bot_html.dart';
 import 'package:bot_web/bot_retained.dart';
 
 void main() {
-  CanvasElement canvas = document.query("#content");
+  CanvasElement canvas = querySelector("#content");
   var demo = new NavDemo(canvas);
   demo.requestFrame();
 }
@@ -33,7 +32,7 @@ class NavDemo extends StageWrapper<NavThing> {
   }
 
   void _canvas_mouseDown(MouseEvent e) {
-    final point = getMouseEventCoordinate(e);
+    final point = e.offset;
     final hits = RetainedUtil.hitTest(stage, point);
     if(hits.length > 0) {
       _itemClick(hits.first);

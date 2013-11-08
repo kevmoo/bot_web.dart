@@ -9,7 +9,7 @@ class Dragger {
   final EventHandle<Vector> _dragDeltaHandle;
   final EventHandle<CancelableEventArgs> _dragStartHandle;
 
-  Coordinate _clientLoc;
+  Point _clientLoc;
 
   Dragger(this._element) :
     _dragDeltaHandle = new EventHandle<Vector>(),
@@ -32,14 +32,14 @@ class Dragger {
     _dragStartHandle.add(args);
     if(!args.isCanceled) {
       event.preventDefault();
-      _clientLoc = _p2c(event.client);
+      _clientLoc = event.client;
     }
   }
 
   void _handleMove(MouseEvent event) {
     if(isDragging) {
 
-      final newLoc = _p2c(event.client);
+      final newLoc = event.client;
 
       final delta = newLoc - _clientLoc;
       _dragDeltaHandle.add(delta);

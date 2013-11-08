@@ -4,7 +4,7 @@ class CanvasUtil {
   /**
    * (√2 - 1) * 4 / 3;
    */
-  static final num kappa = 0.55228474983079339840225163227959743809289583383593;
+  static const double KAPPA = 0.55228474983079339840225163227959743809289583383593;
 
   static Size getCanvasSize(CanvasElement canvasElement) {
     return new Size(canvasElement.width, canvasElement.height);
@@ -91,8 +91,8 @@ class CanvasUtil {
 
   static void ellipse(CanvasRenderingContext2D ctx,
                       num x, num y, num width, num height) {
-    var hB = (width / 2) * kappa,
-      vB = (height / 2) * kappa,
+    var hB = (width / 2) * KAPPA,
+      vB = (height / 2) * KAPPA,
       eX = x + width,
       eY = y + height,
       mX = x + width / 2,

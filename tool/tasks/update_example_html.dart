@@ -13,7 +13,7 @@ const _demoFinder = r'/**/*_demo.html';
 final _exampleFile = _startPath + '/index.html';
 
 Task getUpdateExampleHtmlTask() {
-  return new Task.async((ctx) {
+  return new Task((ctx) {
     return _getExampleFiles()
         .then((List<String> demos) {
           ctx.info(demos.join('\n'));
@@ -23,7 +23,6 @@ Task getUpdateExampleHtmlTask() {
         .then((bool updated) {
           final String msg = updated ? '$_exampleFile updated!' : 'No changes to $_exampleFile';
           ctx.info(msg);
-          return true;
         });
   }, description: 'Updated the sample file at $_exampleFile');
 }

@@ -12,7 +12,7 @@ class RetainedDebug {
     ctx.restore();
   }
 
-  static void borderHitTest(Stage stage, Coordinate point){
+  static void borderHitTest(Stage stage, Point point){
     final ctx = stage.ctx;
 
     final hits = RetainedUtil.hitTest(stage, point);

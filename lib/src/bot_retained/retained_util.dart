@@ -46,11 +46,11 @@ class RetainedUtil {
     return new Vector(x, y);
   }
 
-  static List<Thing> hitTest(Stage stage, Coordinate point){
+  static List<Thing> hitTest(Stage stage, Point point){
     return _hitTest(stage.rootThing, point);
   }
 
-  static List<Thing> _hitTest(Thing thing, Coordinate point){
+  static List<Thing> _hitTest(Thing thing, Point point){
     point = transformPointGlobalToLocal(thing, point);
 
     final bounds = new Box(0, 0, thing.width, thing.height);
@@ -80,8 +80,7 @@ class RetainedUtil {
     return tx.transformCoordinate(point);
   }
 
-  static Coordinate transformPointGlobalToLocal(Thing thing,
-                                                     Coordinate point) {
+  static Coordinate transformPointGlobalToLocal(Thing thing, Point point) {
     var tx = thing.getTransform();
     return tx.createInverse().transformCoordinate(point);
   }

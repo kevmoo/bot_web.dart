@@ -1,18 +1,17 @@
 import 'dart:html';
 import 'dart:math' as math;
 import 'package:bot/bot.dart';
-import 'package:bot_web/bot_html.dart';
 import 'package:bot_web/bot_retained.dart';
 
 main(){
-  CanvasElement canvas = document.query("#content");
+  CanvasElement canvas = querySelector("#content");
   var demo = new SpinDemo(canvas);
   demo.requestFrame();
 }
 
 class SpinDemo extends StageWrapper<CanvasThing> {
   final AffineTransform _tx;
-  Coordinate _mouseLocation;
+  Point _mouseLocation;
 
   factory SpinDemo(CanvasElement canvas) {
 
@@ -58,7 +57,7 @@ class SpinDemo extends StageWrapper<CanvasThing> {
   }
 
   void _canvas_mouseMove(MouseEvent e){
-    _mouseLocation = getMouseEventCoordinate(e);
+    _mouseLocation = e.offset;
   }
 
   void _canvas_mouseOut(MouseEvent e){

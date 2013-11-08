@@ -1,11 +1,9 @@
 import 'dart:html';
-import 'dart:isolate';
 import 'package:bot/bot.dart';
-import 'package:bot/bot_async.dart';
 import 'package:bot_web/bot_retained.dart';
 
 main(){
-  CanvasElement canvas = document.query("#content");
+  CanvasElement canvas = querySelector("#content");
   var demo = new DraggerDemo(canvas);
   demo.requestFrame();
 }
@@ -14,7 +12,6 @@ class DraggerDemo{
   final CanvasElement _canvas;
   final Stage _stage;
   final AffineTransform _tx;
-  final _DemoValue _demoMapper;
 
   Coordinate _mouseLocation;
   bool _frameRequested = false;
@@ -38,10 +35,7 @@ class DraggerDemo{
     return new DraggerDemo._internal(canvas, stage, tx, image);
   }
 
-  DraggerDemo._internal(this._canvas, this._stage, this._tx, this._thing) :
-    _demoMapper = new _DemoValue() {
-
-    _demoMapper.outputChanged.listen((e) => requestFrame());
+  DraggerDemo._internal(this._canvas, this._stage, this._tx, this._thing) {
 
     _stage.invalidated.listen(_onStageInvalidated);
 
@@ -66,52 +60,12 @@ class DraggerDemo{
     final delta = args.delta;
     _tx.translate(delta.x, delta.y);
     final arrayValue = [_tx.translateX, _tx.translateY];
-    _demoMapper.input = arrayValue;
     requestFrame();
   }
 
   void _onFrame(double highResTime){
     _stage.draw();
-
-    final ctx = _stage.ctx;
-    ctx.save();
-    ctx.fillStyle = 'black';
-    ctx.shadowColor = 'white';
-    ctx.shadowBlur = 2;
-    ctx.shadowOffsetX = 1;
-    ctx.shadowOffsetY = 1;
-    ctx.font = '20px Fixed, monospace';
-
-    final inputText = " Input: ${_demoMapper.input}";
-    final outputText = "Output: ${_demoMapper.output}";
-
-    final int bottom = _canvas.height;
-    final w = _canvas.width;
-
-    ctx.fillText(inputText, 10, bottom - 40);
-    ctx.fillText(outputText, 10, bottom - 20);
-    ctx.restore();
     _frameRequested = false;
     requestFrame();
   }
-}
-
-class _DemoValue extends SendPortValue<List<int>, int> {
-  _DemoValue() : super(spawnFunction(_demoIsolate));
-}
-
-void _demoIsolate() {
-  new SendValuePort<List<int>, int>((input) {
-    final start = new DateTime.now();
-    Duration delta;
-    do {
-      delta = (new DateTime.now().difference(start));
-    } while(delta.inSeconds < 1);
-
-    assert(input.length == 2);
-    final coord = new Coordinate(input[0], input[1]);
-
-    final int output = coord.x * coord.y;
-    return output;
-  });
 }

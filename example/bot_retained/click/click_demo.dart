@@ -2,8 +2,8 @@ import 'dart:html';
 import 'package:bot/bot.dart';
 import 'package:bot_web/bot_retained.dart';
 
-main(){
-  CanvasElement canvas = document.query("#content");
+void main() {
+  CanvasElement canvas = querySelector("#content");
   var demo = new ClickDemo(canvas);
   demo.requestFrame();
 }

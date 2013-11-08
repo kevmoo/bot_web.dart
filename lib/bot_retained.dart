@@ -2,7 +2,6 @@ library bot_retained;
 
 import 'dart:async';
 import 'dart:html';
-import 'package:meta/meta.dart';
 import 'package:bot/bot.dart';
 import 'package:bot_web/bot_html.dart';
 

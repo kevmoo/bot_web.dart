@@ -9,7 +9,7 @@ import '../test/harness_console.dart' as test_console;
 import 'tasks/update_example_html.dart' as html_tasks;
 import 'package:hop/src/hop_tasks_experimental.dart' as dartdoc;
 
-void main() {
+void main(List<String> args) {
   // Easy to enable hop-wide logging
   // enableScriptLogListener();
 
@@ -38,7 +38,7 @@ void main() {
 
   addTask('update-html', html_tasks.getUpdateExampleHtmlTask());
 
-  runHop();
+  runHop(args);
 }
 
 Future<List<String>> _getLibs() {

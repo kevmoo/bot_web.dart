@@ -3,7 +3,7 @@ import 'package:bot/bot.dart';
 import 'package:bot_web/bot_retained.dart';
 
 void main() {
-  CanvasElement canvas = document.query("#content");
+  CanvasElement canvas = querySelector("#content");
   var demo = new FrameDemo(canvas);
   demo.requestFrame();
 }
@@ -95,7 +95,7 @@ class TxThing extends ParentThing {
 
     final pointDeltaVector = _rotateScaleCoordinate - pc;
 
-    final newScale = pointDeltaVector.length / _sourceSize.height;
+    final newScale = pointDeltaVector.magnitude / _sourceSize.height;
 
     final downVector = const Vector(0, 10);
     final angle = downVector.getAngle(pointDeltaVector);
