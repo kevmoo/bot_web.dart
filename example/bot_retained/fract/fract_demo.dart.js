@@ -69,17 +69,13 @@ $$.Closure$0 = [H, {"": "Closure;call$0,$name"}];
 
 $$.Closure$7 = [H, {"": "Closure;call$7,$name"}];
 
-$$.Closure$1 = [H, {"": "Closure;call$1,$name"}];
-
-$$.Closure$2 = [H, {"": "Closure;call$2,$name"}];
-
 (function (reflectionData) {
   function map(x){x={x:x};delete x.x;return x}
   if (!init.libraries) init.libraries = [];
   if (!init.mangledNames) init.mangledNames = map();
   if (!init.mangledGlobalNames) init.mangledGlobalNames = map();
   if (!init.statics) init.statics = map();
-  if (!init.interfaces) init.interfaces = map();
+  if (!init.typeInformation) init.typeInformation = map();
   if (!init.globalFunctions) init.globalFunctions = map();
   var libraries = init.libraries;
   var mangledNames = init.mangledNames;
@@ -107,7 +103,7 @@ $$.Closure$2 = [H, {"": "Closure;call$2,$name"}];
         if (firstChar === "+") {
           mangledGlobalNames[previousProperty] = property.substring(1);
           if (descriptor[property] == 1) descriptor[previousProperty].$reflectable = 1;
-          if (element && element.length) init.interfaces[previousProperty] = element;
+          if (element && element.length) init.typeInformation[previousProperty] = element;
         } else if (firstChar === "@") {
           property = property.substring(1);
           $[property]["@"] = element;
@@ -157,6 +153,8 @@ $$.Closure$2 = [H, {"": "Closure;call$2,$name"}];
                     globalObject]);
   }
 })([
+["_foreign_helper", "dart:_foreign_helper", , H, {
+JS_CONST: {"": "Object;code"}}],
 ["_interceptors", "dart:_interceptors", , J, {
 getInterceptor: function(object) {
   return void 0;
@@ -167,8 +165,13 @@ makeDispatchRecord: function(interceptor, proto, extension, indexability) {
 },
 
 getNativeInterceptor: function(object) {
-  var record, proto, objectProto;
+  var record, proto, objectProto, interceptor;
   record = object[init.dispatchPropertyName];
+  if (record == null)
+    if ($.initNativeDispatchFlag == null) {
+      H.initNativeDispatch();
+      record = object[init.dispatchPropertyName];
+    }
   if (record != null) {
     proto = record.p;
     if (false === proto)
@@ -179,13 +182,12 @@ getNativeInterceptor: function(object) {
     if (proto === objectProto)
       return record.i;
     if (record.e === objectProto)
-      return proto(object, record);
+      throw H.wrapException(P.UnimplementedError$("Return interceptor for " + H.S(proto(object, record))));
   }
-  record = H.lookupDispatchRecord(object);
-  if (record == null)
-    return C.C_UnknownJavaScriptObject;
-  Object.defineProperty(Object.getPrototypeOf(object), init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
-  return J.getNativeInterceptor(object);
+  interceptor = H.lookupAndCacheInterceptor(object);
+  if (interceptor == null)
+    return C.UnknownJavaScriptObject_methods;
+  return interceptor;
 },
 
 Interceptor: {"": "Object;",
@@ -194,7 +196,8 @@ Interceptor: {"": "Object;",
   },
   toString$0: function(receiver) {
     return H.Primitives_objectToString(receiver);
-  }
+  },
+  "%": "AutocompleteErrorEvent|CanvasGradient|CanvasPattern|CanvasRenderingContext|CanvasRenderingContext2D|DOMError|ErrorEvent|Event|FileError|MediaError|MediaKeyError|NavigatorUserMediaError|PositionError|SQLError|SVGAnimatedLength|SVGAnimatedLengthList|SVGAnimatedNumber|SVGAnimatedNumberList|SVGAnimatedTransformList|SpeechRecognitionError"
 },
 
 JSBool: {"": "bool/Interceptor;",
@@ -260,7 +263,11 @@ JSNumber: {"": "num/Interceptor;",
     else
       return "" + receiver;
   },
-  $isnum: true
+  $isnum: true,
+  static: {
+"": "JSNumber__MIN_INT32,JSNumber__MAX_INT32",
+}
+
 },
 
 JSInt: {"": "int/JSNumber;", $isnum: true, $isint: true},
@@ -270,24 +277,24 @@ JSDouble: {"": "double/JSNumber;", $isnum: true},
 JSString: {"": "String/Interceptor;",
   codeUnitAt$1: function(receiver, index) {
     if (index < 0)
-      throw H.wrapException(new P.RangeError("value " + index));
+      throw H.wrapException(P.RangeError$value(index));
     if (index >= receiver.length)
-      throw H.wrapException(new P.RangeError("value " + index));
+      throw H.wrapException(P.RangeError$value(index));
     return receiver.charCodeAt(index);
   },
   substring$2: function(receiver, startIndex, endIndex) {
     if (endIndex == null)
       endIndex = receiver.length;
-    if (typeof endIndex !== "number")
-      H.throwExpression(new P.ArgumentError(endIndex));
+    if (typeof endIndex !== "number" || Math.floor(endIndex) !== endIndex)
+      H.throwExpression(P.ArgumentError$(endIndex));
     if (startIndex < 0)
-      throw H.wrapException(new P.RangeError("value " + startIndex));
+      throw H.wrapException(P.RangeError$value(startIndex));
     if (typeof endIndex !== "number")
       throw H.iae(endIndex);
     if (startIndex > endIndex)
-      throw H.wrapException(new P.RangeError("value " + startIndex));
+      throw H.wrapException(P.RangeError$value(startIndex));
     if (endIndex > receiver.length)
-      throw H.wrapException(new P.RangeError("value " + H.S(endIndex)));
+      throw H.wrapException(P.RangeError$value(endIndex));
     return receiver.substring(startIndex, endIndex);
   },
   substring$1: function($receiver, startIndex) {
@@ -317,7 +324,7 @@ S: function(value) {
     return "null";
   res = J.toString$0(value);
   if (typeof res !== "string")
-    throw H.wrapException(new P.ArgumentError(value));
+    throw H.wrapException(P.ArgumentError$(value));
   return res;
 },
 
@@ -331,18 +338,16 @@ Primitives_objectHashCode: function(object) {
 },
 
 Primitives_objectTypeName: function(object) {
-  var $name, decompiled, t1;
-  $name = H.constructorNameFallback(J.getInterceptor(object));
-  if (J.$eq($name, "Object")) {
+  var $name, decompiled;
+  $name = C.JS_CONST_86y(J.getInterceptor(object));
+  if ($name === "Object") {
     decompiled = String(object.constructor).match(/^\s*function\s*(\S*)\s*\(/)[1];
     if (typeof decompiled === "string")
       $name = decompiled;
   }
-  t1 = J.getInterceptor$s($name);
-  if (t1.codeUnitAt$1($name, 0) === 36)
-    $name = t1.substring$1($name, 1);
-  t1 = H.getRuntimeTypeInfo(object);
-  return H.S($name) + H.joinArguments(t1, 0);
+  if (J.getInterceptor$s($name).codeUnitAt$1($name, 0) === 36)
+    $name = C.JSString_methods.substring$1($name, 1);
+  return $name + H.joinArguments(H.getRuntimeTypeInfo(object), 0, null);
 },
 
 Primitives_objectToString: function(object) {
@@ -356,7 +361,7 @@ Primitives_newFixedList: function($length) {
 },
 
 iae: function(argument) {
-  throw H.wrapException(new P.ArgumentError(argument));
+  throw H.wrapException(P.ArgumentError$(argument));
 },
 
 ioore: function(receiver, index) {
@@ -364,7 +369,7 @@ ioore: function(receiver, index) {
     J.get$length$asx(receiver);
   if (typeof index !== "number" || Math.floor(index) !== index)
     H.iae(index);
-  throw H.wrapException(new P.RangeError("value " + H.S(index)));
+  throw H.wrapException(P.RangeError$value(index));
 },
 
 wrapException: function(ex) {
@@ -402,7 +407,7 @@ invokeClosure: function(closure, isolate, numberOfArguments, arg1, arg2, arg3, a
   else if (t1.$eq(numberOfArguments, 4))
     return new H.invokeClosure_closure3(closure, arg1, arg2, arg3, arg4).call$0();
   else
-    throw H.wrapException(new P._ExceptionImplementation("Unsupported number of arguments for wrapped closure"));
+    throw H.wrapException(P.Exception_Exception("Unsupported number of arguments for wrapped closure"));
 },
 
 convertDartClosureToJS: function(closure, arity) {
@@ -418,7 +423,7 @@ convertDartClosureToJS: function(closure, arity) {
 },
 
 throwCyclicInit: function(staticName) {
-  throw H.wrapException(new P.CyclicInitializationError("Cyclic initialization for static " + H.S(staticName)));
+  throw H.wrapException(P.CyclicInitializationError$("Cyclic initialization for static " + H.S(staticName)));
 },
 
 getRuntimeTypeInfo: function(target) {
@@ -427,18 +432,24 @@ getRuntimeTypeInfo: function(target) {
   return target.$builtinTypeInfo;
 },
 
-runtimeTypeToString: function(type) {
+getRuntimeTypeAsString: function(runtimeType, onTypeVariable) {
+  return runtimeType[0].builtin$cls + H.joinArguments(runtimeType, 1, onTypeVariable);
+},
+
+runtimeTypeToString: function(type, onTypeVariable) {
   if (type == null)
     return "dynamic";
   else if (typeof type === "object" && type !== null && type.constructor === Array)
-    return type[0].builtin$cls + H.joinArguments(type, 1);
+    return H.getRuntimeTypeAsString(type, onTypeVariable);
   else if (typeof type == "function")
     return type.builtin$cls;
+  else if (typeof type === "number" && Math.floor(type) === type)
+    return C.JSInt_methods.toString$0(type);
   else
     return;
 },
 
-joinArguments: function(types, startIndex) {
+joinArguments: function(types, startIndex, onTypeVariable) {
   var buffer, index, firstArgument, allDynamic, argument, str;
   if (types == null)
     return "";
@@ -451,130 +462,16 @@ joinArguments: function(types, startIndex) {
     argument = types[index];
     if (argument != null)
       allDynamic = false;
-    str = H.runtimeTypeToString(argument);
-    str = typeof str === "string" ? str : str;
+    str = H.runtimeTypeToString(argument, onTypeVariable);
+    str = typeof str === "string" ? str : H.S(str);
     buffer._contents = buffer._contents + str;
   }
   return allDynamic ? "" : "<" + H.S(buffer) + ">";
 },
 
-typeNameInChrome: function(obj) {
-  return obj.constructor.name;
-},
-
-typeNameInSafari: function(obj) {
-  return H.constructorNameFallback(obj);
-},
-
-typeNameInOpera: function(obj) {
-  return H.constructorNameFallback(obj);
-},
-
-typeNameInFirefox: function(obj) {
-  var $name = H.constructorNameFallback(obj);
-  if ($name === "BeforeUnloadEvent")
-    return "Event";
-  if ($name === "DataTransfer")
-    return "Clipboard";
-  if ($name === "GeoGeolocation")
-    return "Geolocation";
-  if ($name === "WorkerMessageEvent")
-    return "MessageEvent";
-  if ($name === "XMLDocument")
-    return "Document";
-  return $name;
-},
-
-typeNameInIE: function(obj) {
-  var $name = H.constructorNameFallback(obj);
-  if ($name === "Document") {
-    if (!!obj.xmlVersion)
-      return "Document";
-    return "HTMLDocument";
-  }
-  if ($name === "BeforeUnloadEvent")
-    return "Event";
-  if ($name === "DataTransfer")
-    return "Clipboard";
-  if ($name === "HTMLDDElement")
-    return "HTMLElement";
-  if ($name === "HTMLDTElement")
-    return "HTMLElement";
-  if ($name === "HTMLPhraseElement")
-    return "HTMLElement";
-  if ($name === "Position")
-    return "Geoposition";
-  if ($name === "Object")
-    if (window.DataView && obj instanceof window.DataView)
-      return "DataView";
-  return $name;
-},
-
-constructorNameFallback: function(object) {
-  var $constructor, $name, t1, string;
-  if (object == null)
-    return "Null";
-  $constructor = object.constructor;
-  if (typeof $constructor === "function") {
-    $name = $constructor.builtin$cls;
-    if ($name != null)
-      return $name;
-    $name = $constructor.name;
-    if (typeof $name === "string")
-      t1 = $name !== "" && $name !== "Object" && $name !== "Function.prototype";
-    else
-      t1 = false;
-    if (t1)
-      return $name;
-  }
-  string = Object.prototype.toString.call(object);
-  return string.substring(8, string.length - 1);
-},
-
-alternateTag: function(object, tag) {
-  if (!!/^HTML[A-Z].*Element$/.test(tag)) {
-    if (Object.prototype.toString.call(object) === "[object Object]")
-      return;
-    return "HTMLElement";
-  }
-  return;
-},
-
-getFunctionForTypeNameOf: function() {
-  var getTagFunction = H.getBaseFunctionForTypeNameOf();
-  if (typeof dartExperimentalFixupGetTag == "function")
-    return H.applyExperimentalFixup(dartExperimentalFixupGetTag, getTagFunction);
-  return getTagFunction;
-},
-
-getBaseFunctionForTypeNameOf: function() {
-  if (typeof navigator !== "object")
-    return H.typeNameInChrome$closure;
-  var userAgent = navigator.userAgent;
-  if (userAgent.indexOf("Chrome") !== -1 || userAgent.indexOf("DumpRenderTree") !== -1)
-    return H.typeNameInChrome$closure;
-  else if (userAgent.indexOf("Firefox") !== -1)
-    return H.typeNameInFirefox$closure;
-  else if (userAgent.indexOf("Trident/") !== -1)
-    return H.typeNameInIE$closure;
-  else if (userAgent.indexOf("Opera") !== -1)
-    return H.typeNameInOpera$closure;
-  else if (userAgent.indexOf("AppleWebKit") !== -1)
-    return H.typeNameInSafari$closure;
-  else
-    return H.constructorNameFallback$closure;
-},
-
-applyExperimentalFixup: function(fixupJSFunction, originalGetTagDartFunction) {
-  return new H.applyExperimentalFixup_newGetTagDartFunction(fixupJSFunction((function(invoke, closure){return function(arg){ return invoke(closure, arg); };})(H.callDartFunctionWith1Arg$closure.call$2, originalGetTagDartFunction)));
-},
-
-callDartFunctionWith1Arg: function(fn, arg) {
-  return fn.call$1(arg);
-},
-
 toStringForNativeObject: function(obj) {
-  return "Instance of " + $.get$getTypeNameOf().call$1(obj);
+  var t1 = $.getTagFunction;
+  return "Instance of " + (t1 == null ? "<Unknown>" : t1.call$1(obj));
 },
 
 hashCodeForNativeObject: function(object) {
@@ -585,72 +482,147 @@ defineProperty: function(obj, property, value) {
   Object.defineProperty(obj, property, {value: value, enumerable: false, writable: true, configurable: true});
 },
 
-defineNativeMethods: function(tags, interceptorClass) {
-  H.defineNativeMethodsCommon(tags, interceptorClass, true);
-},
-
-defineNativeMethodsNonleaf: function(tags, interceptorClass) {
-  H.defineNativeMethodsCommon(tags, interceptorClass, false);
-},
-
-defineNativeMethodsExtended: function(tags, interceptorClass, subclassInterceptorClasses) {
-  var classes, t1, i;
-  if ($.interceptorToTag == null)
-    $.interceptorToTag = [];
-  classes = subclassInterceptorClasses;
-  for (t1 = classes.length, i = 0; i < t1; ++i) {
-    $.interceptorToTag.push(classes[i]);
-    $.interceptorToTag.push(tags);
+lookupAndCacheInterceptor: function(obj) {
+  var tag, record, interceptor, interceptorClass, mark, t1;
+  tag = $.getTagFunction.call$1(obj);
+  record = $.dispatchRecordsForInstanceTags[tag];
+  if (record != null) {
+    Object.defineProperty(obj, init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
+    return record.i;
   }
-  H.defineNativeMethodsCommon(tags, interceptorClass, false);
-},
-
-defineNativeMethodsCommon: function(tags, interceptorClass, isLeaf) {
-  var methods, tagsList, i, tag;
-  methods = interceptorClass.prototype;
-  if ($.interceptorsByTag == null)
-    $.interceptorsByTag = {};
-  if ($.leafTags == null)
-    $.leafTags = {};
-  tagsList = tags.split("|");
-  for (i = 0; i < tagsList.length; ++i) {
-    tag = tagsList[i];
-    $.interceptorsByTag[tag] = methods;
-    $.leafTags[tag] = isLeaf;
+  interceptor = $.interceptorsForUncacheableTags[tag];
+  if (interceptor != null)
+    return interceptor;
+  interceptorClass = init.interceptorsByTag[tag];
+  if (interceptorClass == null) {
+    tag = $.alternateTagFunction.call$2(obj, tag);
+    if (tag != null) {
+      record = $.dispatchRecordsForInstanceTags[tag];
+      if (record != null) {
+        Object.defineProperty(obj, init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
+        return record.i;
+      }
+      interceptor = $.interceptorsForUncacheableTags[tag];
+      if (interceptor != null)
+        return interceptor;
+      interceptorClass = init.interceptorsByTag[tag];
+    }
   }
-},
-
-defineNativeMethodsFinish: function() {
-},
-
-lookupInterceptor: function(hasOwnPropertyFunction, tag) {
-  var map = $.interceptorsByTag;
-  if (map == null)
+  if (interceptorClass == null)
     return;
-  return hasOwnPropertyFunction.call(map, tag) ? map[tag] : null;
+  interceptor = interceptorClass.prototype;
+  mark = tag[0];
+  if (mark === "!") {
+    record = H.makeLeafDispatchRecord(interceptor);
+    $.dispatchRecordsForInstanceTags[tag] = record;
+    Object.defineProperty(obj, init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
+    return record.i;
+  }
+  if (mark === "~") {
+    $.interceptorsForUncacheableTags[tag] = interceptor;
+    return interceptor;
+  }
+  if (mark === "-") {
+    t1 = H.makeLeafDispatchRecord(interceptor);
+    Object.defineProperty(Object.getPrototypeOf(obj), init.dispatchPropertyName, {value: t1, enumerable: false, writable: true, configurable: true});
+    return t1.i;
+  }
+  if (mark === "+")
+    return H.patchInteriorProto(obj, interceptor);
+  if (mark === "*")
+    throw H.wrapException(P.UnimplementedError$(tag));
+  if (init.leafTags[tag] === true) {
+    t1 = H.makeLeafDispatchRecord(interceptor);
+    Object.defineProperty(Object.getPrototypeOf(obj), init.dispatchPropertyName, {value: t1, enumerable: false, writable: true, configurable: true});
+    return t1.i;
+  } else
+    return H.patchInteriorProto(obj, interceptor);
 },
 
-lookupDispatchRecord: function(obj) {
-  var hasOwnPropertyFunction, tag, interceptor, secondTag, t1;
-  hasOwnPropertyFunction = Object.prototype.hasOwnProperty;
-  tag = $.get$getTypeNameOf().call$1(obj);
-  interceptor = H.lookupInterceptor(hasOwnPropertyFunction, tag);
-  if (interceptor == null) {
-    secondTag = H.alternateTag(obj, tag);
-    if (secondTag != null)
-      interceptor = H.lookupInterceptor(hasOwnPropertyFunction, secondTag);
-  }
-  if (interceptor == null)
-    return;
-  t1 = $.leafTags;
-  if (t1 != null && t1[tag] === true)
-    return H.makeLeafDispatchRecord(interceptor);
-  else
-    return J.makeDispatchRecord(interceptor, Object.getPrototypeOf(obj), null, null);
+patchInteriorProto: function(obj, interceptor) {
+  var proto, record;
+  proto = Object.getPrototypeOf(obj);
+  record = J.makeDispatchRecord(interceptor, proto, null, null);
+  Object.defineProperty(proto, init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
+  return interceptor;
 },
 
 makeLeafDispatchRecord: function(interceptor) {
   return J.makeDispatchRecord(interceptor, false, null, !!interceptor.$isJavaScriptIndexingBehavior);
+},
+
+makeDefaultDispatchRecord: function(tag, interceptorClass, proto) {
+  var interceptor = interceptorClass.prototype;
+  if (init.leafTags[tag] === true)
+    return J.makeDispatchRecord(interceptor, false, null, !!interceptor.$isJavaScriptIndexingBehavior);
+  else
+    return J.makeDispatchRecord(interceptor, proto, null, null);
+},
+
+initNativeDispatch: function() {
+  if (true === $.initNativeDispatchFlag)
+    return;
+  $.initNativeDispatchFlag = true;
+  H.initNativeDispatchContinue();
+},
+
+initNativeDispatchContinue: function() {
+  var map, tags, i, tag, proto, record, interceptorClass;
+  $.dispatchRecordsForInstanceTags = Object.create(null);
+  $.interceptorsForUncacheableTags = Object.create(null);
+  H.initHooks();
+  map = init.interceptorsByTag;
+  tags = Object.getOwnPropertyNames(map);
+  if (typeof window != "undefined") {
+    window;
+    for (i = 0; i < tags.length; ++i) {
+      tag = tags[i];
+      proto = $.prototypeForTagFunction.call$1(tag);
+      if (proto != null) {
+        record = H.makeDefaultDispatchRecord(tag, map[tag], proto);
+        if (record != null)
+          Object.defineProperty(proto, init.dispatchPropertyName, {value: record, enumerable: false, writable: true, configurable: true});
+      }
+    }
+  }
+  for (i = 0; i < tags.length; ++i) {
+    tag = tags[i];
+    if (/^[A-Za-z_]/.test(tag)) {
+      interceptorClass = map[tag];
+      map["!" + tag] = interceptorClass;
+      map["~" + tag] = interceptorClass;
+      map["-" + tag] = interceptorClass;
+      map["+" + tag] = interceptorClass;
+      map["*" + tag] = interceptorClass;
+    }
+  }
+},
+
+initHooks: function() {
+  var hooks, transformers, i, transformer, getTag, getUnknownTag, prototypeForTag;
+  hooks = C.JS_CONST_TtD();
+  hooks = H.applyHooksTransformer(C.JS_CONST_0, H.applyHooksTransformer(C.JS_CONST_Fs4, H.applyHooksTransformer(C.JS_CONST_Fs4, H.applyHooksTransformer(C.JS_CONST_rD3, H.applyHooksTransformer(C.JS_CONST_6qb, H.applyHooksTransformer(C.JS_CONST_Cbr(C.JS_CONST_86y), hooks))))));
+  if (typeof dartNativeDispatchHooksTransformer != "undefined") {
+    transformers = dartNativeDispatchHooksTransformer;
+    if (typeof transformers == "function")
+      transformers = [transformers];
+    if (transformers.constructor == Array)
+      for (i = 0; i < transformers.length; ++i) {
+        transformer = transformers[i];
+        if (typeof transformer == "function")
+          hooks = transformer(hooks) || hooks;
+      }
+  }
+  getTag = hooks.getTag;
+  getUnknownTag = hooks.getUnknownTag;
+  prototypeForTag = hooks.prototypeForTag;
+  $.getTagFunction = new H.initHooks_closure(getTag);
+  $.alternateTagFunction = new H.initHooks_closure0(getUnknownTag);
+  $.prototypeForTagFunction = new H.initHooks_closure1(prototypeForTag);
+},
+
+applyHooksTransformer: function(transformer, hooks) {
+  return transformer(hooks) || hooks;
 },
 
 invokeClosure_closure: {"": "Closure;closure_0",
@@ -689,15 +661,27 @@ Closure: {"": "Object;",
   }
 },
 
-applyExperimentalFixup_newGetTagDartFunction: {"": "Closure;newGetTagJSFunction_0",
-  call$1: function(object) {
-    return this.newGetTagJSFunction_0(object);
+initHooks_closure: {"": "Closure;getTag_0",
+  call$1: function(o) {
+    return this.getTag_0(o);
+  }
+},
+
+initHooks_closure0: {"": "Closure;getUnknownTag_1",
+  call$2: function(o, tag) {
+    return this.getUnknownTag_1(o, tag);
+  }
+},
+
+initHooks_closure1: {"": "Closure;prototypeForTag_2",
+  call$1: function(tag) {
+    return this.prototypeForTag_2(tag);
   }
 }}],
 ["bot", "package:bot/bot.dart", , X, {
 _metaRequireArgumentNotNullOrEmpty: function(argName) {
   if (argName.length === 0)
-    throw H.wrapException(new X.InvalidOperationError("That's just sad. Give me a good argName"));
+    throw H.wrapException(X.InvalidOperationError$("That's just sad. Give me a good argName"));
 },
 
 DetailedArgumentError: {"": "ArgumentError;",
@@ -709,15 +693,25 @@ DetailedArgumentError: {"": "ArgumentError;",
   },
   DetailedArgumentError$2: function(argument, details) {
     if (this.argument.length === 0)
-      throw H.wrapException(new X.InvalidOperationError("That's just sad. Give me a valid argument"));
+      throw H.wrapException(X.InvalidOperationError$("That's just sad. Give me a valid argument"));
     if (this.details.length === 0)
-      throw H.wrapException(new X.InvalidOperationError("That's just sad. I need details!"));
+      throw H.wrapException(X.InvalidOperationError$("That's just sad. I need details!"));
   }
 },
 
-InvalidOperationError: {"": "Object;message"},
+InvalidOperationError: {"": "Object;message", static: {
+InvalidOperationError$: function(message) {
+  return new X.InvalidOperationError(message);
+}}
+},
 
-NullArgumentError: {"": "DetailedArgumentError;argument,details,message"},
+NullArgumentError: {"": "DetailedArgumentError;argument,details,message", static: {
+NullArgumentError$: function(argument) {
+  var t1 = new X.NullArgumentError(argument, "cannot be null", null);
+  t1.DetailedArgumentError$2(argument, "cannot be null");
+  return t1;
+}}
+},
 
 AffineTransform: {"": "Object;_scX,_shY,_shX,_scY,_tX,_tY",
   scale$2: function(_, sx, sy) {
@@ -776,13 +770,9 @@ AffineTransform$: function(scaleX, shearY, shearX, scaleY, translateX, translate
 }}],
 ["bot_html", "package:bot_web/bot_html.dart", , B, {
 CanvasUtil_transform: function(ctx, tx) {
-  var t1;
   X._metaRequireArgumentNotNullOrEmpty("ctx");
-  if (ctx == null) {
-    t1 = new X.NullArgumentError("ctx", "cannot be null", null);
-    t1.DetailedArgumentError$2("ctx", "cannot be null");
-    H.throwExpression(t1);
-  }
+  if (ctx == null)
+    H.throwExpression(X.NullArgumentError$("ctx"));
   X._metaRequireArgumentNotNullOrEmpty("tx");
   ctx.transform(tx._scX, tx._shY, tx._shX, tx._scY, tx._tX, tx._tY);
 }}],
@@ -817,7 +807,7 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current",
     t1 = this._iterable;
     $length = t1.length;
     if (this._length !== $length)
-      throw H.wrapException(new P.ConcurrentModificationError(t1));
+      throw H.wrapException(P.ConcurrentModificationError$(t1));
     t2 = this._index;
     if (t2 >= $length) {
       this._current = null;
@@ -835,11 +825,15 @@ Error_safeToString: function(object) {
   return H.Primitives_objectToString(object);
 },
 
+Exception_Exception: function(message) {
+  return new P._ExceptionImplementation(message);
+},
+
 List_List: function($length) {
   if ($length == null)
     return new Array(0);
   if (typeof $length !== "number" || Math.floor($length) !== $length || $length < 0)
-    throw H.wrapException(new P.ArgumentError("Length must be a positive integer: " + H.S($length) + "."));
+    throw H.wrapException(P.ArgumentError$("Length must be a positive integer: " + H.S($length) + "."));
   return H.Primitives_newFixedList($length);
 },
 
@@ -856,25 +850,57 @@ ArgumentError: {"": "Error;message>",
     if (this.get$message(this) != null)
       return "Illegal argument(s): " + H.S(this.get$message(this));
     return "Illegal argument(s)";
-  }
+  },
+  static: {
+ArgumentError$: function(message) {
+  return new P.ArgumentError(message);
+}}
+
 },
 
 RangeError: {"": "ArgumentError;message",
   toString$0: function(_) {
     return "RangeError: " + H.S(this.message);
-  }
+  },
+  static: {
+RangeError$value: function(value) {
+  return new P.RangeError("value " + H.S(value));
+}}
+
+},
+
+UnimplementedError: {"": "Error;message",
+  toString$0: function(_) {
+    var t1 = this.message;
+    return t1 != null ? "UnimplementedError: " + H.S(t1) : "UnimplementedError";
+  },
+  static: {
+UnimplementedError$: function(message) {
+  return new P.UnimplementedError(message);
+}}
+
 },
 
 ConcurrentModificationError: {"": "Error;modifiedObject",
   toString$0: function(_) {
     return "Concurrent modification during iteration: " + P.Error_safeToString(this.modifiedObject) + ".";
-  }
+  },
+  static: {
+ConcurrentModificationError$: function(modifiedObject) {
+  return new P.ConcurrentModificationError(modifiedObject);
+}}
+
 },
 
 CyclicInitializationError: {"": "Error;variableName",
   toString$0: function(_) {
     return "Reading static variable '" + this.variableName + "' during its initialization";
-  }
+  },
+  static: {
+CyclicInitializationError$: function(variableName) {
+  return new P.CyclicInitializationError(variableName);
+}}
+
 },
 
 _ExceptionImplementation: {"": "Object;message",
@@ -903,11 +929,6 @@ StringBuffer: {"": "Object;_contents<",
     return this._contents.length;
   },
   write$1: function(obj) {
-    if (typeof obj !== "string")
-      return this.write$1$bailout(1, obj);
-    this._contents = this._contents + obj;
-  },
-  write$1$bailout: function(state0, obj) {
     var str = typeof obj === "string" ? obj : H.S(obj);
     this._contents = this._contents + str;
   },
@@ -947,45 +968,50 @@ StringBuffer$: function($content) {
 
 }}],
 ["dart.dom.html", "dart:html", , W, {
-HtmlElement: {"": "Element;"},
+HtmlElement: {"": "Element;", "%": "HTMLAppletElement|HTMLAreaElement|HTMLAudioElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMediaElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement|HTMLVideoElement;HTMLElement"},
 
 AnchorElement: {"": "HtmlElement;",
   toString$0: function(receiver) {
     return receiver.toString();
-  }
+  },
+  "%": "HTMLAnchorElement"
 },
 
 CanvasElement: {"": "HtmlElement;",
   get$context2D: function(receiver) {
     return receiver.getContext("2d");
-  }
+  },
+  "%": "HTMLCanvasElement"
 },
 
 DomException: {"": "Interceptor;",
   toString$0: function(receiver) {
     return receiver.toString();
-  }
+  },
+  "%": "DOMException"
 },
 
 Element: {"": "Node;",
   toString$0: function(receiver) {
     return receiver.localName;
-  }
+  },
+  "%": "SVGAElement|SVGAltGlyphDefElement|SVGAltGlyphElement|SVGAltGlyphItemElement|SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGCursorElement|SVGDefsElement|SVGDescElement|SVGElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFEPointLightElement|SVGFESpecularLightingElement|SVGFESpotLightElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGForeignObjectElement|SVGGElement|SVGGlyphElement|SVGGlyphRefElement|SVGGradientElement|SVGGraphicsElement|SVGHKernElement|SVGImageElement|SVGLineElement|SVGLinearGradientElement|SVGMPathElement|SVGMarkerElement|SVGMaskElement|SVGMetadataElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRadialGradientElement|SVGRectElement|SVGSVGElement|SVGScriptElement|SVGSetElement|SVGStopElement|SVGStyleElement|SVGSwitchElement|SVGSymbolElement|SVGTSpanElement|SVGTextContentElement|SVGTextElement|SVGTextPathElement|SVGTextPositioningElement|SVGTitleElement|SVGUseElement|SVGVKernElement|SVGViewElement;Element"
 },
 
-EventTarget: {"": "Interceptor;"},
+EventTarget: {"": "Interceptor;", "%": ";EventTarget"},
 
-FormElement: {"": "HtmlElement;length="},
+FormElement: {"": "HtmlElement;length=", "%": "HTMLFormElement"},
 
 Node: {"": "EventTarget;",
   toString$0: function(receiver) {
     var t1 = receiver.nodeValue;
     return t1 == null ? J.Interceptor.prototype.toString$0.call(this, receiver) : t1;
-  }
+  },
+  "%": "Document|HTMLDocument;Node"
 },
 
-SelectElement: {"": "HtmlElement;length="}}],
-["fract_demo.dart", "fract_demo.dart", , E, {
+SelectElement: {"": "HtmlElement;length=", "%": "HTMLSelectElement"}}],
+["", "fract_demo.dart", , E, {
 main: function() {
   var ctx, tx;
   ctx = J.get$context2D$x(document.querySelector("#content"));
@@ -1033,13 +1059,6 @@ $$ = null;
 // Static function getters
 init.globalFunctions.toStringWrapper$closure = H.toStringWrapper$closure = new H.Closure$0(H.toStringWrapper, "toStringWrapper$closure");
 init.globalFunctions.invokeClosure$closure = H.invokeClosure$closure = new H.Closure$7(H.invokeClosure, "invokeClosure$closure");
-init.globalFunctions.typeNameInChrome$closure = H.typeNameInChrome$closure = new H.Closure$1(H.typeNameInChrome, "typeNameInChrome$closure");
-init.globalFunctions.typeNameInSafari$closure = H.typeNameInSafari$closure = new H.Closure$1(H.typeNameInSafari, "typeNameInSafari$closure");
-init.globalFunctions.typeNameInOpera$closure = H.typeNameInOpera$closure = new H.Closure$1(H.typeNameInOpera, "typeNameInOpera$closure");
-init.globalFunctions.typeNameInFirefox$closure = H.typeNameInFirefox$closure = new H.Closure$1(H.typeNameInFirefox, "typeNameInFirefox$closure");
-init.globalFunctions.typeNameInIE$closure = H.typeNameInIE$closure = new H.Closure$1(H.typeNameInIE, "typeNameInIE$closure");
-init.globalFunctions.constructorNameFallback$closure = H.constructorNameFallback$closure = new H.Closure$1(H.constructorNameFallback, "constructorNameFallback$closure");
-init.globalFunctions.callDartFunctionWith1Arg$closure = H.callDartFunctionWith1Arg$closure = new H.Closure$2(H.callDartFunctionWith1Arg, "callDartFunctionWith1Arg$closure");
 // Runtime type support
 // getInterceptor methods
 J.getInterceptor = function(receiver) {
@@ -1102,18 +1121,128 @@ J.getInterceptor$x = function(receiver) {
     return receiver;
   return J.getNativeInterceptor(receiver);
 };
-C.C_UnknownJavaScriptObject = new J.UnknownJavaScriptObject();
 C.JSArray_methods = J.JSArray.prototype;
-$.interceptorsByTag = null;
-$.leafTags = null;
-$.interceptorToTag = null;
-J.$eq = function(receiver, a0) {
-  if (receiver == null)
-    return a0 == null;
-  if (typeof receiver != "object")
-    return a0 != null && receiver === a0;
-  return J.getInterceptor(receiver).$eq(receiver, a0);
+C.JSInt_methods = J.JSInt.prototype;
+C.JSString_methods = J.JSString.prototype;
+C.JS_CONST_0 = function(hooks) {
+  if (typeof dartExperimentalFixupGetTag != "function") return hooks;
+  hooks.getTag = dartExperimentalFixupGetTag(hooks.getTag);
 };
+C.JS_CONST_6qb = function(hooks) {
+  var userAgent = typeof navigator == "object" ? navigator.userAgent : "";
+  if (userAgent.indexOf("Firefox") == -1) return hooks;
+  var getTag = hooks.getTag;
+  var quickMap = {
+    "BeforeUnloadEvent": "Event",
+    "DataTransfer": "Clipboard",
+    "GeoGeolocation": "Geolocation",
+    "WorkerMessageEvent": "MessageEvent",
+    "XMLDocument": "Document"};
+  function getTagFirefox(o) {
+    var tag = getTag(o);
+    return quickMap[tag] || tag;
+  }
+  hooks.getTag = getTagFirefox;
+};
+C.JS_CONST_86y = function getTagFallback(o) {
+  if (o == null) return "Null";
+  var constructor = o.constructor;
+  if (typeof constructor == "function") {
+    var name = constructor.builtin$cls;
+    if (typeof name == "string") return name;
+    name = constructor.name;
+    if (typeof name == "string"
+        && name !== ""
+        && name !== "Object"
+        && name !== "Function.prototype") {
+      return name;
+    }
+  }
+  var s = Object.prototype.toString.call(o);
+  return s.substring(8, s.length - 1);
+};
+C.JS_CONST_Cbr = function(getTagFallback) {
+  return function(hooks) {
+    if (typeof navigator != "object") return hooks;
+    var userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Chrome") >= 0 ||
+        userAgent.indexOf("DumpRenderTree") >= 0) {
+      return hooks;
+    }
+    hooks.getTag = getTagFallback;
+  };
+};
+C.JS_CONST_Fs4 = function(hooks) { return hooks; }
+;
+C.JS_CONST_TtD = function() {
+  function typeNameInChrome(obj) { return obj.constructor.name; }
+  function getUnknownTag(object, tag) {
+    if (/^HTML[A-Z].*Element$/.test(tag)) {
+      var name = Object.prototype.toString.call(object);
+      if (name == "[object Object]") return null;
+      return "HTMLElement";
+    }
+  }
+  function getUnknownTagGenericBrowser(object, tag) {
+    if (object instanceof HTMLElement) return "HTMLElement";
+    return getUnknownTag(object, tag);
+  }
+  function prototypeForTag(tag) {
+    if (typeof window == "undefined") return null;
+    if (typeof window[tag] == "undefined") return null;
+    var constructor = window[tag];
+    if (typeof constructor != "function") return null;
+    return constructor.prototype;
+  }
+  function discriminator(tag) { return null; }
+  var isBrowser = typeof navigator == "object";
+  return {
+    getTag: typeNameInChrome,
+    getUnknownTag: isBrowser ? getUnknownTagGenericBrowser : getUnknownTag,
+    prototypeForTag: prototypeForTag,
+    discriminator: discriminator };
+};
+C.JS_CONST_rD3 = function(hooks) {
+  var userAgent = typeof navigator == "object" ? navigator.userAgent : "";
+  if (userAgent.indexOf("Trident/") == -1) return hooks;
+  var getTag = hooks.getTag;
+  var quickMap = {
+    "BeforeUnloadEvent": "Event",
+    "DataTransfer": "Clipboard",
+    "HTMLDDElement": "HTMLElement",
+    "HTMLDTElement": "HTMLElement",
+    "HTMLPhraseElement": "HTMLElement",
+    "Position": "Geoposition"
+  };
+  function getTagIE(o) {
+    var tag = getTag(o);
+    var newTag = quickMap[tag];
+    if (newTag) return newTag;
+    if (tag == "Document") {
+      if (!!o.xmlVersion) return "!Document";
+      return "!HTMLDocument";
+    }
+    if (tag == "Object") {
+      if (window.DataView && (o instanceof window.DataView)) return "DataView";
+    }
+    return tag;
+  }
+  function prototypeForTagIE(tag) {
+    if (tag == "Document") return null;
+    var constructor = window[tag];
+    if (constructor == null) return null;
+    return constructor.prototype;
+  }
+  hooks.getTag = getTagIE;
+  hooks.prototypeForTag = prototypeForTagIE;
+};
+C.UnknownJavaScriptObject_methods = J.UnknownJavaScriptObject.prototype;
+$.getTagFunction = null;
+$.alternateTagFunction = null;
+$.prototypeForTagFunction = null;
+$.dispatchRecordsForInstanceTags = null;
+$.interceptorsForUncacheableTags = null;
+$.initNativeDispatchFlag = null;
 J.get$context2D$x = function(receiver) {
   return J.getInterceptor$x(receiver).get$context2D(receiver);
 };
@@ -1126,40 +1255,10 @@ J.get$length$asx = function(receiver) {
 J.toString$0 = function(receiver) {
   return J.getInterceptor(receiver).toString$0(receiver);
 };
-$.mapTypeToInterceptor = [];
-Isolate.$lazy($, "getTypeNameOf", "getTypeNameOf", "get$getTypeNameOf", function() {
-  return H.getFunctionForTypeNameOf();
-});
 Isolate.$lazy($, "_toStringList", "IterableMixinWorkaround__toStringList", "get$IterableMixinWorkaround__toStringList", function() {
   return P.List_List(null);
 });
 // Native classes
-H.defineNativeMethods("AutocompleteErrorEvent|CanvasGradient|CanvasPattern|CanvasRenderingContext|CanvasRenderingContext2D|DOMError|ErrorEvent|Event|FileError|MediaError|MediaKeyError|NavigatorUserMediaError|PositionError|SQLError|SVGAnimatedLength|SVGAnimatedLengthList|SVGAnimatedNumber|SVGAnimatedNumberList|SVGAnimatedTransformList|SpeechRecognitionError", J.Interceptor);
-
-H.defineNativeMethods("HTMLAppletElement|HTMLAreaElement|HTMLAudioElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMediaElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement|HTMLVideoElement", W.HtmlElement);
-
-H.defineNativeMethodsNonleaf("HTMLElement", W.HtmlElement);
-
-H.defineNativeMethods("HTMLAnchorElement", W.AnchorElement);
-
-H.defineNativeMethods("HTMLCanvasElement", W.CanvasElement);
-
-H.defineNativeMethods("DOMException", W.DomException);
-
-H.defineNativeMethods("SVGAElement|SVGAltGlyphDefElement|SVGAltGlyphElement|SVGAltGlyphItemElement|SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGCursorElement|SVGDefsElement|SVGDescElement|SVGElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFEPointLightElement|SVGFESpecularLightingElement|SVGFESpotLightElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGForeignObjectElement|SVGGElement|SVGGlyphElement|SVGGlyphRefElement|SVGGradientElement|SVGGraphicsElement|SVGHKernElement|SVGImageElement|SVGLineElement|SVGLinearGradientElement|SVGMPathElement|SVGMarkerElement|SVGMaskElement|SVGMetadataElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRadialGradientElement|SVGRectElement|SVGSVGElement|SVGScriptElement|SVGSetElement|SVGStopElement|SVGStyleElement|SVGSwitchElement|SVGSymbolElement|SVGTRefElement|SVGTSpanElement|SVGTextContentElement|SVGTextElement|SVGTextPathElement|SVGTextPositioningElement|SVGTitleElement|SVGUseElement|SVGVKernElement|SVGViewElement", W.Element);
-
-H.defineNativeMethodsNonleaf("Element", W.Element);
-
-H.defineNativeMethodsNonleaf("EventTarget", W.EventTarget);
-
-H.defineNativeMethods("HTMLFormElement", W.FormElement);
-
-H.defineNativeMethods("Document|HTMLDocument", W.Node);
-
-H.defineNativeMethodsNonleaf("Node", W.Node);
-
-H.defineNativeMethods("HTMLSelectElement", W.SelectElement);
-
 
 init.functionAliases = {};
 ;
@@ -1381,6 +1480,8 @@ function init() {
     }
     constructors = null;
     var finishedClasses = {};
+    init.interceptorsByTag = Object.create(null);
+    init.leafTags = {};
     function finishClass(cls) {
       var hasOwnProperty = Object.prototype.hasOwnProperty;
       if (hasOwnProperty.call(finishedClasses, cls))
@@ -1394,7 +1495,31 @@ function init() {
       var superConstructor = allClasses[superclass];
       if (!superConstructor)
         superConstructor = existingIsolateProperties[superclass];
-      prototype = inheritFrom(constructor, superConstructor);
+      var prototype = inheritFrom(constructor, superConstructor);
+      if (hasOwnProperty.call(prototype, "%")) {
+        var nativeSpec = prototype["%"].split(";");
+        if (nativeSpec[0]) {
+          var tags = nativeSpec[0].split("|");
+          for (var i = 0; i < tags.length; i++) {
+            init.interceptorsByTag[tags[i]] = constructor;
+            init.leafTags[tags[i]] = true;
+          }
+        }
+        if (nativeSpec[1]) {
+          tags = nativeSpec[1].split("|");
+          if (nativeSpec[2]) {
+            var subclasses = nativeSpec[2].split("|");
+            for (var i = 0; i < subclasses.length; i++) {
+              var subclass = allClasses[subclasses[i]];
+              subclass.$nativeSuperclassTag = tags[0];
+            }
+          }
+          for (i = 0; i < tags.length; i++) {
+            init.interceptorsByTag[tags[i]] = constructor;
+            init.leafTags[tags[i]] = false;
+          }
+        }
+      }
     }
     for (var cls in pendingClasses)
       finishClass(cls);
