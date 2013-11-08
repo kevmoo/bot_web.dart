@@ -1,5 +1,12 @@
 # Changelog - Dart Bag of Tricks - WEB
 
+## 0.21.0 2013-11-08 (SDK 0.8.10+10_r30107)
+
+* Lastest SDK
+* Aligned with [Dart V1 Pubspec Recommendations](https://plus.google.com/+SethLadd/posts/9JQJVz78R97).
+* **BREAKING** Removed deprecated features from `bot_web`
+* Many APIs changed from taking `Coordinate` to taking `Point`.
+
 ## 0.20.6 2013-10-09 (SDK 0.8.1+2 r28355)
 
 * Latest SDK, updated `bot` package version
