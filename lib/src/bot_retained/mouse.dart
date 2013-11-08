@@ -13,10 +13,10 @@ class Mouse {
   static bool isMouseDirectlyOver(Thing thing) =>
       isMouseDirectlyOverProperty.get(thing);
 
-  static List<Thing> markMouseOver(Stage stage,
-      [Coordinate coordinate = null]) {
+  static List<Thing> markMouseOver(Stage stage, [Point coordinate = null]) {
     requireArgumentNotNull(stage, 'stage');
-    requireArgument(coordinate == null || coordinate.isValid, 'coordinate');
+    requireArgument(coordinate == null ||
+        Coordinate.valid(coordinate), 'coordinate');
 
     final items = _stageMouseCacheProperty.get(stage);
     if (items != null) {

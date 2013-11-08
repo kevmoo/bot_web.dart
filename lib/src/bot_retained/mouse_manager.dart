@@ -184,7 +184,7 @@ class MouseManager {
     cursorProperty.set(_stage, cursor);
   }
 
-  List<Thing> _updateMouseLocation(Coordinate value) {
+  List<Thing> _updateMouseLocation(Point value) {
     return Mouse.markMouseOver(_stage, value);
   }
 
