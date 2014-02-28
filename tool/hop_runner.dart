@@ -4,10 +4,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:hop/hop.dart';
 import 'package:hop/hop_tasks.dart';
+import 'package:hop_docgen/hop_docgen.dart';
 import '../test/harness_console.dart' as test_console;
 
 import 'tasks/update_example_html.dart' as html_tasks;
-import 'package:hop/src/hop_tasks_experimental.dart' as dartdoc;
 
 void main(List<String> args) {
   // Easy to enable hop-wide logging
@@ -15,7 +15,7 @@ void main(List<String> args) {
 
   addTask('test', createUnitTestTask(test_console.testCore));
 
-  addTask('docs', createDartDocTask(_getLibs, linkApi: true, postBuild: dartdoc.createPostBuild(_cfg)));
+  addTask('docs', createDocGenTask('../kev_dartdoc_viewer'));
 
   //
   // Analyzer
@@ -47,8 +47,3 @@ Future<List<String>> _getLibs() {
       .map((File file) => file.path)
       .toList();
 }
-
-const _libs = const ['bot_html', 'bot_retained', 'bot_texture'];
-
-final _cfg = new dartdoc.DocsConfig('bot_web', 'https://github.com/kevmoo/bot_web.dart',
-    'logo.png', 333, 250, _libs.contains);
