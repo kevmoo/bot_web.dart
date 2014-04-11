@@ -93,7 +93,7 @@ Future<bool> _transform(List<String> samples) {
 
 void _tweakDocument(Document doc, List<String> samples) {
 
-  final sampleList = doc.queryAll('ul')
+  final sampleList = doc.querySelectorAll('ul')
       .where((Element e) => e.id == 'demo-list')
       .single;
 
@@ -109,7 +109,6 @@ void _tweakDocument(Document doc, List<String> samples) {
       ..children.add(anchor);
     sampleList.children.add(li);
   }
-
 }
 
 Future<List<String>> _getExampleFiles() {
