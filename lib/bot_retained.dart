@@ -2,8 +2,11 @@ library bot_retained;
 
 import 'dart:async';
 import 'dart:html';
+
 import 'package:bot/bot.dart';
 import 'package:bot_web/bot_html.dart';
+
+import 'src/util.dart';
 
 part 'src/bot_retained/alignment.dart';
 part 'src/bot_retained/mouse_manager.dart';

@@ -6,14 +6,14 @@ part of bot_html;
 
 class Dragger {
   final Element _element;
-  final EventHandle<Vector> _dragDeltaHandle;
-  final EventHandle<CancelableEventArgs> _dragStartHandle;
+  final StreamController<Vector> _dragDeltaHandle;
+  final StreamController<CancelableEventArgs> _dragStartHandle;
 
   Point _clientLoc;
 
   Dragger(this._element) :
-    _dragDeltaHandle = new EventHandle<Vector>(),
-    _dragStartHandle = new EventHandle<CancelableEventArgs>() {
+    _dragDeltaHandle = new StreamController<Vector>(),
+    _dragStartHandle = new StreamController<CancelableEventArgs>() {
     _element.onMouseDown.listen(_onMouseDown);
     window.onMouseMove.listen(_handleMove);
     window.onMouseUp.listen(_endDrag);

@@ -133,7 +133,7 @@ class MouseManager {
 
   void _mouseOut(MouseEvent e) {
     _updateMouseLocation(null);
-    _mouseOutEvent.fireEvent(_stage, EventArgs.empty);
+    _mouseOutEvent.fireEvent(_stage, EMPTY_EVENT);
     _updateStageCursor(null);
   }
 

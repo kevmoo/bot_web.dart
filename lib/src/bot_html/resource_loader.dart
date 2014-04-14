@@ -10,8 +10,8 @@ abstract class ResourceLoader<T> {
   static const int _defaultSize = 2000;
 
   final ReadOnlyCollection<_ResourceEntry<T>> _entries;
-  final EventHandle<EventArgs> _loadedEvent= new EventHandle<EventArgs>();
-  final EventHandle<EventArgs> _progressEvent = new EventHandle<EventArgs>();
+  final StreamController _loadedEvent= new StreamController();
+  final StreamController _progressEvent = new StreamController();
 
   String _state = StateUnloaded;
 
@@ -50,7 +50,7 @@ abstract class ResourceLoader<T> {
         .then((_) {
           if(_entries.every((e) => e.completed)) {
             _state = StateLoaded;
-            _loadedEvent.add(EventArgs.empty);
+            _loadedEvent.add(EMPTY_EVENT);
           }
         });
   }
@@ -101,7 +101,7 @@ abstract class ResourceLoader<T> {
     assert(args.lengthComputable);
 
     if(entry.updateProgress(args.loaded, args.total)) {
-      _progressEvent.add(EventArgs.empty);
+      _progressEvent.add(EMPTY_EVENT);
     }
   }
 }

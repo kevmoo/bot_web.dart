@@ -4,8 +4,11 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:web_audio';
-import 'package:logging/logging.dart';
+
 import 'package:bot/bot.dart';
+import 'package:logging/logging.dart';
+
+import 'src/util.dart';
 
 part 'src/bot_html/_resource_entry.dart';
 part 'src/bot_html/audio_loader.dart';

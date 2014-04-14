@@ -1,6 +1,6 @@
 part of bot_retained;
 
-class ThingMouseEventArgs extends EventArgs {
+class ThingMouseEventArgs {
   final Thing thing;
   final MouseEvent sourceEvent;
 

@@ -1,7 +1,7 @@
 part of bot_texture;
 
 class TextureAnimationRequest {
-  final EventHandle<EventArgs> _startEventHandle = new EventHandle<EventArgs>();
+  final StreamController _startEventHandle = new StreamController();
   final String _texturePrefix;
   final int _frameCount;
   final Coordinate _offset;
@@ -27,7 +27,7 @@ class TextureAnimationRequest {
   bool get fresh => _frame == null;
   bool get done => _done;
 
-  Stream<EventArgs> get started => _startEventHandle.stream;
+  Stream get started => _startEventHandle.stream;
 
   void update() {
     if(_frame == null) {
@@ -40,7 +40,7 @@ class TextureAnimationRequest {
     }
 
     if(_frame == 0 && !_done) {
-      _startEventHandle.add(EventArgs.empty);
+      _startEventHandle.add(EMPTY_EVENT);
     }
   }
 
