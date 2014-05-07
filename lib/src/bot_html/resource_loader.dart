@@ -9,17 +9,17 @@ abstract class ResourceLoader<T> {
 
   static const int _defaultSize = 2000;
 
-  final ReadOnlyCollection<_ResourceEntry<T>> _entries;
+  final UnmodifiableListView<_ResourceEntry<T>> _entries;
   final StreamController _loadedEvent= new StreamController();
   final StreamController _progressEvent = new StreamController();
 
   String _state = StateUnloaded;
 
-  ResourceLoader(Iterable<String> urlList) : _entries = $(urlList)
-      .map((url) => new _ResourceEntry(url))
-      .toReadOnlyCollection();
+  ResourceLoader(Iterable<String> urlList)
+      : _entries = new UnmodifiableListView(
+          urlList.map((url) => new _ResourceEntry(url)).toList());
 
-  int get completedCount => _entries.count((e) => e.completed);
+  int get completedCount => $(_entries).count((e) => e.completed);
 
   String get state => _state;
 
@@ -30,11 +30,11 @@ abstract class ResourceLoader<T> {
   T getResource(String url) => _getByUrl(url).resource;
 
   int get completedBytes {
-    return _entries.selectNumbers((e) => e.completedBytes).sum();
+    return $(_entries).selectNumbers((e) => e.completedBytes).sum();
   }
 
   int get totalBytes {
-    return _entries.selectNumbers((e) {
+    return $(_entries).selectNumbers((e) {
       if(e.totalBytes == null) {
         return _defaultSize;
       } else {

@@ -37,13 +37,14 @@ class TxThing extends ParentThing {
   Coordinate _rotateScaleCoordinate;
 
   factory TxThing(num width, num height) {
-    final box = new Box(width/3, height/3, width/3, height/3);
+    var box = new Rectangle(width/3, height/3, width/3, height/3);
 
-    final shape = new ShapeThing(box.width, box.height);
-    final tx = shape.addTransform();
+    var shape = new ShapeThing(box.width, box.height);
+    var tx = shape.addTransform();
     tx.setToTranslation(box.left, box.top);
 
-    return new TxThing._internal(width, height, box.size, shape, tx);
+    return new TxThing._internal(width, height, new Size(box.width, box.height),
+        shape, tx);
   }
 
   TxThing._internal(num width, num height, this._sourceSize, this._shape, this._tx) :

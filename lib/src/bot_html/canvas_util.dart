@@ -80,10 +80,10 @@ class CanvasUtil {
   }
 
   static void drawImage(CanvasRenderingContext2D ctx, ImageElement img,
-                        Box sourceBox, [Box targetBox = null]) {
+                        Rectangle sourceBox, [Rectangle targetBox = null]) {
 
     if(targetBox == null) {
-      targetBox = new Box(0, 0, sourceBox.width, sourceBox.height);
+      targetBox = new Rectangle(0, 0, sourceBox.width, sourceBox.height);
     }
 
     ctx.drawImageToRect(img, targetBox, sourceRect: sourceBox);

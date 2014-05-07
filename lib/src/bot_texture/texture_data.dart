@@ -30,7 +30,7 @@ class TextureData {
 
     if(texture.rotated) {
       tx.rotate(-0.5 * math.PI, 0.5 * theFrame.height, 0.5 * theFrame.height);
-      theFrame = new Box(theFrame.left, theFrame.top,
+      theFrame = new Rectangle(theFrame.left, theFrame.top,
           theFrame.height, theFrame.width);
     }
 

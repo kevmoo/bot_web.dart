@@ -1,7 +1,8 @@
 library bot_html;
 
-import 'dart:html';
 import 'dart:async';
+import 'dart:collection';
+import 'dart:html';
 import 'dart:math' as math;
 import 'dart:web_audio';
 

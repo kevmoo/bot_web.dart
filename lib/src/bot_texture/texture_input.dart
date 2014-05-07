@@ -2,10 +2,10 @@ part of bot_texture;
 
 class TextureInput {
   final String name;
-  final Box frame;
+  final Rectangle frame;
   final bool rotated;
   final bool trimmed;
-  final Box sourceColorRect;
+  final Rectangle sourceColorRect;
   final Size sourceSize;
   final ImageElement image;
 
@@ -24,7 +24,7 @@ class TextureInput {
 
   String toString() => this.name;
 
-  static Box _parseRect(Map<String, dynamic> input) {
+  static Rectangle _parseRect(Map<String, dynamic> input) {
     var coord = new Coordinate(input['x'], input['y']);
     var size = new Size(input['w'], input['h']);
 

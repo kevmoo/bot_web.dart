@@ -53,7 +53,7 @@ class RetainedUtil {
   static List<Thing> _hitTest(Thing thing, Point point){
     point = transformPointGlobalToLocal(thing, point);
 
-    final bounds = new Box(0, 0, thing.width, thing.height);
+    final bounds = new Rectangle(0, 0, thing.width, thing.height);
 
     var hits = new List<Thing>();
     if (bounds.containsPoint(point)) {
@@ -86,7 +86,7 @@ class RetainedUtil {
   }
 
   static List<Coordinate> getCorners(Thing thing) {
-    final rect = new Box(0,0,thing.width, thing.height);
+    var rect = new Box(0,0,thing.width, thing.height);
     final points = rect.getCorners();
     return points.map((p) {
       return transformPointLocalToGlobal(thing, p);

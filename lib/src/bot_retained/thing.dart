@@ -4,7 +4,7 @@ part of bot_retained;
 
 abstract class Thing extends AttachableObject {
   final List<AffineTransform> _transforms = new List<AffineTransform>();
-  final EventHandle<EventArgs> _invalidatedEventHandle = new EventHandle<EventArgs>();
+  final StreamController _invalidatedEventHandle = new StreamController();
   CanvasElement _cacheCanvas;
 
   num _width, _height, _alpha = 1;
@@ -147,7 +147,7 @@ abstract class Thing extends AttachableObject {
   @protected
   void disposeInternal(){
     super.disposeInternal();
-    _invalidatedEventHandle.dispose();
+    _invalidatedEventHandle.close();
   }
 
   //

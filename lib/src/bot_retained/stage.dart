@@ -2,8 +2,7 @@ part of bot_retained;
 
 class Stage extends AttachableObject
   implements ThingParent {
-  final EventHandle<EventArgs> _invalidatedEventHandle =
-      new EventHandle<EventArgs>();
+  final StreamController _invalidatedEventHandle = new StreamController();
 
   final CanvasElement _canvas;
   final Thing rootThing;
@@ -44,7 +43,7 @@ class Stage extends AttachableObject
 
   void disposeInternal(){
     super.disposeInternal();
-    _invalidatedEventHandle.dispose();
+    _invalidatedEventHandle.close();
   }
 
   AffineTransform getTransformToRoot() => new AffineTransform();

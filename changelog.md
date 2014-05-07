@@ -1,3 +1,7 @@
+## 0.22.0 2014-05-06
+
+* Removing a mountain of deprecations from `bot`.
+
 ## 0.21.0+3 2014-04-14
 
 * Updated max dependency versions.
