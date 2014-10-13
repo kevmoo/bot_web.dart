@@ -1,3 +1,9 @@
+## 0.22.0+1
+
+* Updated dev dependencies.
+
+* Updated doc location.
+
 ## 0.22.0 2014-05-06
 
 * Removing a mountain of deprecations from `bot`.

@@ -4,7 +4,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:hop/hop.dart';
 import 'package:hop/hop_tasks.dart';
-import 'package:hop_docgen/hop_docgen.dart';
+import 'package:hop_unittest/hop_unittest.dart';
+
 import '../test/harness_console.dart' as test_console;
 
 import 'tasks/update_example_html.dart' as html_tasks;
@@ -14,8 +15,6 @@ void main(List<String> args) {
   // enableScriptLogListener();
 
   addTask('test', createUnitTestTask(test_console.main));
-
-  addTask('docs', createDocGenTask('../kev_dartdoc_viewer'));
 
   //
   // Analyzer
