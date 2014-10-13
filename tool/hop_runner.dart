@@ -29,7 +29,7 @@ void main(List<String> args) {
   // Dart2js
   //
   final paths = ['click', 'drag', 'fract', 'frames', 'nav', 'spin']
-      .map((d) => "example/bot_retained/$d/${d}_demo.dart")
+      .map((d) => "example/$d/${d}_demo.dart")
       .toList();
   paths.add('test/harness_browser.dart');
 
