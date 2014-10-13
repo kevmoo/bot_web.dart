@@ -7,7 +7,7 @@ import 'package:hop/hop.dart';
 import 'package:html5lib/dom.dart';
 import 'package:html5lib/parser.dart';
 
-const _startPath = r'example/bot_retained';
+const _startPath = r'example';
 const _demoFinder = r'/**/*_demo.html';
 final _exampleFile = _startPath + '/index.html';
 
