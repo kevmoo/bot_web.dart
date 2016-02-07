@@ -31,4 +31,3 @@ part 'src/bot_retained/text_thing.dart';
 part 'src/bot_retained/_retained_enum.dart';
 
 Coordinate _p2c(Point p) => new Coordinate(p.x, p.y);
-Point _c2p(Coordinate c) => new Point(c.x, c.y);

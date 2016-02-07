@@ -99,10 +99,6 @@ class NavThing extends ParentThing {
     _navLayerTransformProp.set(_child, tx);
     _child.registerParent(this);
   }
-
-  void _updateChildLocation() {
-    throw 'not impld';
-  }
 }
 
 class _NavLayerTxPanel extends PanelThing {

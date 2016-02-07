@@ -63,11 +63,6 @@ abstract class ResourceLoader<T> {
     return _entries.singleWhere((e) => e.url == url);
   }
 
-  _ResourceEntry<T> _getByBlobUrl(String blobUrl) {
-    assert(blobUrl != null);
-    return _entries.singleWhere((e) => e.matchesBlobUrl(blobUrl));
-  }
-
   Future _httpLoad(_ResourceEntry<T> entry) {
     return HttpRequest.request(entry.url, responseType: 'blob',
         onProgress: (ProgressEvent args) => _onProgress(entry, args))
