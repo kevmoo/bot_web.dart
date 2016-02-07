@@ -11,15 +11,15 @@ void main() {
 class ClickDemo extends StageWrapper<CanvasThing> {
   static const _blueColor = 'blue';
 
-  factory ClickDemo(CanvasElement canvas){
-
+  factory ClickDemo(CanvasElement canvas) {
     CanvasThing pCanvas = new CanvasThing(200, 200);
     pCanvas.background = 'yellow';
 
     var blue = new ShapeThing(100, 100, fillStyle: _blueColor);
     MouseManager.setClickable(blue, true);
     final clickHandler = (args) {
-      blue.fillStyle = (blue.fillStyle == _blueColor) ? 'lightblue' : _blueColor;
+      blue.fillStyle =
+          (blue.fillStyle == _blueColor) ? 'lightblue' : _blueColor;
     };
 
     MouseManager.getClickStream(blue).listen(clickHandler);
@@ -30,17 +30,19 @@ class ClickDemo extends StageWrapper<CanvasThing> {
     pCanvas.add(green);
     pCanvas.setTopLeft(green, const Coordinate(110, 15));
 
-    var red = new ShapeThing(40, 40, fillStyle: 'red', shapeType: ShapeType.ellipse);
+    var red =
+        new ShapeThing(40, 40, fillStyle: 'red', shapeType: ShapeType.ellipse);
     pCanvas.add(red);
     pCanvas.setCenter(red, const Coordinate(50, 150));
 
     MouseManager.setClickable(red, true);
     MouseManager.getMouseUpStream(red).listen((args) => print(['up', args]));
-    MouseManager.getMouseDownStream(red).listen((args) => print(['down', args]));
+    MouseManager
+        .getMouseDownStream(red)
+        .listen((args) => print(['down', args]));
 
-    pCanvas.addTransform().translate(
-      (canvas.width - pCanvas.width) / 2,
-      (canvas.height - pCanvas.height) / 2);
+    pCanvas.addTransform().translate((canvas.width - pCanvas.width) / 2,
+        (canvas.height - pCanvas.height) / 2);
 
     var rootPanel = new CanvasThing(500, 500);
     rootPanel.add(pCanvas);
@@ -48,8 +50,8 @@ class ClickDemo extends StageWrapper<CanvasThing> {
     return new ClickDemo._internal(canvas, rootPanel);
   }
 
-  ClickDemo._internal(CanvasElement canvas, CanvasThing thing) :
-    super(canvas, thing) {
+  ClickDemo._internal(CanvasElement canvas, CanvasThing thing)
+      : super(canvas, thing) {
     new MouseManager(stage);
   }
 }

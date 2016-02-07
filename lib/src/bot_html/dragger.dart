@@ -11,9 +11,9 @@ class Dragger {
 
   Point _clientLoc;
 
-  Dragger(this._element) :
-    _dragDeltaHandle = new StreamController<Vector>(),
-    _dragStartHandle = new StreamController<CancelableEventArgs>() {
+  Dragger(this._element)
+      : _dragDeltaHandle = new StreamController<Vector>(),
+        _dragStartHandle = new StreamController<CancelableEventArgs>() {
     _element.onMouseDown.listen(_onMouseDown);
     window.onMouseMove.listen(_handleMove);
     window.onMouseUp.listen(_endDrag);
@@ -30,15 +30,14 @@ class Dragger {
     assert(!isDragging);
     final args = new CancelableEventArgs();
     _dragStartHandle.add(args);
-    if(!args.isCanceled) {
+    if (!args.isCanceled) {
       event.preventDefault();
       _clientLoc = event.client;
     }
   }
 
   void _handleMove(MouseEvent event) {
-    if(isDragging) {
-
+    if (isDragging) {
       final newLoc = event.client;
 
       final delta = newLoc - _clientLoc;
@@ -49,7 +48,7 @@ class Dragger {
   }
 
   void _endDrag(Event event) {
-    if(isDragging) {
+    if (isDragging) {
       _clientLoc = null;
     }
   }

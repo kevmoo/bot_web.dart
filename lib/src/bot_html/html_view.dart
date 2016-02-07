@@ -16,7 +16,7 @@ abstract class HtmlView {
   }
 
   void draw() {
-    if(_dirty) {
+    if (_dirty) {
       updateElement();
       _dirty = false;
     }

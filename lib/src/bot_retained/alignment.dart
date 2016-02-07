@@ -14,8 +14,7 @@ class HorizontalAlignment extends _RetainedEnum {
 }
 
 class VerticalAlignment extends _RetainedEnum {
-  static const VerticalAlignment TOP =
-      const VerticalAlignment._internal('top');
+  static const VerticalAlignment TOP = const VerticalAlignment._internal('top');
 
   static const VerticalAlignment BOTTOM =
       const VerticalAlignment._internal('bottom');

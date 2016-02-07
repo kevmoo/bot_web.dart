@@ -4,8 +4,10 @@ class ShapeThing extends Thing {
   dynamic _fillStyle;
   final ShapeType shapeType;
 
-  ShapeThing(num w, num h, {dynamic fillStyle: 'blue', this.shapeType: ShapeType.rect})
-    : _fillStyle = fillStyle, super(w, h);
+  ShapeThing(num w, num h,
+      {dynamic fillStyle: 'blue', this.shapeType: ShapeType.rect})
+      : _fillStyle = fillStyle,
+        super(w, h);
 
   dynamic get fillStyle => _fillStyle;
 
@@ -16,7 +18,7 @@ class ShapeThing extends Thing {
 
   void drawOverride(CanvasRenderingContext2D ctx) {
     ctx.fillStyle = _fillStyle;
-    switch(shapeType){
+    switch (shapeType) {
       case ShapeType.rect:
         ctx.fillRect(0, 0, size.width, size.height);
         break;

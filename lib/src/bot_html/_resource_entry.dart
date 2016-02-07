@@ -27,12 +27,12 @@ class _ResourceEntry<T> {
     assert(_total == null || _total == total);
 
     var changed = false;
-    if(_completed != completed) {
+    if (_completed != completed) {
       _completed = completed;
       changed = true;
     }
 
-    if(_total != total) {
+    if (_total != total) {
       _total = total;
       changed = true;
     }
@@ -52,7 +52,7 @@ class _ResourceEntry<T> {
     assert(blob != null);
     assert(_blobUrl == null);
     _blobUrl = Url.createObjectUrl(blob);
-    if(_blobUrl == null) {
+    if (_blobUrl == null) {
       _blobUrl = url;
     }
     return _blobUrl;

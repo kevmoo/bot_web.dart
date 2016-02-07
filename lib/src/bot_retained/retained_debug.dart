@@ -12,12 +12,12 @@ class RetainedDebug {
     ctx.restore();
   }
 
-  static void borderHitTest(Stage stage, Point point){
+  static void borderHitTest(Stage stage, Point point) {
     final ctx = stage.ctx;
 
     final hits = RetainedUtil.hitTest(stage, point);
 
-    if(hits.length > 0){
+    if (hits.length > 0) {
       ctx.save();
       ctx.lineWidth = 2;
 
@@ -29,8 +29,7 @@ class RetainedDebug {
   }
 
   static void _borderThing(CanvasRenderingContext2D ctx, Thing thing,
-                             [bool excludeChildren = false,
-                             Func1<Thing, bool> filter = null]) {
+      [bool excludeChildren = false, Func1<Thing, bool> filter = null]) {
     if (filter == null || filter(thing)) {
       _borderThingCore(ctx, thing);
     }
@@ -57,7 +56,7 @@ class RetainedDebug {
 
     ctx.beginPath();
     ctx.moveTo(corners[3].x, corners[3].y);
-    for(final p in corners) {
+    for (final p in corners) {
       ctx.lineTo(p.x, p.y);
     }
     ctx.stroke();

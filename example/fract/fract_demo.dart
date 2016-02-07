@@ -22,7 +22,7 @@ void main() {
 }
 
 void drawBranch(CanvasRenderingContext2D ctx, [int levels = 12]) {
-  if(levels == 0) {
+  if (levels == 0) {
     return;
   }
   ctx.moveTo(0, 0);
@@ -36,7 +36,7 @@ void drawBranch(CanvasRenderingContext2D ctx, [int levels = 12]) {
   var rightTx = new AffineTransform();
   rightTx.translate(1, 0);
   rightTx.scale(ratio, ratio);
-  rightTx.rotate(angle, 0,0);
+  rightTx.rotate(angle, 0, 0);
   CanvasUtil.transform(ctx, rightTx);
   drawBranch(ctx, levels - 1);
   ctx.restore();
@@ -46,7 +46,7 @@ void drawBranch(CanvasRenderingContext2D ctx, [int levels = 12]) {
   rightTx = new AffineTransform();
   rightTx.translate(1, 0);
   rightTx.scale(ratio, ratio);
-  rightTx.rotate(-angle, 0,0);
+  rightTx.rotate(-angle, 0, 0);
   CanvasUtil.transform(ctx, rightTx);
   drawBranch(ctx, levels - 1);
   ctx.restore();

@@ -45,7 +45,7 @@ abstract class Thing extends AttachableObject {
     requireArgument(isValidNumber(value), 'value');
     requireArgument(value >= 0 && value <= 1, 'value');
     _alpha = value;
-    if(parent != null) {
+    if (parent != null) {
       _invalidateParent();
     }
   }
@@ -56,9 +56,9 @@ abstract class Thing extends AttachableObject {
 
   void set cacheEnabled(bool value) {
     requireArgumentNotNull(value, 'value');
-    if(value != _cacheEnabled) {
+    if (value != _cacheEnabled) {
       _cacheEnabled = value;
-      if(!_cacheEnabled) {
+      if (!_cacheEnabled) {
         _cacheCanvas = null;
       }
     }
@@ -72,9 +72,9 @@ abstract class Thing extends AttachableObject {
     return tx;
   }
 
-  AffineTransform getTransformToRoot(){
+  AffineTransform getTransformToRoot() {
     var tx = new AffineTransform();
-    if(_parent != null){
+    if (_parent != null) {
       tx.concatenate(_parent.getTransformToRoot());
     }
     tx.concatenate(getTransform());
@@ -82,10 +82,10 @@ abstract class Thing extends AttachableObject {
   }
 
   @protected
-  void update(){ }
+  void update() {}
 
   @protected
-  void drawCore(CanvasRenderingContext2D ctx){
+  void drawCore(CanvasRenderingContext2D ctx) {
     ctx.save();
     final tx = this.getTransform();
     CanvasUtil.transform(ctx, tx);
@@ -94,7 +94,7 @@ abstract class Thing extends AttachableObject {
     assert(_alpha <= 1);
     ctx.globalAlpha = ctx.globalAlpha * _alpha;
 
-    if(_cacheEnabled) {
+    if (_cacheEnabled) {
       _drawCached(ctx);
     } else {
       _drawNormal(ctx);
@@ -106,7 +106,7 @@ abstract class Thing extends AttachableObject {
   @protected
   void drawOverride(CanvasRenderingContext2D ctx);
 
-  AffineTransform addTransform(){
+  AffineTransform addTransform() {
     validateNotDisposed();
     var tx = new AffineTransform();
     _transforms.add(tx);
@@ -116,7 +116,7 @@ abstract class Thing extends AttachableObject {
   bool removeTransform(AffineTransform tx) {
     requireArgumentNotNull(tx, 'tx');
     final index = _transforms.indexOf(tx);
-    if(index < 0) {
+    if (index < 0) {
       return false;
     } else {
       _transforms.removeAt(index);
@@ -124,9 +124,9 @@ abstract class Thing extends AttachableObject {
     }
   }
 
-  void invalidateDraw(){
+  void invalidateDraw() {
     validateNotDisposed();
-    if(_lastDrawTime != null) {
+    if (_lastDrawTime != null) {
       _lastDrawTime = null;
       _invalidateParent();
     }
@@ -145,7 +145,7 @@ abstract class Thing extends AttachableObject {
   }
 
   @protected
-  void disposeInternal(){
+  void disposeInternal() {
     super.disposeInternal();
     _invalidatedEventHandle.close();
   }
@@ -154,7 +154,7 @@ abstract class Thing extends AttachableObject {
   // Privates
   //
 
-  bool _stageDraw(CanvasRenderingContext2D ctx){
+  bool _stageDraw(CanvasRenderingContext2D ctx) {
     update();
     var dirty = (_lastDrawTime == null);
     drawCore(ctx);
@@ -190,7 +190,7 @@ abstract class Thing extends AttachableObject {
     drawOverride(ctx);
   }
 
-  void _invalidateParent(){
+  void _invalidateParent() {
     assert(this._parent != null);
     _invalidatedEventHandle.add(EMPTY_EVENT);
     _parent.childInvalidated(this);

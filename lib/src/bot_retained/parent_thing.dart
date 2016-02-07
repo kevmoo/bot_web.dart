@@ -1,23 +1,19 @@
 part of bot_retained;
 
-abstract class ParentThing
-  extends Thing
-  implements ThingParent {
+abstract class ParentThing extends Thing implements ThingParent {
+  ParentThing(num w, num h) : super(w, h);
 
-  ParentThing(num w, num h) :
-    super(w, h);
-
-  bool hasVisualChild(Thing thing){
+  bool hasVisualChild(Thing thing) {
     var length = visualChildCount;
-    for(var i=0;i<length;i++){
-      if(identical(thing, getVisualChild(i))){
+    for (var i = 0; i < length; i++) {
+      if (identical(thing, getVisualChild(i))) {
         return true;
       }
     }
     return false;
   }
 
-  void onChildrenChanged(){
+  void onChildrenChanged() {
     invalidateDraw();
   }
 
@@ -25,12 +21,12 @@ abstract class ParentThing
 
   int get visualChildCount;
 
-  void childInvalidated(Thing child){
+  void childInvalidated(Thing child) {
     assert(hasVisualChild(child));
     invalidateDraw();
   }
 
-  void update(){
+  void update() {
     _forEach((e) => e.update());
     super.update();
   }
@@ -41,7 +37,7 @@ abstract class ParentThing
 
   void _forEach(Action1<Thing> f) {
     final length = visualChildCount;
-    for(int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
       f(getVisualChild(i));
     }
   }

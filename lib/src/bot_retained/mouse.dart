@@ -15,8 +15,8 @@ class Mouse {
 
   static List<Thing> markMouseOver(Stage stage, [Point coordinate = null]) {
     requireArgumentNotNull(stage, 'stage');
-    requireArgument(coordinate == null ||
-        Coordinate.valid(coordinate), 'coordinate');
+    requireArgument(
+        coordinate == null || Coordinate.valid(coordinate), 'coordinate');
 
     final items = _stageMouseCacheProperty.get(stage);
     if (items != null) {

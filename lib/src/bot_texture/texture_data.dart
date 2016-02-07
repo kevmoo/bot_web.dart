@@ -11,15 +11,15 @@ class TextureData {
   }
 
   void drawTextureKeyAt(CanvasRenderingContext2D ctx, String textureKey,
-                        [Coordinate location = const Coordinate()]) {
+      [Coordinate location = const Coordinate()]) {
     assert(textureKey != null);
     final texture = getTexture(textureKey);
     assert(texture != null);
     drawTextureAt(ctx, location, texture);
   }
 
-  void drawTextureAt(CanvasRenderingContext2D ctx, Coordinate location,
-                     TextureInput texture) {
+  void drawTextureAt(
+      CanvasRenderingContext2D ctx, Coordinate location, TextureInput texture) {
     ctx.save();
     final tx = new AffineTransform();
     tx.translate(location.x, location.y);
@@ -28,10 +28,10 @@ class TextureData {
     var source = texture.sourceColorRect.topLeft;
     tx.translate(source.x, source.y);
 
-    if(texture.rotated) {
+    if (texture.rotated) {
       tx.rotate(-0.5 * math.PI, 0.5 * theFrame.height, 0.5 * theFrame.height);
-      theFrame = new Rectangle(theFrame.left, theFrame.top,
-          theFrame.height, theFrame.width);
+      theFrame = new Rectangle(
+          theFrame.left, theFrame.top, theFrame.height, theFrame.width);
     }
 
     CanvasUtil.transform(ctx, tx);
@@ -39,6 +39,4 @@ class TextureData {
     CanvasUtil.drawImage(ctx, texture.image, theFrame);
     ctx.restore();
   }
-
-
 }

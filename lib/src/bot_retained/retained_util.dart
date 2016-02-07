@@ -1,11 +1,12 @@
 part of bot_retained;
 
 class RetainedUtil {
-
-  static Vector getOffsetVector(Size parentSize, Size childSize,
-                         HorizontalAlignment horizontalAlignment,
-                         VerticalAlignment verticalAlignment,
-                         Vector offset) {
+  static Vector getOffsetVector(
+      Size parentSize,
+      Size childSize,
+      HorizontalAlignment horizontalAlignment,
+      VerticalAlignment verticalAlignment,
+      Vector offset) {
     requireArgumentNotNull(parentSize, 'parentSize');
     requireArgumentNotNull(childSize, 'childSize');
     requireArgumentNotNull(horizontalAlignment, 'horizontalAlignment');
@@ -13,7 +14,6 @@ class RetainedUtil {
     requireArgumentNotNull(offset, 'offset');
 
     num x = offset.x, y = offset.y;
-
 
     switch (horizontalAlignment) {
       case HorizontalAlignment.LEFT:
@@ -26,7 +26,8 @@ class RetainedUtil {
         x += parentSize.width - childSize.width;
         break;
       default:
-        throw new ArgumentError('horizontalAlignment value not expected $horizontalAlignment');
+        throw new ArgumentError(
+            'horizontalAlignment value not expected $horizontalAlignment');
     }
 
     switch (verticalAlignment) {
@@ -40,24 +41,25 @@ class RetainedUtil {
         y += parentSize.height - childSize.height;
         break;
       default:
-        throw new ArgumentError('verticalAlignment value not expected $verticalAlignment');
+        throw new ArgumentError(
+            'verticalAlignment value not expected $verticalAlignment');
     }
 
     return new Vector(x, y);
   }
 
-  static List<Thing> hitTest(Stage stage, Point point){
+  static List<Thing> hitTest(Stage stage, Point point) {
     return _hitTest(stage.rootThing, point);
   }
 
-  static List<Thing> _hitTest(Thing thing, Point point){
+  static List<Thing> _hitTest(Thing thing, Point point) {
     point = transformPointGlobalToLocal(thing, point);
 
     final bounds = new Rectangle(0, 0, thing.width, thing.height);
 
     var hits = new List<Thing>();
     if (bounds.containsPoint(point)) {
-      if(thing is ParentThing) {
+      if (thing is ParentThing) {
         final ParentThing p = thing;
 
         var length = p.visualChildCount;
@@ -74,8 +76,7 @@ class RetainedUtil {
     return hits;
   }
 
-  static Coordinate transformPointLocalToGlobal(Thing thing,
-                                                     Coordinate point) {
+  static Coordinate transformPointLocalToGlobal(Thing thing, Coordinate point) {
     var tx = thing.getTransformToRoot();
     return tx.transformCoordinate(point);
   }
@@ -86,7 +87,7 @@ class RetainedUtil {
   }
 
   static List<Coordinate> getCorners(Thing thing) {
-    var rect = new Box(0,0,thing.width, thing.height);
+    var rect = new Box(0, 0, thing.width, thing.height);
     final points = rect.getCorners();
     return points.map((p) {
       return transformPointLocalToGlobal(thing, p);

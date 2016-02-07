@@ -11,13 +11,12 @@ class ImageThing extends Thing {
     return new ImageThing(w, h, img);
   }
 
-  ImageThing(num width, num height, this._image) :
-    super(width, height);
+  ImageThing(num width, num height, this._image) : super(width, height);
 
   void drawOverride(CanvasRenderingContext2D ctx) {
-    if(_image.complete) {
+    if (_image.complete) {
       _doDraw(ctx);
-    } else if(!_waitingOnLoad) {
+    } else if (!_waitingOnLoad) {
       _waitingOnLoad = true;
       // TODO: some day we'll have a way to remove these cleanly
       //       ...because this handled should be disposed :-/

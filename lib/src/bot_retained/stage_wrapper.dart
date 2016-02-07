@@ -1,7 +1,6 @@
 part of bot_retained;
 
 class StageWrapper<T extends Thing> extends DisposableImpl {
-
   @protected
   final CanvasElement canvas;
 
@@ -15,15 +14,15 @@ class StageWrapper<T extends Thing> extends DisposableImpl {
 
   bool _frameRequested = false;
 
-  StageWrapper(CanvasElement canvas, T rootThing) :
-    this.canvas = canvas,
-    this.rootThing = rootThing,
-    this.stage = new Stage(canvas, rootThing) {
+  StageWrapper(CanvasElement canvas, T rootThing)
+      : this.canvas = canvas,
+        this.rootThing = rootThing,
+        this.stage = new Stage(canvas, rootThing) {
     _invalidatedEventSub = stage.invalidated.listen((_) => requestFrame());
   }
 
   void requestFrame() {
-    if(!_frameRequested) {
+    if (!_frameRequested) {
       _frameRequested = true;
       window.requestAnimationFrame(drawFrame);
     }

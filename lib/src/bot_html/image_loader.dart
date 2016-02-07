@@ -16,6 +16,5 @@ class ImageLoader extends ResourceLoader<ImageElement> {
     });
 
     return completer.future;
-
   }
 }

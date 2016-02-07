@@ -13,11 +13,10 @@ class TextThing extends Thing {
   dynamic fillStyle = 'white';
   dynamic textFillStyle = 'black';
 
-  TextThing(this._value, num width, num height)
-      : super(width, height);
+  TextThing(this._value, num width, num height) : super(width, height);
 
   void drawOverride(CanvasRenderingContext2D ctx) {
-    if(fillStyle != null) {
+    if (fillStyle != null) {
       ctx.fillStyle = fillStyle;
       ctx.fillRect(0, 0, this.width, this.height);
     }

@@ -11,11 +11,10 @@ class NavThing extends ParentThing {
   _NavLayerTxPanel _txPanel;
   Vector _childOffset;
 
-  NavThing(num width, num height) :
-    super(width, height);
+  NavThing(num width, num height) : super(width, height);
 
   int get visualChildCount {
-    if(_txPanel != null) {
+    if (_txPanel != null) {
       return 1;
     } else if (_child != null) {
       return 1;
@@ -25,10 +24,10 @@ class NavThing extends ParentThing {
   }
 
   Thing getVisualChild(int index) {
-    if(index == 0) {
-      if(_txPanel != null) {
+    if (index == 0) {
+      if (_txPanel != null) {
         return _txPanel;
-      } else if(_child != null) {
+      } else if (_child != null) {
         return _child;
       }
     }
@@ -43,7 +42,7 @@ class NavThing extends ParentThing {
     requireArgumentNotNull(frameCount, 'frameCount');
     require(canForward, 'Forward cannot be called');
 
-    if(_child != null) {
+    if (_child != null) {
       assert(_txPanel == null); // I guess we don't allow stacked forwards yet
       final ghost = this._child;
 
@@ -59,16 +58,24 @@ class NavThing extends ParentThing {
       final tempCtx = tempCanvas.context2D;
       ghost.drawOverride(tempCtx);
 
-      this._txPanel = new _NavLayerTxPanel(this.width, this.height, tempCanvas,
-          thing, tx, existingTx, frameCount, horizontalAlignment,
-          verticalAlignment, _childOffset);
+      this._txPanel = new _NavLayerTxPanel(
+          this.width,
+          this.height,
+          tempCanvas,
+          thing,
+          tx,
+          existingTx,
+          frameCount,
+          horizontalAlignment,
+          verticalAlignment,
+          _childOffset);
       this._txPanel.registerParent(this);
     }
 
     assert(_child == null);
     _child = thing;
 
-    if(_txPanel == null) {
+    if (_txPanel == null) {
       _claimChild();
     }
 
@@ -77,10 +84,10 @@ class NavThing extends ParentThing {
 
   void update() {
     super.update();
-    if(_txPanel != null) {
+    if (_txPanel != null) {
       assert(_child != null);
       assert(_child.parent == _txPanel);
-      if(_txPanel.isDone) {
+      if (_txPanel.isDone) {
         _txPanel.unregisterParent(this);
         final removed = _txPanel.remove(_child);
         assert(removed);
@@ -110,31 +117,42 @@ class _NavLayerTxPanel extends PanelThing {
 
   int _i = 0;
 
-  factory _NavLayerTxPanel(num width, num height, CanvasElement lastCanvas,
-      Thing newChild, AffineTransform startTx, AffineTransform ghostTx,
-      int frameCount, HorizontalAlignment horizontalAlignment,
-      VerticalAlignment verticalAlignment, Vector childOffset) {
-    if(childOffset == null) {
+  factory _NavLayerTxPanel(
+      num width,
+      num height,
+      CanvasElement lastCanvas,
+      Thing newChild,
+      AffineTransform startTx,
+      AffineTransform ghostTx,
+      int frameCount,
+      HorizontalAlignment horizontalAlignment,
+      VerticalAlignment verticalAlignment,
+      Vector childOffset) {
+    if (childOffset == null) {
       childOffset = new Vector();
     }
 
-    final lastImage = new SubCanvasThing(lastCanvas.width, lastCanvas.height,
-        lastCanvas);
+    final lastImage =
+        new SubCanvasThing(lastCanvas.width, lastCanvas.height, lastCanvas);
 
     final lastTx = lastImage.addTransform();
     lastTx.setFromTransfrom(startTx.createInverse());
 
     final thisSize = new Size(width, height);
 
-    final Coordinate newChildOffset = RetainedUtil.getOffsetVector(
-        thisSize, newChild.size, horizontalAlignment, verticalAlignment, childOffset);
-    final goalTx = new AffineTransform.fromTranslat(newChildOffset.x, newChildOffset.y);
+    final Coordinate newChildOffset = RetainedUtil.getOffsetVector(thisSize,
+        newChild.size, horizontalAlignment, verticalAlignment, childOffset);
+    final goalTx =
+        new AffineTransform.fromTranslat(newChildOffset.x, newChildOffset.y);
     final newStartTx = ghostTx.clone().concatenate(startTx);
 
-    return new _NavLayerTxPanel._internal(width, height, frameCount, lastImage,
-        newChild, newStartTx, goalTx);  }
+    return new _NavLayerTxPanel._internal(
+        width, height, frameCount, lastImage, newChild, newStartTx, goalTx);
+  }
 
-  _NavLayerTxPanel._internal(num width, num height, this._frames, this._lastImage, this._newChild, this._startTx, this._goalTx) : super(width, height) {
+  _NavLayerTxPanel._internal(num width, num height, this._frames,
+      this._lastImage, this._newChild, this._startTx, this._goalTx)
+      : super(width, height) {
     add(_lastImage);
     add(_newChild);
     assert(_frames >= 0);
@@ -146,7 +164,7 @@ class _NavLayerTxPanel extends PanelThing {
   bool get isDone => _i >= _frames;
 
   void update() {
-    if(_i < _frames) {
+    if (_i < _frames) {
       assert(!isDone);
       final ratio = _i / (_frames - 1);
       final newTx = _startTx.lerpTx(_goalTx, ratio);
@@ -168,7 +186,7 @@ class _NavLayerTxPanel extends PanelThing {
 
   void drawOverride(CanvasRenderingContext2D ctx) {
     super.drawOverride(ctx);
-    if(!isDone) {
+    if (!isDone) {
       invalidateDraw();
     }
   }

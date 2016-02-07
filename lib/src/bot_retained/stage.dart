@@ -1,7 +1,6 @@
 part of bot_retained;
 
-class Stage extends AttachableObject
-  implements ThingParent {
+class Stage extends AttachableObject implements ThingParent {
   final StreamController _invalidatedEventHandle = new StreamController();
 
   final CanvasElement _canvas;
@@ -18,13 +17,13 @@ class Stage extends AttachableObject
 
   CanvasRenderingContext2D get ctx {
     validateNotDisposed();
-    if(_ctx == null) {
+    if (_ctx == null) {
       _ctx = _canvas.context2D;
     }
     return _ctx;
   }
 
-  bool draw(){
+  bool draw() {
     validateNotDisposed();
     if (_ctx == null) {
       _ctx = _canvas.context2D;
@@ -35,13 +34,13 @@ class Stage extends AttachableObject
     return this.rootThing._stageDraw(this._ctx);
   }
 
-  void childInvalidated(Thing child){
+  void childInvalidated(Thing child) {
     validateNotDisposed();
     assert(child == rootThing);
     _invalidatedEventHandle.add(EMPTY_EVENT);
   }
 
-  void disposeInternal(){
+  void disposeInternal() {
     super.disposeInternal();
     _invalidatedEventHandle.close();
   }

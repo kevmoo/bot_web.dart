@@ -12,8 +12,8 @@ class TextureInput {
   TextureInput(this.name, this.frame, this.rotated, this.trimmed,
       this.sourceColorRect, this.sourceSize, this.image);
 
-  factory TextureInput.fromHash(String keyName, Map<String, dynamic> map,
-      ImageElement image) {
+  factory TextureInput.fromHash(
+      String keyName, Map<String, dynamic> map, ImageElement image) {
     final frame = _parseRect(map['frame']);
     final sourceColorRect = _parseRect(map['spriteSourceSize']);
     final sourceSize = _parseCoordinate(map['sourceSize']);

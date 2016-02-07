@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:bot/bot.dart';
 import 'package:bot_web/bot_retained.dart';
 
-main(){
+main() {
   CanvasElement canvas = querySelector("#content");
   var demo = new SpinDemo(canvas);
   demo.requestFrame();
@@ -14,11 +14,11 @@ class SpinDemo extends StageWrapper<CanvasThing> {
   Point _mouseLocation;
 
   factory SpinDemo(CanvasElement canvas) {
-
     final pCanvas = new CanvasThing(200, 200);
     final blue = new ShapeThing(100, 100, fillStyle: 'blue');
     final green = new ShapeThing(70, 70, fillStyle: 'green');
-    final red = new ShapeThing(40, 40, fillStyle: 'red', shapeType: ShapeType.ellipse);
+    final red =
+        new ShapeThing(40, 40, fillStyle: 'red', shapeType: ShapeType.ellipse);
 
     pCanvas.add(blue);
 
@@ -28,10 +28,8 @@ class SpinDemo extends StageWrapper<CanvasThing> {
     pCanvas.add(red);
     pCanvas.setCenter(red, new Coordinate(50, 50));
 
-
-    pCanvas.addTransform().translate(
-      (canvas.width - pCanvas.width) / 2,
-      (canvas.height - pCanvas.height) / 2);
+    pCanvas.addTransform().translate((canvas.width - pCanvas.width) / 2,
+        (canvas.height - pCanvas.height) / 2);
 
     final tx = pCanvas.addTransform();
 
@@ -41,26 +39,26 @@ class SpinDemo extends StageWrapper<CanvasThing> {
     return new SpinDemo._internal(canvas, rootPanel, tx);
   }
 
-  SpinDemo._internal(CanvasElement canvas, CanvasThing thing, this._tx) :
-    super(canvas, thing) {
+  SpinDemo._internal(CanvasElement canvas, CanvasThing thing, this._tx)
+      : super(canvas, thing) {
     canvas.onMouseMove.listen(_canvas_mouseMove);
     canvas.onMouseOut.listen(_canvas_mouseOut);
   }
 
-  void drawFrame(double highResTime){
+  void drawFrame(double highResTime) {
     _tx.rotate(math.PI * 0.01, 100, 100);
     super.drawFrame(highResTime);
-    if(_mouseLocation != null){
+    if (_mouseLocation != null) {
       RetainedDebug.borderHitTest(stage, _mouseLocation);
     }
     requestFrame();
   }
 
-  void _canvas_mouseMove(MouseEvent e){
+  void _canvas_mouseMove(MouseEvent e) {
     _mouseLocation = e.offset;
   }
 
-  void _canvas_mouseOut(MouseEvent e){
+  void _canvas_mouseOut(MouseEvent e) {
     _mouseLocation = null;
   }
 }

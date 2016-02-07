@@ -2,13 +2,13 @@ import 'dart:html';
 import 'package:bot/bot.dart';
 import 'package:bot_web/bot_retained.dart';
 
-main(){
+main() {
   CanvasElement canvas = querySelector("#content");
   var demo = new DraggerDemo(canvas);
   demo.requestFrame();
 }
 
-class DraggerDemo{
+class DraggerDemo {
   final CanvasElement _canvas;
   final Stage _stage;
   final AffineTransform _tx;
@@ -17,11 +17,9 @@ class DraggerDemo{
   bool _frameRequested = false;
   final Thing _thing;
 
-  factory DraggerDemo(CanvasElement canvas){
-
-    final image =
-        new SpriteThing.horizontalFromUrl('disasteroids2_master.png',
-            28, 28, 16, 29, new Coordinate(35,354));
+  factory DraggerDemo(CanvasElement canvas) {
+    final image = new SpriteThing.horizontalFromUrl(
+        'disasteroids2_master.png', 28, 28, 16, 29, new Coordinate(35, 354));
 
     MouseManager.setCursor(image, 'pointer');
 
@@ -36,7 +34,6 @@ class DraggerDemo{
   }
 
   DraggerDemo._internal(this._canvas, this._stage, this._tx, this._thing) {
-
     _stage.invalidated.listen(_onStageInvalidated);
 
     final cm = new MouseManager(_stage);
@@ -45,8 +42,8 @@ class DraggerDemo{
     MouseManager.getDragStream(_thing).listen(_onDrag);
   }
 
-  void requestFrame(){
-    if(!_frameRequested) {
+  void requestFrame() {
+    if (!_frameRequested) {
       _frameRequested = true;
       window.requestAnimationFrame(_onFrame);
     }
@@ -63,7 +60,7 @@ class DraggerDemo{
     requestFrame();
   }
 
-  void _onFrame(double highResTime){
+  void _onFrame(double highResTime) {
     _stage.draw();
     _frameRequested = false;
     requestFrame();

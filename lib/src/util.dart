@@ -1,6 +1,5 @@
 library bot_web.util;
 
-
 class _EmptyEvent {
   const _EmptyEvent();
 

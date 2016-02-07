@@ -5,8 +5,7 @@ part of bot_retained;
 //       Nothing interesting exists on the instance of CM
 
 class MouseManager {
-  static final Property<String> cursorProperty =
-      new Property<String>("cursor");
+  static final Property<String> cursorProperty = new Property<String>("cursor");
 
   static final Property<MouseManager> _clickManagerProperty =
       new Property<MouseManager>("_clickManager");
@@ -29,8 +28,7 @@ class MouseManager {
   static final AttachedEvent<ThingMouseEventArgs> _mouseMoveEvent =
       new AttachedEvent<ThingMouseEventArgs>('mouseMove');
 
-  static final AttachedEvent _mouseOutEvent =
-      new AttachedEvent('mouseOut');
+  static final AttachedEvent _mouseOutEvent = new AttachedEvent('mouseOut');
 
   static final AttachedEvent<ThingDragStartingEventArgs> _dragStartingEvent =
       new AttachedEvent<ThingDragStartingEventArgs>("_dragStartingEvent");
@@ -66,7 +64,7 @@ class MouseManager {
 
   static void setCursor(Thing thing, String value) {
     assert(thing != null);
-    if(value == null) {
+    if (value == null) {
       cursorProperty.clear(thing);
     } else {
       cursorProperty.set(thing, value);
@@ -87,7 +85,7 @@ class MouseManager {
     return _isClickableProperty.get(thing);
   }
 
-  static void setDraggable (Thing thing, bool value) {
+  static void setDraggable(Thing thing, bool value) {
     _setBoolProp(thing, _isDraggableProperty, value);
   }
 
@@ -101,7 +99,7 @@ class MouseManager {
     assert(prop != null);
     assert(value != null);
     assert(prop.defaultValue == false);
-    if(value) {
+    if (value) {
       prop.set(thing, true);
     } else {
       prop.clear(thing);
@@ -114,16 +112,16 @@ class MouseManager {
     final items = _updateMouseLocation(e.offset);
 
     String cursor = null;
-    if(_draggingThing != null) {
+    if (_draggingThing != null) {
       cursor = getCursor(_draggingThing);
     }
 
-    if(items.length > 0) {
+    if (items.length > 0) {
       final args = new ThingMouseEventArgs(items[0], e);
 
-      for(final e in items) {
+      for (final e in items) {
         _mouseMoveEvent.fireEvent(e, args);
-        if(cursor == null) {
+        if (cursor == null) {
           cursor = getCursor(e);
         }
       }
@@ -149,11 +147,11 @@ class MouseManager {
     final hits = _updateMouseLocation(e.offset);
     final thing = hits.firstWhere((e) => getClickable(e), orElse: () => null);
 
-    if(thing != null) {
+    if (thing != null) {
       _doMouseUp(thing, e);
 
       // handle click
-      if(thing == _mouseDownThing) {
+      if (thing == _mouseDownThing) {
         _doClick(thing, e);
       }
       _mouseDownThing = null;
@@ -167,12 +165,12 @@ class MouseManager {
     final coord = e.offset;
     final hits = _updateMouseLocation(coord);
 
-    for(final t in hits) {
-      if(getDraggable(t)) {
+    for (final t in hits) {
+      if (getDraggable(t)) {
         _draggingThing = t;
         _startDrag(_draggingThing, e);
         break;
-      } else if(getClickable(t)) {
+      } else if (getClickable(t)) {
         _mouseDownThing = t;
         _doMouseDown(_mouseDownThing, e);
         break;
@@ -210,14 +208,14 @@ class MouseManager {
     assert(!_isDragging);
     final args = new ThingDragStartingEventArgs(thing, e);
     _dragStartingEvent.fireEvent(thing, args);
-    if(!args.isCanceled) {
+    if (!args.isCanceled) {
       e.preventDefault();
       _dragCoordinate = _p2c(e.client);
     }
   }
 
   void _windowMouseMove(MouseEvent e) {
-    if(_isDragging) {
+    if (_isDragging) {
       final newLoc = _p2c(e.client);
 
       final delta = newLoc - _dragCoordinate;
@@ -239,7 +237,7 @@ class MouseManager {
 
   void _endDrag() {
     assert(_isDragging == (_draggingThing != null));
-    if(_isDragging) {
+    if (_isDragging) {
       _dragCoordinate = null;
       _draggingThing = null;
     }
@@ -278,11 +276,12 @@ class MouseManager {
   }
 }
 
-class ThingDragStartingEventArgs extends ThingMouseEventArgs implements CancelableEventArgs {
+class ThingDragStartingEventArgs extends ThingMouseEventArgs
+    implements CancelableEventArgs {
   bool _canceled = false;
 
-  ThingDragStartingEventArgs(Thing thing, MouseEvent source) :
-    super(thing, source);
+  ThingDragStartingEventArgs(Thing thing, MouseEvent source)
+      : super(thing, source);
 
   @override
   bool get isCanceled => _canceled;
@@ -296,6 +295,6 @@ class ThingDragStartingEventArgs extends ThingMouseEventArgs implements Cancelab
 
 class ThingDragEventArgs extends ThingMouseEventArgs {
   final Vector delta;
-  ThingDragEventArgs(Thing thing, MouseEvent source, this.delta) :
-    super(thing, source);
+  ThingDragEventArgs(Thing thing, MouseEvent source, this.delta)
+      : super(thing, source);
 }

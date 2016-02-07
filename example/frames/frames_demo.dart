@@ -16,15 +16,13 @@ class FrameDemo extends StageWrapper<CanvasThing> {
     return new FrameDemo._internal(canvas, canvasThing);
   }
 
-  FrameDemo._internal(CanvasElement canvas, CanvasThing canvasThing) :
-    _txThing = new TxThing(canvas.width, canvas.height),
-    super(canvas, canvasThing) {
-
+  FrameDemo._internal(CanvasElement canvas, CanvasThing canvasThing)
+      : _txThing = new TxThing(canvas.width, canvas.height),
+        super(canvas, canvasThing) {
     this.rootThing.add(_txThing);
 
     var cm = new MouseManager(stage);
   }
-
 }
 
 class TxThing extends ParentThing {
@@ -37,22 +35,24 @@ class TxThing extends ParentThing {
   Coordinate _rotateScaleCoordinate;
 
   factory TxThing(num width, num height) {
-    var box = new Rectangle(width/3, height/3, width/3, height/3);
+    var box = new Rectangle(width / 3, height / 3, width / 3, height / 3);
 
     var shape = new ShapeThing(box.width, box.height);
     var tx = shape.addTransform();
     tx.setToTranslation(box.left, box.top);
 
-    return new TxThing._internal(width, height, new Size(box.width, box.height),
-        shape, tx);
+    return new TxThing._internal(
+        width, height, new Size(box.width, box.height), shape, tx);
   }
 
-  TxThing._internal(num width, num height, this._sourceSize, this._shape, this._tx) :
-    _canvasThing = new CanvasThing(width, height),
-    _positionShape = new ShapeThing(_widgetSize, _widgetSize, fillStyle: 'gray'),
-    _rotateScaleShape = new ShapeThing(_widgetSize, _widgetSize, fillStyle: 'red'),
-    super(width, height) {
-
+  TxThing._internal(
+      num width, num height, this._sourceSize, this._shape, this._tx)
+      : _canvasThing = new CanvasThing(width, height),
+        _positionShape =
+            new ShapeThing(_widgetSize, _widgetSize, fillStyle: 'gray'),
+        _rotateScaleShape =
+            new ShapeThing(_widgetSize, _widgetSize, fillStyle: 'red'),
+        super(width, height) {
     _canvasThing.registerParent(this);
     _canvasThing.add(_shape);
 
@@ -82,7 +82,8 @@ class TxThing extends ParentThing {
   }
 
   void _updateRotateScale() {
-    _rotateScaleCoordinate = _tx.transformCoordinate(new Coordinate(0, _sourceSize.height));
+    _rotateScaleCoordinate =
+        _tx.transformCoordinate(new Coordinate(0, _sourceSize.height));
     _updatePoints();
   }
 
@@ -103,7 +104,6 @@ class TxThing extends ParentThing {
 
     _tx.setToTranslation(pc.x, pc.y);
     _tx.rotate(angle, 0, 0);
-
 
     _tx.scale(newScale, newScale);
 

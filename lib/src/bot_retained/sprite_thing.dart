@@ -7,16 +7,17 @@ class SpriteThing extends ImageThing {
 
   int _frame = 0;
 
-  factory SpriteThing.horizontalFromUrl(String src, num w, num h,
-      int count, num xDelta, [Coordinate start = const Coordinate()]) {
+  factory SpriteThing.horizontalFromUrl(
+      String src, num w, num h, int count, num xDelta,
+      [Coordinate start = const Coordinate()]) {
     final img = new ImageElement(src: src);
 
     return new SpriteThing(img, w, h, start, new Vector(xDelta, 0), count);
   }
 
-  SpriteThing(ImageElement image, num width, num height,
-                this.startCoordinate, this.nextDelta, this.count) :
-    super(width, height, image);
+  SpriteThing(ImageElement image, num width, num height, this.startCoordinate,
+      this.nextDelta, this.count)
+      : super(width, height, image);
 
   void nextFrame() {
     setFrame(_frame + 1);

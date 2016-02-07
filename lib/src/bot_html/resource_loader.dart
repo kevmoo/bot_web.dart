@@ -10,14 +10,14 @@ abstract class ResourceLoader<T> {
   static const int _defaultSize = 2000;
 
   final UnmodifiableListView<_ResourceEntry<T>> _entries;
-  final StreamController _loadedEvent= new StreamController();
+  final StreamController _loadedEvent = new StreamController();
   final StreamController _progressEvent = new StreamController();
 
   String _state = StateUnloaded;
 
   ResourceLoader(Iterable<String> urlList)
       : _entries = new UnmodifiableListView(
-          urlList.map((url) => new _ResourceEntry(url)).toList());
+            urlList.map((url) => new _ResourceEntry(url)).toList());
 
   int get completedCount => $(_entries).count((e) => e.completed);
 
@@ -35,7 +35,7 @@ abstract class ResourceLoader<T> {
 
   int get totalBytes {
     return $(_entries).selectNumbers((e) {
-      if(e.totalBytes == null) {
+      if (e.totalBytes == null) {
         return _defaultSize;
       } else {
         return e.totalBytes;
@@ -46,13 +46,12 @@ abstract class ResourceLoader<T> {
   Future load() {
     assert(_state == StateUnloaded);
     _state = StateLoading;
-    return Future.wait(_entries.map((e) => _httpLoad(e)))
-        .then((_) {
-          if(_entries.every((e) => e.completed)) {
-            _state = StateLoaded;
-            _loadedEvent.add(EMPTY_EVENT);
-          }
-        });
+    return Future.wait(_entries.map((e) => _httpLoad(e))).then((_) {
+      if (_entries.every((e) => e.completed)) {
+        _state = StateLoaded;
+        _loadedEvent.add(EMPTY_EVENT);
+      }
+    });
   }
 
   @protected
@@ -64,8 +63,10 @@ abstract class ResourceLoader<T> {
   }
 
   Future _httpLoad(_ResourceEntry<T> entry) {
-    return HttpRequest.request(entry.url, responseType: 'blob',
-        onProgress: (ProgressEvent args) => _onProgress(entry, args))
+    return HttpRequest
+        .request(entry.url,
+            responseType: 'blob',
+            onProgress: (ProgressEvent args) => _onProgress(entry, args))
         .then((HttpRequest request) => _onLoadEnd(entry, request))
         .catchError((dynamic error) => _onError(entry, error));
   }
@@ -76,13 +77,11 @@ abstract class ResourceLoader<T> {
     require(request.response != null, 'request.response should not be null');
     final blobUrl = entry.getBlobUrl(request.response);
 
-    return _doLoad(blobUrl)
-        .then((T resource) {
-          assert(_state == StateLoading);
-          assert(resource != null);
-          entry.setResource(resource);
-        })
-        .whenComplete(() => entry.revokeBlobUrl());
+    return _doLoad(blobUrl).then((T resource) {
+      assert(_state == StateLoading);
+      assert(resource != null);
+      entry.setResource(resource);
+    }).whenComplete(() => entry.revokeBlobUrl());
   }
 
   void _onError(_ResourceEntry<T> entry, dynamic error) {
@@ -95,7 +94,7 @@ abstract class ResourceLoader<T> {
     assert(args.type == 'progress');
     assert(args.lengthComputable);
 
-    if(entry.updateProgress(args.loaded, args.total)) {
+    if (entry.updateProgress(args.loaded, args.total)) {
       _progressEvent.add(EMPTY_EVENT);
     }
   }

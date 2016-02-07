@@ -7,20 +7,18 @@ class PanelThing extends ParentThing {
   final List<Thing> _children;
   String background;
 
-  PanelThing(num w, num h) :
-    _children = new List<Thing>(),
-    super(w, h);
+  PanelThing(num w, num h)
+      : _children = new List<Thing>(),
+        super(w, h);
 
-  void add(Thing thing){
+  void add(Thing thing) {
     insertAt(thing, _children.length);
   }
 
-  void insertAt(Thing thing, [int index=null]){
+  void insertAt(Thing thing, [int index = null]) {
     requireArgumentNotNull(thing, 'thing');
-    requireArgument(thing.parent == null, 'thing',
-        'already has a parent');
-    requireArgument(!_children.contains(thing), 'thing',
-        'Cannot add twice');
+    requireArgument(thing.parent == null, 'thing', 'already has a parent');
+    requireArgument(!_children.contains(thing), 'thing', 'Cannot add twice');
 
     index = (index == null) ? 0 : index;
     thing.registerParent(this);
@@ -35,7 +33,7 @@ class PanelThing extends ParentThing {
     requireArgumentNotNull(thing, 'thing');
 
     final index = _children.indexOf(thing);
-    if(index < 0) {
+    if (index < 0) {
       return false;
     } else {
       final item = _children.removeAt(index);
@@ -62,7 +60,7 @@ class PanelThing extends ParentThing {
   }
 
   void drawOverride(CanvasRenderingContext2D ctx) {
-    if(background != null) {
+    if (background != null) {
       ctx.fillStyle = background;
       ctx.fillRect(0, 0, width, height);
     }
