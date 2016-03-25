@@ -1,5 +1,5 @@
 name: bot_web
-version: 0.22.0+1
+version: 0.22.0+2
 author: Kevin Moore <github@j832.com>
 description: A collection of (mostly) general libraries to make working with Dart more productive.
 homepage: https://github.com/kevmoo/bot_web.dart

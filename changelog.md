@@ -1,3 +1,7 @@
+## 0.22.0+2
+
+* Updated dev dependencies.
+
 ## 0.22.0+1
 
 * Updated dev dependencies.
