@@ -1,6 +1,6 @@
 part of bot_retained;
 
-class StageWrapper<T extends Thing> extends DisposableImpl {
+class StageWrapper<T extends Thing> {
   @protected
   final CanvasElement canvas;
 

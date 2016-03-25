@@ -42,7 +42,8 @@ class SpriteThing extends ImageThing {
 
     final sourceCoord = startCoordinate + nextDelta * theFrame;
 
-    final rect = new Box.fromCoordSize(sourceCoord, size);
+    final rect =
+        new Rectangle(sourceCoord.x, sourceCoord.y, size.width, size.height);
 
     CanvasUtil.drawImage(ctx, _image, rect);
   }

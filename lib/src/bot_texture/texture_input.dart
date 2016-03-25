@@ -28,7 +28,7 @@ class TextureInput {
     var coord = new Coordinate(input['x'], input['y']);
     var size = new Size(input['w'], input['h']);
 
-    return new Box.fromCoordSize(coord, size);
+    return new Rectangle(coord.x, coord.y, size.width, size.height);
   }
 
   static Size _parseCoordinate(Map<String, dynamic> input) {

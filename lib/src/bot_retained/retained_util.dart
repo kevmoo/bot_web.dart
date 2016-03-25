@@ -87,7 +87,7 @@ class RetainedUtil {
   }
 
   static List<Coordinate> getCorners(Thing thing) {
-    var rect = new Box(0, 0, thing.width, thing.height);
+    var rect = new Rectangle(0, 0, thing.width, thing.height);
     final points = rect.getCorners();
     return points.map((p) {
       return transformPointLocalToGlobal(thing, p);
