@@ -21,7 +21,7 @@ class FrameDemo extends StageWrapper<CanvasThing> {
         super(canvas, canvasThing) {
     this.rootThing.add(_txThing);
 
-    var cm = new MouseManager(stage);
+    new MouseManager(stage);
   }
 }
 

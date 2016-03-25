@@ -9,11 +9,9 @@ main() {
 }
 
 class DraggerDemo {
-  final CanvasElement _canvas;
   final Stage _stage;
   final AffineTransform _tx;
 
-  Coordinate _mouseLocation;
   bool _frameRequested = false;
   final Thing _thing;
 
@@ -30,13 +28,13 @@ class DraggerDemo {
 
     var stage = new Stage(canvas, rootPanel);
 
-    return new DraggerDemo._internal(canvas, stage, tx, image);
+    return new DraggerDemo._internal(stage, tx, image);
   }
 
-  DraggerDemo._internal(this._canvas, this._stage, this._tx, this._thing) {
+  DraggerDemo._internal(this._stage, this._tx, this._thing) {
     _stage.invalidated.listen(_onStageInvalidated);
 
-    final cm = new MouseManager(_stage);
+    new MouseManager(_stage);
 
     MouseManager.setDraggable(_thing, true);
     MouseManager.getDragStream(_thing).listen(_onDrag);
@@ -56,7 +54,6 @@ class DraggerDemo {
   void _onDrag(ThingDragEventArgs args) {
     final delta = args.delta;
     _tx.translate(delta.x, delta.y);
-    final arrayValue = [_tx.translateX, _tx.translateY];
     requestFrame();
   }
 
