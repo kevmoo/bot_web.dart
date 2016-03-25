@@ -13,5 +13,5 @@ dev_dependencies:
   browser: '>=0.9.0 <0.11.0'
   hop: '>=0.31.0 <0.32.0'
   hop_unittest: any
-  html5lib: '>=0.9.0 <0.13.0'
+  html: '^0.12.0'
   unittest: '>=0.9.0 <0.12.0'
